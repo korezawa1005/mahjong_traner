@@ -123,4 +123,4 @@ Figma：https://www.figma.com/board/IMyPhu6YZyMRly6OXMC3b6/%E9%BA%BB%E9%9B%80%E3
 - [x] 作り込みはある程度完了している（Figmaを見て画面の作成ができる状態にある）
 
 ### ER図
-https://gyazo.com/2ac8d5ccd67d06bdfb3c3af66ff05dce
+https://gyazo.com/c59d0c3ecc9c17b51bf7362329388b57
