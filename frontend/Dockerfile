@@ -1,8 +1,8 @@
-FROM --platform=linux/amd64 node:21.5.0
+FROM --platform=linux/amd64 node:20.14.0
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install 
 COPY . .
 RUN yarn build
-EXPOSE 3000
-CMD sh -c 'npx serve -s build -l tcp://0.0.0.0:$PORT'
+EXPOSE 8000
+CMD sh -c 'npx serve -s dist -l tcp://0.0.0.0:$PORT'
