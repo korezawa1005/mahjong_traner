@@ -1,14 +1,16 @@
 // frontend/src/App.js
 import React from 'react';
-import RadarChart from './components/RadarChart';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
 
 function App() {
   return (
-    <div className="App">
-      <h1>レーダーチャート表示</h1>
-      <RadarChart />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;
