@@ -32,9 +32,9 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules 
-    command: yarn start
+    command: yarn dev --host
     ports:
-      - "8000:3000"
+      - "8000:8000"
 volumes:
   postgres_data:
 
