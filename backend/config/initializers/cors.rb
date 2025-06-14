@@ -4,6 +4,8 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
 
     resource "*",
       headers: :any,
-      methods: [:get, :post, :put, :patch, :delete, :options, :head]
+      expose: ['Authorization'],
+      methods: [:get, :post, :put, :patch, :delete, :options, :head],
+      credentials: true # サーバー側が「認証情報付きリクエスト」を受け入れる許可
   end
 end
