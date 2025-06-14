@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { FcGoogle } from 'react-icons/fc';
 import { FaLine, FaXTwitter } from 'react-icons/fa6';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+
 
 const RegisterForm = () => {
   const [email, setEmail] = useState('');
@@ -90,7 +91,7 @@ const RegisterForm = () => {
         </button>
 
         <div className="text-center text-sm text-gray-500 mt-4">
-          すでにアカウントをお持ちですか？ <a href="/login" className="underline">ログイン</a>
+          すでにアカウントをお持ちですか？ <Link to="/login" className="underline">ログイン</Link>
         </div>
       </div>
     </div>
