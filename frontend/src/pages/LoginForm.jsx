@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { FcGoogle } from 'react-icons/fc';
 import { FaLine, FaXTwitter } from 'react-icons/fa6';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -79,7 +79,7 @@ const LoginForm = () => {
         </button>
 
         <div className="text-center text-sm text-gray-500 mt-4">
-          アカウントをお持ちでないですか？ <a href="/register" className="underline">サインアップ</a>
+          アカウントをお持ちでないですか？ <Link to="/sign_up" className="underline">サインアップ</Link>
         </div>
       </div>
     </div>
