@@ -3,7 +3,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import LoginForm from './pages/LoginForm';
-import RegisterForm from './pages/RegisterForm';
+import SignupForm from './pages/SignupForm';
 import RequestResetPassword from './pages/RequestResetPassword';
 import ResetPassword from './pages/ResetPassword';
 
@@ -13,7 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginForm />} />
-        <Route path="/sign_up" element={<RegisterForm />} />
+        <Route path="/sign_up" element={<SignupForm />} />
         <Route path="/password/forgot" element={<RequestResetPassword />} />
         <Route path="/password/reset" element={<ResetPassword />} />
       </Routes>

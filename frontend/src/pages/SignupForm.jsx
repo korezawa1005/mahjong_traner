@@ -5,14 +5,15 @@ import { FaLine, FaXTwitter } from 'react-icons/fa6';
 import { useNavigate, Link } from 'react-router-dom';
 
 
-const RegisterForm = () => {
+const SignupForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const navigate = useNavigate();
+  const [errors, setErrors] = useState([]);
 
 
-  const handleRegister = async (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(
@@ -33,17 +34,19 @@ const RegisterForm = () => {
         }
       );
       console.log('サインアップ成功:', response.data);
-      // 必要であればここでログイン画面にリダイレクトなど
-      navigate('/');
+      navigate('/', { replace: true });
     } catch (error) {
       console.error('サインアップ失敗:', error.response?.data || error.message);
+      const resErrors = error.response?.data?.errors || ['アカウント作成に失敗しました。'];
+      setErrors(resErrors);
     }
+    
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f6f6f6]">
       <div className="max-w-xs w-full bg-[#fdf7ed] p-6 rounded-xl shadow-md space-y-4 mt-20">
-        <form onSubmit={handleRegister} className="space-y-4">
+        <form onSubmit={handleSignup} className="space-y-4">
           <input
             type="email"
             placeholder="メールアドレス"
@@ -65,6 +68,13 @@ const RegisterForm = () => {
             onChange={(e) => setPasswordConfirmation(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded"
           />
+          {errors.length > 0 && (
+            <ul className="text-red-600 mb-3 text-sm">
+              {errors.map((error, idx) => (
+                <li key={idx}>・{error}</li>
+              ))}
+            </ul>
+          )}
           <button
             type="submit"
             className="w-full py-2 bg-emerald-700 text-white font-semibold rounded hover:bg-emerald-800"
@@ -98,4 +108,4 @@ const RegisterForm = () => {
   );
 };
 
-export default RegisterForm;
+export default SignupForm;

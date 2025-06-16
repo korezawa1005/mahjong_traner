@@ -4,6 +4,7 @@ import axios from 'axios';
 const RequestResetPassword = () => {
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
+  const [errors, setErrors] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,6 +16,8 @@ const RequestResetPassword = () => {
       setSent(true);
     } catch (error) {
       console.error('メール送信失敗:', error.response?.data || error.message);
+      const resErrors = error.response?.data?.errors || ['メール送信に失敗しました。'];
+      setErrors(resErrors);
     }
   };
 
@@ -33,6 +36,13 @@ const RequestResetPassword = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+          {errors.length > 0 && (
+            <ul className="text-red-600 mb-3 text-sm">
+              {errors.map((error, idx) => (
+                <li key={idx}>・{error}</li>
+              ))}
+            </ul>
+          )}
           <button className="w-full bg-emerald-700 text-white p-2 rounded">
             送信
           </button>
@@ -41,5 +51,4 @@ const RequestResetPassword = () => {
     </div>
   );
 };
-
 export default RequestResetPassword;

@@ -8,6 +8,8 @@ const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const [errors, setErrors] = useState([]);
+
 
   const handleLogin = async (e) => { //asyncによって非同期関数であることを宣言
     e.preventDefault(); //フォームのデフォルト動作（ページのリロード）をキャンセル。ReactでAPI通信だけで完結させたいから必要
@@ -29,9 +31,11 @@ const LoginForm = () => {
         }
       );
       console.log('ログイン成功:', response.data); //response.dataによってRailsが返したJSON形式のデータを返す
-      navigate('/');
+      navigate('/', { replace: true });
     } catch (error) {
       console.error('ログイン失敗:', error.response?.data || error.message); //401 Unauthorized(Rails)かNetwork Error(JS)を返す
+      const resErrors = error.response?.data?.errors || ['ログインに失敗しました。'];
+      setErrors(resErrors);
     }
   };
 
@@ -53,6 +57,13 @@ const LoginForm = () => {
             onChange={(e) => setPassword(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded"
           />
+          {errors.length > 0 && (
+            <ul className="text-red-600 mb-3 text-sm">
+              {errors.map((error, idx) => (
+                <li key={idx}>・{error}</li>
+              ))}
+            </ul>
+          )}
           <button
             type="submit"
             className="w-full py-2 bg-emerald-700 text-white font-semibold rounded hover:bg-emerald-800"
