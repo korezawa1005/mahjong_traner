@@ -50,3 +50,41 @@ tiles.each do |tile|
   end
 end
 
+Quiz.delete_all
+ActiveRecord::Base.connection.reset_pk_sequence!('quizzes')
+Category.delete_all
+ActiveRecord::Base.connection.reset_pk_sequence!('categories')
+
+Category.create!(name: "牌効率")
+
+quiz_data = [
+  {
+    tiles: ["三萬","三萬","五萬","六萬","七萬","八萬","九萬","五筒","六筒","七筒","七筒","七筒","八筒","八筒"],
+    correct: "九萬",
+    dora: "白",
+    situation: "南４局 ６巡目 西家 上がりトップ",
+    explanation: "鳴いて進める九萬が正着"
+  },
+  {
+    tiles: ["五萬","六萬","六萬","七萬","八萬","三筒","五筒","三索","四索","五索","六索","七索","八索","九萬"],
+    correct: "九萬",
+    dora: "五筒",
+    situation: "東3局 7巡目 東家 30,000点",
+    explanation: "最高打点を見て九萬切りが正解"
+  }
+]
+
+def tile_id(name)
+  Tile.find_by(name: name)&.id
+end
+
+quiz_data.each do |data|
+  Quiz.create!(
+    category_id: 1,
+    quiz_tile_ids: data[:tiles].map { |name| tile_id(name) },
+    correct_tile_id: tile_id(data[:correct]),
+    dora_indicator_tile_ids: [tile_id(data[:dora])],
+    situation: data[:situation],
+    explanation: data[:explanation]
+  )
+end
