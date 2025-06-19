@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  quiz: one
+  quiz_session: one
+  selected_tile: one
+  correct: false
+
+two:
+  quiz: two
+  quiz_session: two
+  selected_tile: two
+  correct: false
