@@ -33,9 +33,8 @@ const Quiz = () => {
         <span className="text-black font-medium">ドラ：</span>
         {quiz.discard_tile_urls.map((url, i) => (
           <img
-            key={i}
+            key={`${url}-${i}`}
             src={url}
-            alt={`dora-${i}`}
             className="w-10 border border-white rounded-sm bg-white"
           />
         ))}
@@ -44,10 +43,9 @@ const Quiz = () => {
       <div className="mt-4 flex gap-1 bg-neutral-200 p-2 rounded-md">
         {quiz.hand_tile_urls.map((url, i) => (
           <img
-            key={i}
+            key={`${url}-${i}`} //key={i}はアンチパターン Reactの性質上、順番が変わると誤認識する可能性あり　url + index　で一意のkeyを作成
             src={url}
-            alt={`tile-${i}`}
-            className="w-10 border border-white rounded-sm bg-white cursor-pointer"
+            className="w-10 border border-white hover:border-red-500 rounded-sm bg-white cursor-pointer"
             onClick={() => handleTileClick(i)} // tileId = index
           />
         ))}
