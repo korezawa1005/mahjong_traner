@@ -6,6 +6,8 @@ import LoginForm from './pages/LoginForm';
 import SignupForm from './pages/SignupForm';
 import RequestResetPassword from './pages/RequestResetPassword';
 import ResetPassword from './pages/ResetPassword';
+import Quiz from './pages/Quiz';
+
 
 function App() {
   return (
@@ -16,6 +18,7 @@ function App() {
         <Route path="/sign_up" element={<SignupForm />} />
         <Route path="/password/forgot" element={<RequestResetPassword />} />
         <Route path="/password/reset" element={<ResetPassword />} />
+        <Route path="/quiz" element={<Quiz />} />
       </Routes>
     </BrowserRouter>
   );
