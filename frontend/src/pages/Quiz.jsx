@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Quiz = () => {
   const [quiz, setQuiz] = useState(null);
+  const [searchParams] = useSearchParams();
+  const category = searchParams.get("category");
   const navigate = useNavigate();
 
   useEffect(() => {
     axios.get("http://localhost:3000/api/v1/quizzes", {
-      params: { category: "牌効率" },
+      params: { category },
       withCredentials: true
     }).then((res) => {
       setQuiz(res.data);
