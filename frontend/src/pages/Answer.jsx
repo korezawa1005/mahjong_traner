@@ -8,13 +8,15 @@ const Answer = () => {
   const { quiz, previous_ids } = state;
 
   const handleNext = async () => {
-    const excludeIds = quiz.previous_ids ? [...quiz.previous_ids, quiz.id] : [quiz.id];
+    const excludeIds = previous_ids ? [...previous_ids, quiz.id] : [quiz.id];
+    console.log("🪪 excludeIds:", excludeIds);
+
 
   try {
     const res = await axios.get("http://localhost:3000/api/v1/quizzes", {
       params: {
         category: quiz.category,
-        exclude_ids: excludeIds.join(",")
+        exclude_ids: excludeIds.join(","),
       },
       withCredentials: true,
     });

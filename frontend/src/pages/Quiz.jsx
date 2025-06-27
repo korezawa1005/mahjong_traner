@@ -5,13 +5,16 @@ import axios from "axios";
 
 const Quiz = () => {
   const { state } = useLocation();
-  const { quiz: initialQuiz, previous_ids } = state || {};
+  const { quiz: initialQuiz, previous_ids: initialPreviousIds } = state || {};
   const [quiz, setQuiz] = useState(initialQuiz || null);
+  const [previousIds, setPreviousIds] = useState(initialPreviousIds || []);
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category");
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (initialQuiz) return;
+
     axios.get("http://localhost:3000/api/v1/quizzes", {
       params: { category },
       withCredentials: true
@@ -25,7 +28,14 @@ const Quiz = () => {
   if (!quiz) return <div>読み込み中...</div>;
 
   const handleTileClick = (tileId) => {
-    navigate("/quiz/answer", { state: { quiz, selectedTileId: tileId } });
+    navigate("/quiz/answer",
+      {
+        state: {
+          quiz,
+          selectedTileId: tileId,
+          previous_ids: [previousIds, quiz.id],
+        }
+      });
   };
 
   return (

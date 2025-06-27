@@ -8,6 +8,7 @@ import RequestResetPassword from './pages/RequestResetPassword';
 import ResetPassword from './pages/ResetPassword';
 import Quiz from './pages/Quiz';
 import Answer from './pages/Answer';
+import Result from "./pages/Result";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Route path="/password/reset" element={<ResetPassword />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/quiz/answer" element={<Answer />} />
+        <Route path="/quiz/result" element={<Result />} />
       </Routes>
     </BrowserRouter>
   );
