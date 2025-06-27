@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Quiz = () => {
-  const [quiz, setQuiz] = useState(null);
+  const { state } = useLocation();
+  const { quiz: initialQuiz, previous_ids } = state || {};
+  const [quiz, setQuiz] = useState(initialQuiz || null);
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category");
   const navigate = useNavigate();

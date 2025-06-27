@@ -10,7 +10,9 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       get 'chart_data', to: 'charts#show'
-      get 'quizzes', to: 'quizzes#index'
+
+      resources :quizzes, only: [:index], defaults: { format: :json }
+      resources :quiz_answers, only: [:create]
     end
   end
 end
