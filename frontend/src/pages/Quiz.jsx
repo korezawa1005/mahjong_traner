@@ -7,11 +7,16 @@ const Quiz = () => {
   const { state } = useLocation();
   const { quiz: initialQuiz, previous_ids: initialPreviousIds } = state || {};
   const [quiz, setQuiz] = useState(initialQuiz || null);
-  const [previousIds, setPreviousIds] = useState(initialPreviousIds || []);
+  const [previousIds, setPreviousIds] = useState(() =>
+    Array.isArray(initialPreviousIds)
+      ? initialPreviousIds.filter(id => typeof id === "number" && !isNaN(id))
+      : []
+  );
+  
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category");
   const navigate = useNavigate();
-
+  const currentCorrectCount = state?.correctCount || 0;
   useEffect(() => {
     if (initialQuiz) return;
 
@@ -27,13 +32,14 @@ const Quiz = () => {
 
   if (!quiz) return <div>読み込み中...</div>;
 
-  const handleTileClick = (tileId) => {
+  const handleTileClick = (selectedUrl) => {
     navigate("/quiz/answer",
       {
         state: {
           quiz,
-          selectedTileId: tileId,
-          previous_ids: [previousIds, quiz.id],
+          selectedTileUrl: selectedUrl,
+          previous_ids: [...previousIds, quiz.id],
+          correctCount: currentCorrectCount,
         }
       });
   };
@@ -61,7 +67,7 @@ const Quiz = () => {
             key={`${url}-${i}`} //key={i}はアンチパターン Reactの性質上、順番が変わると誤認識する可能性あり　url + index　で一意のkeyを作成
             src={url}
             className="w-10 border border-white hover:border-red-500 rounded-sm bg-white cursor-pointer"
-            onClick={() => handleTileClick(i)} // tileId = index
+            onClick={() => handleTileClick(url)} 
           />
         ))}
       </div>

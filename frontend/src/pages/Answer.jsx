@@ -1,15 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+
 
 const Answer = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { quiz, previous_ids } = state;
+  const { quiz, previous_ids, selectedTileUrl } = state;
+  const isCorrect = selectedTileUrl === quiz.correct_tile_url;
 
   const handleNext = async () => {
-    const excludeIds = previous_ids ? [...previous_ids, quiz.id] : [quiz.id];
-    console.log("🪪 excludeIds:", excludeIds);
+    const excludeIds = Array.from(new Set(
+      [...(previous_ids || []), quiz.id].flat()
+    )).filter(id => typeof id === "number" && !isNaN(id));
+    const correctCount = state?.correctCount || 0;
+    const updatedCorrect = isCorrect ? correctCount + 1 : correctCount;
 
 
   try {
@@ -25,7 +30,8 @@ const Answer = () => {
         state: {
           quiz: res.data,
           previous_ids: excludeIds,
-          category: quiz.category
+          category: quiz.category,
+          correctCount: updatedCorrect,
         }
       });
   } catch (err) {
@@ -34,6 +40,7 @@ const Answer = () => {
         state: {
           total: excludeIds.length, 
           category: quiz.category,
+          correctCount: updatedCorrect,
         },
       });
     } else {
