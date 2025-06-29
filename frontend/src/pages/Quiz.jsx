@@ -1,14 +1,27 @@
 import React, { useEffect, useState } from "react";
+import { useSearchParams, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Quiz = () => {
-  const [quiz, setQuiz] = useState(null);
+  const { state } = useLocation();
+  const { quiz: initialQuiz, previous_ids: initialPreviousIds } = state || {};
+  const [quiz, setQuiz] = useState(initialQuiz || null);
+  const [previousIds, setPreviousIds] = useState(() =>
+    Array.isArray(initialPreviousIds)
+      ? initialPreviousIds.filter(id => typeof id === "number" && !isNaN(id))
+      : []
+  );
+  
+  const [searchParams] = useSearchParams();
+  const category = searchParams.get("category");
   const navigate = useNavigate();
-
+  const currentCorrectCount = state?.correctCount || 0;
   useEffect(() => {
+    if (initialQuiz) return;
+
     axios.get("http://localhost:3000/api/v1/quizzes", {
-      params: { category: "牌効率" },
+      params: { category },
       withCredentials: true
     }).then((res) => {
       setQuiz(res.data);
@@ -19,8 +32,16 @@ const Quiz = () => {
 
   if (!quiz) return <div>読み込み中...</div>;
 
-  const handleTileClick = (tileId) => {
-    navigate("/quiz/answer", { state: { quiz, selectedTileId: tileId } });
+  const handleTileClick = (selectedUrl) => {
+    navigate("/quiz/answer",
+      {
+        state: {
+          quiz,
+          selectedTileUrl: selectedUrl,
+          previous_ids: [...previousIds, quiz.id],
+          correctCount: currentCorrectCount,
+        }
+      });
   };
 
   return (
@@ -46,7 +67,7 @@ const Quiz = () => {
             key={`${url}-${i}`} //key={i}はアンチパターン Reactの性質上、順番が変わると誤認識する可能性あり　url + index　で一意のkeyを作成
             src={url}
             className="w-10 border border-white hover:border-red-500 rounded-sm bg-white cursor-pointer"
-            onClick={() => handleTileClick(i)} // tileId = index
+            onClick={() => handleTileClick(url)} 
           />
         ))}
       </div>
