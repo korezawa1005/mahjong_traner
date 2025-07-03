@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams, useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate  } from "react-router-dom";
 import axios from "axios";
 
 const QuizEfficiency = (props) => {
@@ -13,9 +12,8 @@ const QuizEfficiency = (props) => {
       : []
   );
   const { category } = props;
-  const [searchParams] = useSearchParams();
   
-  const navigate = useNavigate();
+  const navigate = useNavigate(); //navigateさせたいなら一旦定義しないと使えない
   const currentCorrectCount = state?.correctCount || 0;
   useEffect(() => {
     console.log("カテゴリ:", category); 
