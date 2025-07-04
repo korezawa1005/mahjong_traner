@@ -16,7 +16,7 @@ class Api::V1::QuizAnswersController < ApplicationController
       :quiz_id,
       :selected_tile_id,
       :is_correct,
-      :user_id # ログイン機能がある場合
+      :user_id
     )
   end
 end
