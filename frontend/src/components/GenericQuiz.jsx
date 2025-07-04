@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate  } from "react-router-dom";
 import axios from "axios";
 
-const QuizEfficiency = (props) => {
+const GenericQuiz = ({ category }) => {
   const { state } = useLocation();
   const { quiz: initialQuiz, previous_ids: initialPreviousIds } = state || {};
   const [quiz, setQuiz] = useState(initialQuiz || null);
@@ -11,7 +11,6 @@ const QuizEfficiency = (props) => {
       ? initialPreviousIds.filter(id => typeof id === "number" && !isNaN(id))
       : []
   );
-  const { category } = props;
   
   const navigate = useNavigate(); //navigateさせたいなら一旦定義しないと使えない
   const currentCorrectCount = state?.correctCount || 0;
@@ -74,4 +73,4 @@ const QuizEfficiency = (props) => {
   );
 };
 
-export default QuizEfficiency;
+export default GenericQuiz;
