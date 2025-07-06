@@ -19,10 +19,10 @@ const Home = () => {
           <Link to={`/quiz?category=${encodeURIComponent("リーチ判断")}`} className="underline text-xl font-bold">リーチ判断</Link>
         </div>
         <div className="bg-white shadow-md rounded-2xl p-6 text-center w-56">
-          <Link to={`/quiz?category=${encodeURIComponent("仕掛け判断")}`} className="underline text-xl font-bold">仕掛け判断</Link>
+          <Link to={`/quiz?category=${encodeURIComponent("仕掛け")}`} className="underline text-xl font-bold">仕掛け判断</Link>
         </div>
         <div className="bg-white shadow-md rounded-2xl p-6 text-center col-span-2 w-72 mx-auto">
-          <Link to={`/quiz?category=${encodeURIComponent("手役/構成力")}`} className="underline text-xl font-bold">手役/構成力</Link>
+          <Link to={`/quiz?category=${encodeURIComponent("手役意識")}`} className="underline text-xl font-bold">手役意識</Link>
         </div>
       </div>
 

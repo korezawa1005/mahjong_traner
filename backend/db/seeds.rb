@@ -55,9 +55,15 @@ ActiveRecord::Base.connection.reset_pk_sequence!('quizzes')
 Category.delete_all
 ActiveRecord::Base.connection.reset_pk_sequence!('categories')
 
-Category.create!(name: "牌効率")
+Category.create!([
+  {name: "牌効率"},
+  {name: "押し引き"},
+  {name:"リーチ判断"},
+  {name: "仕掛け"},
+  {name: "手役意識"}
+])
 
-quiz_data = [
+牌効率_quiz_data = [
   {
     tiles: ["三萬","三萬","五萬","六萬","七萬","八萬","九萬","五筒","六筒","七筒","七筒","七筒","八筒","八筒"],
     correct: "九萬",
@@ -74,17 +80,95 @@ quiz_data = [
   }
 ]
 
+押し引き_quiz_data = [
+  {
+    tiles: ["二萬","三萬","六萬","七萬","四筒","五筒","五筒","五筒","六筒","七筒","四索","四索","五索","四萬"],
+    correct: "四筒",
+    dora: "六索",
+    situation: "東3局 7巡目 西家 28000点 トップ目32000点",
+    explanation: "目一杯に受けよう"
+  },
+  {
+    tiles: ["三萬","三萬","四萬","四萬","五萬","八萬","九萬","一筒","二筒","二筒","四索","四索","五索","三筒"],
+    correct: "二筒",
+    dora: "六索",
+    situation: "東3局 7巡目 東家 30,000点",
+    explanation: "もうこの辺テストだから適当"
+  }
+]
+
+リーチ判断_quiz_data = [
+  {
+    tiles: ["三萬","三萬","五萬","六萬","七萬","八萬","九萬","五筒","六筒","七筒","七筒","七筒","八筒","八筒"],
+    correct: "九萬",
+    dora: "白",
+    situation: "これはリーチ判断",
+    explanation: "鳴いて進める九萬が正着"
+  },
+  {
+    tiles: ["五萬","六萬","六萬","七萬","八萬","三筒","五筒","三索","四索","五索","六索","七索","八索","九萬"],
+    correct: "九萬",
+    dora: "五筒",
+    situation: "これはリーチ判断２",
+    explanation: "最高打点を見て九萬切りが正解"
+  }
+]
+
+仕掛け_quiz_data = [
+  {
+    tiles: ["三萬","三萬","五萬","六萬","七萬","八萬","九萬","五筒","六筒","七筒","七筒","七筒","八筒","八筒"],
+    correct: "九萬",
+    dora: "白",
+    situation: "仕掛け",
+    explanation: "鳴いて進める九萬が正着"
+  },
+  {
+    tiles: ["五萬","六萬","六萬","七萬","八萬","三筒","五筒","三索","四索","五索","六索","七索","八索","九萬"],
+    correct: "九萬",
+    dora: "五筒",
+    situation: "仕掛け2",
+    explanation: "最高打点を見て九萬切りが正解"
+  }
+]
+
+手役意識_quiz_data = [
+  {
+    tiles: ["三萬","三萬","五萬","六萬","七萬","八萬","九萬","五筒","六筒","七筒","七筒","七筒","八筒","八筒"],
+    correct: "九萬",
+    dora: "白",
+    situation: "手役意識",
+    explanation: "鳴いて進める九萬が正着"
+  },
+  {
+    tiles: ["五萬","六萬","六萬","七萬","八萬","三筒","五筒","三索","四索","五索","六索","七索","八索","九萬"],
+    correct: "九萬",
+    dora: "五筒",
+    situation: "手役意識2",
+    explanation: "最高打点を見て九萬切りが正解"
+  }
+]
+
+
+
 def tile_id(name)
   Tile.find_by(name: name)&.id
 end
 
-quiz_data.each do |data|
-  Quiz.create!(
-    category_id: 1,
-    quiz_tile_ids: data[:tiles].map { |name| tile_id(name) },
-    correct_tile_id: tile_id(data[:correct]),
-    dora_indicator_tile_ids: [tile_id(data[:dora])],
-    situation: data[:situation],
-    explanation: data[:explanation]
-  )
+def create_quizzes(quiz_data, category_id)
+  quiz_data.each do |data|
+    Quiz.create!(
+      category_id: category_id,
+      quiz_tile_ids: data[:tiles].map { |name| tile_id(name) },
+      correct_tile_id: tile_id(data[:correct]),
+      dora_indicator_tile_ids: [tile_id(data[:dora])],
+      situation: data[:situation],
+      explanation: data[:explanation]
+    )
+  end
 end
+
+create_quizzes(牌効率_quiz_data, 1)
+create_quizzes(押し引き_quiz_data, 2)
+create_quizzes(リーチ判断_quiz_data, 3)
+create_quizzes(仕掛け_quiz_data, 4)
+create_quizzes(手役意識_quiz_data, 5)

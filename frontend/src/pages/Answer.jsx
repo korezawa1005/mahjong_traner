@@ -25,7 +25,7 @@ const Answer = () => {
       },
       withCredentials: true,
     });
-    navigate("/quiz",
+    navigate(`/quiz?category=${encodeURIComponent(quiz.category)}`,
       {
         state: {
           quiz: res.data,
