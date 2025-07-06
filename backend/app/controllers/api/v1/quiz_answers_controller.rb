@@ -15,7 +15,7 @@ class Api::V1::QuizAnswersController < ApplicationController
     params.require(:quiz_answer).permit(
       :quiz_id,
       :selected_tile_id,
-      :is_correct,
+      :correct,
       :user_id
     )
   end

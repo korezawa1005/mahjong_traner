@@ -30,7 +30,18 @@ const GenericQuiz = ({ category }) => {
 
   if (!quiz) return <div>読み込み中...</div>;
 
-  const handleTileClick = (selectedUrl) => {
+  const handleTileClick = async (selectedUrl) => {
+    // const selectedTileId = 
+
+    // await axios.post('http://localhost:3000/api/v1/quiz_answers', {
+    //   quiz_answer: {
+    //     quiz_id: quiz.id,
+    //     selected_tile_id: selectedUrl,
+    //     correct: isCorrect,
+    //     user_id: userId
+    //   }
+    // });
+    
     navigate("/quiz/answer",
       {
         state: {
