@@ -1,3 +1,4 @@
+puts "== SEED FILE RUNNING =="
 tiles = [
   # マンズ（萬子）
   { name: "一萬", suit: "man", number: "1", image_url: "/images/Man1.png" },
