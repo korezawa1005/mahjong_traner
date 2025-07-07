@@ -15,7 +15,7 @@ const LoginForm = () => {
     e.preventDefault(); //フォームのデフォルト動作（ページのリロード）をキャンセル。ReactでAPI通信だけで完結させたいから必要
     try {
       const response = await axios.post( //axiosはHTTPクライアントライブラリ。awaitにより、リクエストの処理が完了するまで待機して次の行に進む
-        'http://localhost:3000/users/sign_in', //第1引数としてRailsのAPIエンドポイントを指定
+        `${import.meta.env.VITE_API_BASE_URL}/users/sign_in`, //第1引数としてRailsのAPIエンドポイントを指定
         {
           user: {
             email,

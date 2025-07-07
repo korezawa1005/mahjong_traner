@@ -18,10 +18,12 @@ const GenericQuiz = ({ category }) => {
     console.log("カテゴリ:", category); 
     if (initialQuiz) return;
 
-    axios.get("http://localhost:3000/api/v1/quizzes", {
+    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/quizzes`, {
       params: { category },
       withCredentials: true
     }).then((res) => {
+      console.log("APIレスポンス:", res.data);
+      console.log("API BASE:", import.meta.env.VITE_API_BASE_URL);
       setQuiz(res.data);
     }).catch((err) => {
       console.error("クイズ取得失敗:", err);
