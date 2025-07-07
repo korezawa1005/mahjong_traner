@@ -24,7 +24,7 @@ const ResetPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put('http://localhost:3000/users/password', {
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/users/password`, {
         user: {
           reset_password_token: token,
           password: password,

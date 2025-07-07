@@ -18,7 +18,7 @@ const Answer = () => {
 
 
   try {
-    const res = await axios.get("http://localhost:3000/api/v1/quizzes", {
+    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/quizzes`, {
       params: {
         category: quiz.category,
         exclude_ids: excludeIds.join(","),

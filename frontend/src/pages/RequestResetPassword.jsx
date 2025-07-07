@@ -9,7 +9,7 @@ const RequestResetPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3000/users/password', {
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/users/password`, {
         user: { email }
       }, { withCredentials: true });
 
