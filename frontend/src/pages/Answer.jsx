@@ -6,10 +6,30 @@ import axios from "axios";
 const Answer = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { quiz, previous_ids, selectedTileUrl } = state;
+  const { quizSessionId, quiz, previous_ids, selectedTileUrl, selectedTileId } = state;
   const isCorrect = selectedTileUrl === quiz.correct_tile_url;
 
+  const handleSaveAnswer = async () => {
+    try {
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/v1/quiz_answers`, {
+        quiz_answer: {
+          quiz_id: quiz.id,
+          quiz_session_id: quizSessionId,
+          selected_tile_id: selectedTileId,
+          correct: isCorrect,
+        //   user_id: userId, 
+        //   quiz_session_id: quizSessionId 
+        },
+        withCredentials: true,
+        
+      });
+    } catch (err) {
+      alert("回答保存に失敗しました");
+    }
+  };
+
   const handleNext = async () => {
+    await handleSaveAnswer();
     const excludeIds = Array.from(new Set(
       [...(previous_ids || []), quiz.id].flat()
     )).filter(id => typeof id === "number" && !isNaN(id));
@@ -28,6 +48,7 @@ const Answer = () => {
     navigate(`/quiz?category=${encodeURIComponent(quiz.category)}`,
       {
         state: {
+          quizSessionId,
           quiz: res.data,
           previous_ids: excludeIds,
           category: quiz.category,
@@ -38,6 +59,7 @@ const Answer = () => {
     if (err.response?.status === 404) {
       navigate("/quiz/result", {
         state: {
+          quizSessionId,
           total: excludeIds.length, 
           category: quiz.category,
           correctCount: updatedCorrect,

@@ -13,6 +13,8 @@ Rails.application.routes.draw do
 
       resources :quizzes, only: [:index], defaults: { format: :json }
       resources :quiz_answers, only: [:create]
+      resources :quiz_sessions, only: [:create]
+      resources :categories, only: [:index]
     end
   end
 end

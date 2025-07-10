@@ -4,7 +4,7 @@ import axios from "axios";
 
 const GenericQuiz = ({ category }) => {
   const { state } = useLocation();
-  const { quiz: initialQuiz, previous_ids: initialPreviousIds } = state || {};
+  const { quizSessionId, quiz: initialQuiz, previous_ids: initialPreviousIds } = state || {};
   const [quiz, setQuiz] = useState(initialQuiz || null);
   const [previousIds] = useState(() =>
     Array.isArray(initialPreviousIds)
@@ -22,8 +22,6 @@ const GenericQuiz = ({ category }) => {
       params: { category },
       withCredentials: true
     }).then((res) => {
-      console.log("APIレスポンス:", res.data);
-      console.log("API BASE:", import.meta.env.VITE_API_BASE_URL);
       setQuiz(res.data);
     }).catch((err) => {
       console.error("クイズ取得失敗:", err);
@@ -33,21 +31,20 @@ const GenericQuiz = ({ category }) => {
   if (!quiz) return <div>読み込み中...</div>;
 
   const handleTileClick = async (selectedUrl) => {
-    // const selectedTileId = 
+    const selectedTileObj = quiz.hand_tiles.find(tile => tile.image_url === selectedUrl);
+    const selectedTileId = selectedTileObj?.id;
 
-    // await axios.post('http://localhost:3000/api/v1/quiz_answers', {
-    //   quiz_answer: {
-    //     quiz_id: quiz.id,
-    //     selected_tile_id: selectedUrl,
-    //     correct: isCorrect,
-    //     user_id: userId
-    //   }
-    // });
+    if (!selectedTileId) {
+      alert("牌IDが見つかりませんでした");
+      return;
+    }
     
     navigate("/quiz/answer",
       {
         state: {
           quiz,
+          quizSessionId,
+          selectedTileId,
           selectedTileUrl: selectedUrl,
           previous_ids: [...previousIds, quiz.id],
           correctCount: currentCorrectCount,

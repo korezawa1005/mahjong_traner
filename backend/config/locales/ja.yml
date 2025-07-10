@@ -1,5 +1,11 @@
 ja:
   activerecord:
+    errors:
+      models:
+        quiz_session:
+          attributes:
+            user:
+              required: "ユーザーを指定してください"
     attributes:
       user:
         confirmation_sent_at: パスワード確認送信時刻
