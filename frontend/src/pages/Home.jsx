@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 const Home = () => {
@@ -29,18 +29,46 @@ const Home = () => {
   };
 
   return (
-    <div>
-      {categories.map(cat => (
-        <button
-          key={cat.id}
-          onClick={() => handleStartQuiz(cat)}
-        >
-          {cat.name}
+    <div className="min-h-screen bg-gray-100 flex flex-col justify-between items-center p-6">
+      {/* タイトル */}
+      <div className="text-center mt-6">
+        <Link to="/" className="text-4xl font-bold text-green-800 mb-2">
+          麻雀スカウター
+        </Link>
+      </div>
+
+      {/* カテゴリ表示 */}
+      <div className="grid grid-cols-2 gap-6 mt-10">
+        {categories.map((cat) => (
+          <div
+            key={cat.id}
+            className="bg-white shadow-md rounded-2xl p-6 text-center w-56 cursor-pointer hover:shadow-lg"
+            onClick={() => handleStartQuiz(cat)}
+          >
+            <p className="underline text-xl font-bold">{cat.name}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* ナビゲーション */}
+      <div className="flex justify-center gap-8 mt-2 mb-24">
+        <button className="rounded-2xl bg-gray-300 p-8">
+          <Link to="/mypage">🔒</Link>
         </button>
-      ))}
+        <button className="rounded-2xl bg-green-400 p-8">
+          <Link to="/login">👤</Link>
+        </button>
+        <button className="rounded-2xl bg-purple-300 p-8">
+          <Link to="/question">❓</Link>
+        </button>
+        <button className="rounded-2xl bg-gray-600 p-8">
+          <Link to="/privacy">📋</Link>
+        </button>
+      </div>
     </div>
   );
 };
+
 
 export default Home;
 //   return (
