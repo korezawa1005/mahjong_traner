@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../libs/api";
 
 
 const Answer = () => {
@@ -11,7 +11,7 @@ const Answer = () => {
 
   const handleSaveAnswer = async () => {
     try {
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/v1/quiz_answers`, {
+      await api.post("/api/v1/quiz_answers", {
         quiz_answer: {
           quiz_id: quiz.id,
           quiz_session_id: quizSessionId,
@@ -19,9 +19,7 @@ const Answer = () => {
           correct: isCorrect,
         //   user_id: userId, 
         //   quiz_session_id: quizSessionId 
-        },
-        withCredentials: true,
-        
+        },        
       });
     } catch (err) {
       alert("回答保存に失敗しました");
@@ -36,14 +34,25 @@ const Answer = () => {
     const correctCount = state?.correctCount || 0;
     const updatedCorrect = isCorrect ? correctCount + 1 : correctCount;
 
+    if (excludeIds.length >= 3)
+    {           
+      navigate("/quiz/result", {
+        state: {
+          quizSessionId,
+          total: excludeIds.length,
+          category: quiz.category,
+          correctCount: updatedCorrect,
+        },
+      });
+      return;
+    }
 
   try {
-    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/quizzes`, {
+    const res = await api.get("/api/v1/quizzes", {
       params: {
         category: quiz.category,
         exclude_ids: excludeIds.join(","),
       },
-      withCredentials: true,
     });
     navigate(`/quiz?category=${encodeURIComponent(quiz.category)}`,
       {
@@ -55,7 +64,9 @@ const Answer = () => {
           correctCount: updatedCorrect,
         }
       });
-  } catch (err) {
+  } catch (err)
+  {
+    console.log(err.response?.status)
     if (err.response?.status === 404) {
       navigate("/quiz/result", {
         state: {

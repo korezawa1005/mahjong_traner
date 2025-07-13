@@ -1,5 +1,5 @@
+import api from "../libs/api";  
 import React, { useState } from 'react';
-import axios from 'axios';
 import { FcGoogle } from 'react-icons/fc';
 import { FaLine, FaXTwitter } from 'react-icons/fa6';
 import { useNavigate, Link } from 'react-router-dom';
@@ -14,23 +14,14 @@ const LoginForm = () => {
   const handleLogin = async (e) => { //asyncによって非同期関数であることを宣言
     e.preventDefault(); //フォームのデフォルト動作（ページのリロード）をキャンセル。ReactでAPI通信だけで完結させたいから必要
     try {
-      const response = await axios.post( //axiosはHTTPクライアントライブラリ。awaitにより、リクエストの処理が完了するまで待機して次の行に進む
-        `${import.meta.env.VITE_API_BASE_URL}/users/sign_in`, //第1引数としてRailsのAPIエンドポイントを指定
-        {
-          user: {
-            email,
-            password
-          } //Rails（Devise）が期待するリクエスト形式。user[email]とuser[password]としてRails側が受け取る。
-        },
-        {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          }
-        }
-      );
-      console.log('ログイン成功:', response.data); //response.dataによってRailsが返したJSON形式のデータを返す
+      const res = await api.post("/users/sign_in", {
+        user: { email, password },
+      });
+
+      const token = res.headers["authorization"];    
+      localStorage.setItem("jwt", token);
+      
+      console.log('ログイン成功:', res.data);
       navigate('/', { replace: true });
     } catch (error) {
       console.error('ログイン失敗:', error.response?.data || error.message); //401 Unauthorized(Rails)かNetwork Error(JS)を返す

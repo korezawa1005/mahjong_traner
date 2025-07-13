@@ -1,25 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import api from "../libs/api";
 
 const Home = () => {
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/categories`)
+    api.get("/api/v1/categories")
       .then(res => setCategories(res.data))
       .catch(() => alert("カテゴリ一覧の取得に失敗しました"));
   }, []);
 
+  useEffect(() => {
+    api.get("/api/v1/current_user")
+      .then(res => {
+        console.log('current_user:', res.data);
+        setIsLoggedIn(res.data.logged_in);
+      })
+      .catch(() => {
+        setIsLoggedIn(false);
+      });
+  }, []);
+
   const handleStartQuiz = async (category) => {
     try {
-      // クイズセッション作成API
-      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/v1/quiz_sessions`, {
+      const res = await api.post("/api/v1/quiz_sessions", {
         category_id: category.id
       });
       const quizSessionId = res.data.id;
-      // クイズページへ遷移、stateでIDを持たせる
       navigate(`/quiz?category=${encodeURIComponent(category.name)}`, {
         state: { quizSessionId }
       });
@@ -30,14 +40,12 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-between items-center p-6">
-      {/* タイトル */}
       <div className="text-center mt-6">
         <Link to="/" className="text-4xl font-bold text-green-800 mb-2">
-          麻雀スカウター
+          雀力スカウター
         </Link>
       </div>
 
-      {/* カテゴリ表示 */}
       <div className="grid grid-cols-2 gap-6 mt-10">
         {categories.map((cat) => (
           <div
@@ -50,11 +58,12 @@ const Home = () => {
         ))}
       </div>
 
-      {/* ナビゲーション */}
       <div className="flex justify-center gap-8 mt-2 mb-24">
-        <button className="rounded-2xl bg-gray-300 p-8">
-          <Link to="/mypage">🔒</Link>
-        </button>
+        {isLoggedIn && (
+          <button className="rounded-2xl bg-gray-300 p-8">
+            <Link to="/mypage">🔒</Link>
+          </button>
+        )}
         <button className="rounded-2xl bg-green-400 p-8">
           <Link to="/login">👤</Link>
         </button>
@@ -68,7 +77,6 @@ const Home = () => {
     </div>
   );
 };
-
 
 export default Home;
 //   return (

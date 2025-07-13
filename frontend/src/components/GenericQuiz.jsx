@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate  } from "react-router-dom";
-import axios from "axios";
+import api from "../libs/api";
 
 const GenericQuiz = ({ category }) => {
   const { state } = useLocation();
@@ -18,9 +18,8 @@ const GenericQuiz = ({ category }) => {
     console.log("カテゴリ:", category); 
     if (initialQuiz) return;
 
-    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/quizzes`, {
+    api.get("/api/v1/quizzes", {
       params: { category },
-      withCredentials: true
     }).then((res) => {
       setQuiz(res.data);
     }).catch((err) => {

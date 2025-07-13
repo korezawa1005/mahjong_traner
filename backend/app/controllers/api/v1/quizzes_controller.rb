@@ -1,4 +1,5 @@
 class Api::V1::QuizzesController < ApplicationController
+  
   def index
     category = Category.find_by(name: params[:category])
     return render json: { error: "カテゴリが見つかりません" }, status: 404 unless category

@@ -51,7 +51,6 @@ tiles.each do |tile|
   end
 end
 
-Quiz.delete_all
 ActiveRecord::Base.connection.reset_pk_sequence!('quizzes')
 ActiveRecord::Base.connection.reset_pk_sequence!('categories')
 

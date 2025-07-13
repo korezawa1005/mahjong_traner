@@ -1,17 +1,26 @@
-class Api::V1::ChartsController < ApplicationController #API
-  def show
-    user = User.find(params[:user_id])
-    session = QuizSession.find(params[:session_id])
+class Api::V1::ChartsController < ApplicationController
+  before_action :authenticate_user!
 
-    # 仮ロジック: 各カテゴリの正解数を出す例
-    categories = Category.all
-    labels = categories.map(&:name)
+  MAX_QUESTIONS = 10  
+
+  def show
+    latest = current_user.quiz_sessions
+                         .order(created_at: :desc)
+                         .group_by(&:category_id)      
+                         .transform_values(&:first)     
+
+    categories = Category.order(:id)
+    labels = categories.pluck(:name)
+
     data = categories.map do |cat|
-      QuizAnswer.joins(:quiz)
-        .where(quiz_session_id: session.id, quizzes: { category_id: cat.id })
-        .where(correct: true).count
+      session = latest[cat.id]
+      if session && session.correct_count
+        ((session.correct_count.to_f / MAX_QUESTIONS) * 100).round
+      else
+        0
+      end
     end
 
-    render json: { labels: labels, data: data }
+    render json: { labels:, data: }
   end
 end

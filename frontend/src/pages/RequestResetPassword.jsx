@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from "../libs/api";
 
 const RequestResetPassword = () => {
   const [email, setEmail] = useState('');
@@ -9,10 +9,9 @@ const RequestResetPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/users/password`, {
+      await api.post("/users/password", {
         user: { email }
-      }, { withCredentials: true });
-
+      });
       setSent(true);
     } catch (error) {
       console.error('メール送信失敗:', error.response?.data || error.message);
