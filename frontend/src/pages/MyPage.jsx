@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import api from "../api";
+import RadarChart from "../components/RadarChart";
+import api from "../libs/api";
 
 const Mypage = () => {
   const [chartData, setChartData] = useState(null);
