@@ -5,10 +5,9 @@ export default defineConfig({
   plugins: [react()],
   base: './',
   server: {
-    host: '0.0.0.0',   // Docker 内からもアクセス可
-    port: 8000,        // コンテナ内 3000 → ホスト 8000 で公開
+    host: '0.0.0.0',   
+    port: 8000,        
     proxy: {
-      // API を Rails へパススルー
       '/api': {
         target: 'http://back:3000',
         changeOrigin: true,

@@ -1,7 +1,7 @@
 // frontend/src/pages/ResetPassword.jsx
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import axios from 'axios';
+import api from "../libs/api";
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
@@ -24,14 +24,14 @@ const ResetPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/users/password`, {
+      await api.put("/users/password", {
         user: {
           reset_password_token: token,
           password: password,
           password_confirmation: password
         }
-      }, { withCredentials: true });
-
+      },);
+      
       setDone(true);
       setErrors([]);
     } catch (error) {

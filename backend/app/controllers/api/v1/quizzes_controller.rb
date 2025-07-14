@@ -1,4 +1,5 @@
 class Api::V1::QuizzesController < ApplicationController
+  
   def index
     category = Category.find_by(name: params[:category])
     return render json: { error: "カテゴリが見つかりません" }, status: 404 unless category
@@ -19,6 +20,10 @@ class Api::V1::QuizzesController < ApplicationController
       round_info: quiz.situation,
       quiz_tile_ids: quiz.quiz_tile_ids,
       hand_tile_urls: tile_urls_from_ids(quiz.quiz_tile_ids),
+      hand_tiles: quiz.quiz_tile_ids.map { |id|
+        tile = Tile.find(id)
+        { id: tile.id, image_url: tile.image_url }
+      },
       discard_tile_urls: tile_urls_from_ids(quiz.dora_indicator_tile_ids),
       correct_tile_url: quiz.correct_tile.image_url,
       explanation: quiz.explanation

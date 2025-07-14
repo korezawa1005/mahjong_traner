@@ -51,18 +51,20 @@ tiles.each do |tile|
   end
 end
 
-Quiz.delete_all
 ActiveRecord::Base.connection.reset_pk_sequence!('quizzes')
-Category.delete_all
 ActiveRecord::Base.connection.reset_pk_sequence!('categories')
 
-Category.create!([
+categories = [
   {name: "牌効率"},
   {name: "押し引き"},
   {name:"リーチ判断"},
   {name: "仕掛け"},
   {name: "手役意識"}
-])
+]
+
+categories.each do |category_attrs|
+  Category.find_or_create_by!(category_attrs)
+end
 
 牌効率_quiz_data = [
   {

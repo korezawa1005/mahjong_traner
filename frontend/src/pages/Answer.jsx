@@ -1,43 +1,76 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../libs/api";
 
 
 const Answer = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { quiz, previous_ids, selectedTileUrl } = state;
+  const { quizSessionId, quiz, previous_ids, selectedTileUrl, selectedTileId } = state;
   const isCorrect = selectedTileUrl === quiz.correct_tile_url;
 
+  const handleSaveAnswer = async () => {
+    try {
+      await api.post("/api/v1/quiz_answers", {
+        quiz_answer: {
+          quiz_id: quiz.id,
+          quiz_session_id: quizSessionId,
+          selected_tile_id: selectedTileId,
+          correct: isCorrect,
+        //   user_id: userId, 
+        //   quiz_session_id: quizSessionId 
+        },        
+      });
+    } catch (err) {
+      alert("回答保存に失敗しました");
+    }
+  };
+
   const handleNext = async () => {
+    await handleSaveAnswer();
     const excludeIds = Array.from(new Set(
       [...(previous_ids || []), quiz.id].flat()
     )).filter(id => typeof id === "number" && !isNaN(id));
     const correctCount = state?.correctCount || 0;
     const updatedCorrect = isCorrect ? correctCount + 1 : correctCount;
 
+    if (excludeIds.length >= 3)
+    {           
+      navigate("/quiz/result", {
+        state: {
+          quizSessionId,
+          total: excludeIds.length,
+          category: quiz.category,
+          correctCount: updatedCorrect,
+        },
+      });
+      return;
+    }
 
   try {
-    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/v1/quizzes`, {
+    const res = await api.get("/api/v1/quizzes", {
       params: {
         category: quiz.category,
         exclude_ids: excludeIds.join(","),
       },
-      withCredentials: true,
     });
     navigate(`/quiz?category=${encodeURIComponent(quiz.category)}`,
       {
         state: {
+          quizSessionId,
           quiz: res.data,
           previous_ids: excludeIds,
           category: quiz.category,
           correctCount: updatedCorrect,
         }
       });
-  } catch (err) {
+  } catch (err)
+  {
+    console.log(err.response?.status)
     if (err.response?.status === 404) {
       navigate("/quiz/result", {
         state: {
+          quizSessionId,
           total: excludeIds.length, 
           category: quiz.category,
           correctCount: updatedCorrect,

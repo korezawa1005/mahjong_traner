@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from "../libs/api";  
 import { FcGoogle } from 'react-icons/fc';
 import { FaLine, FaXTwitter } from 'react-icons/fa6';
 import { useNavigate, Link } from 'react-router-dom';
@@ -16,7 +16,7 @@ const SignupForm = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
+      const response = await api.post(
         `${import.meta.env.VITE_API_BASE_URL}/users`,
         {
           user: {
@@ -25,13 +25,6 @@ const SignupForm = () => {
             password_confirmation: passwordConfirmation
           }
         },
-        {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          }
-        }
       );
       console.log('サインアップ成功:', response.data);
       navigate('/', { replace: true });
