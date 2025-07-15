@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   
       resources :quizzes, only: [:index]
       resources :quiz_answers, only: [:create]
-      resources :quiz_sessions, only: [:create]
+      resources :quiz_sessions, only: [:create, :update]
       resources :categories, only: [:index]
     end
   end
