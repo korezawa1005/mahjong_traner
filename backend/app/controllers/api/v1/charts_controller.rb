@@ -5,6 +5,10 @@ class Api::V1::ChartsController < ApplicationController
 
   def show
     # 各カテゴリで最新2つのセッションを取得
+    puts "=== DEBUG INFO ==="
+    puts "Current user ID: #{current_user.id}"
+    puts "Total quiz sessions: #{current_user.quiz_sessions.count}"
+    
     latest_sessions = current_user.quiz_sessions
                                  .joins(:category)
                                  .order(created_at: :desc)
