@@ -1,3 +1,4 @@
+import QuizHistory from "../components/QuizHistory";
 import React, { useEffect, useState } from "react";
 import RadarChart from "../components/RadarChart";
 import api from "../libs/api";
@@ -54,14 +55,20 @@ const Mypage = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div>
-      <h2>マイページ</h2>
-      {chartData ? (
-        <RadarChart chartData={chartData} />
-      ) : (
-        <p>チャートデータがありません</p>
-      )}
-    </div>
+    <>
+      <div>
+        <h2>マイページ</h2>
+        {chartData ? (
+          <RadarChart chartData={chartData} />
+        ) : (
+          <p>チャートデータがありません</p>
+        )}
+      </div>
+      
+      <div>
+        <QuizHistory/>
+      </div>
+    </>
   );
 };
 

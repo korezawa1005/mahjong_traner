@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import api from "../libs/api";
 
 
 const Result = () => {
@@ -8,6 +9,33 @@ const Result = () => {
   const total = state?.total || 0;
   const category = state?.category || "未分類";
   const correct = state?.correctCount || 0;
+  const quizSessionId = state?.quizSessionId;
+
+  useEffect(() => {
+    const updateQuizSession = async () => {
+      if (!quizSessionId) {
+        console.error('QuizSessionId is missing');
+        return;
+      }
+
+      try {
+        console.log('Updating QuizSession:', { quizSessionId, correct });
+        
+        const response = await api.put(`/api/v1/quiz_sessions/${quizSessionId}`, {
+          correct_count: correct
+        });
+        
+        console.log('QuizSession updated successfully:', response.data);
+      } catch (error) {
+        console.error('Failed to update QuizSession:', error);
+      }
+    };
+
+    // correctが0以上の場合にのみ更新
+    if (quizSessionId && correct >= 0) {
+      updateQuizSession();
+    }
+  }, [quizSessionId, correct]);
   
   
   const getMessage = () => {

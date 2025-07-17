@@ -10,6 +10,12 @@ const Answer = () => {
   const isCorrect = selectedTileUrl === quiz.correct_tile_url;
 
   const handleSaveAnswer = async () => {
+    console.log("=== QuizAnswer Save Debug ===");
+    console.log("quiz_id:", quiz.id);
+    console.log("quiz_session_id:", quizSessionId);
+    console.log("selected_tile_id:", selectedTileId);
+    console.log("correct:", isCorrect);
+    
     try {
       await api.post("/api/v1/quiz_answers", {
         quiz_answer: {
@@ -17,8 +23,6 @@ const Answer = () => {
           quiz_session_id: quizSessionId,
           selected_tile_id: selectedTileId,
           correct: isCorrect,
-        //   user_id: userId, 
-        //   quiz_session_id: quizSessionId 
         },        
       });
     } catch (err) {
