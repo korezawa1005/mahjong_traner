@@ -9,6 +9,8 @@ import Quiz from './pages/Quiz';
 import Answer from './pages/Answer';
 import Result from "./pages/Result";
 import Mypage from "./pages/MyPage";
+import QuizHistoryDetail from "./pages/QuizHistoryDetail";
+
 
 
 function App() {
@@ -24,6 +26,7 @@ function App() {
         <Route path="/quiz/answer" element={<Answer />} />
         <Route path="/quiz/result" element={<Result />} />
         <Route path="/mypage" element={<Mypage />} />
+        <Route path="/quiz/history/:sessionId" element={<QuizHistoryDetail />} />
       </Routes>
     </BrowserRouter>
   );
