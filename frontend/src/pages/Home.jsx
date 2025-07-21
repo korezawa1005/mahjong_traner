@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../libs/api";
 
+
 const Home = () => {
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
@@ -25,7 +26,8 @@ const Home = () => {
   }, []);
 
   const handleStartQuiz = async (category) => {
-    try {
+    try
+    {
       const res = await api.post("/api/v1/quiz_sessions", {
         category_id: category.id
       });
@@ -33,92 +35,59 @@ const Home = () => {
       navigate(`/quiz?category=${encodeURIComponent(category.name)}`, {
         state: { quizSessionId }
       });
-    } catch (err) {
+    } catch (err)
+    {
       alert("クイズ開始に失敗しました");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col justify-between items-center p-6">
-      <div className="text-center mt-6">
-        <Link to="/" className="text-4xl font-bold text-green-800 mb-2">
+    
+    <div className="relative min-h-screen bg-white text-black flex flex-col items-center">
+
+      <header className="text-center pt-6 mb-6">
+        <h1
+          className="
+            font-brush
+            text-4xl sm:text-5xl
+            text-black           /* 白背景なので黒文字 */
+            tracking-widest
+          "
+        >
           雀力スカウター
-        </Link>
-      </div>
+        </h1>
+      </header>
 
-      <div className="grid grid-cols-2 gap-6 mt-10">
-        {categories.map((cat) => (
-          <div
-            key={cat.id}
-            className="bg-white shadow-md rounded-2xl p-6 text-center w-56 cursor-pointer hover:shadow-lg"
-            onClick={() => handleStartQuiz(cat)}
+      <main className="grid grid-cols-2 gap-x-4 gap-y-6 px-4 w-full max-w-[760px] pb-16">
+
+        {categories.map((c) => (
+          <button
+            key={c.id}
+            onClick={() => handleStartQuiz(c)}
+            className="relative w-full bg-white rounded-xl py-6 flex flex-col items-center
+                      border border-black/15 hover:bg-neutral-100
+                      transition-colors duration-150 group"
           >
-            <p className="underline text-xl font-bold">{cat.name}</p>
-          </div>
-        ))}
-      </div>
 
-      <div className="flex justify-center gap-8 mt-2 mb-24">
-        {isLoggedIn && (
-          <button className="rounded-2xl bg-gray-300 p-8">
-            <Link to="/mypage">🔒</Link>
+            <p className="font-semibold">{c.name}</p>
+            <p className="text-xs text-gray-500">全10問</p>
+
+            <span className="pointer-events-none absolute top-0 left-0 right-0 h-[2px]
+                            bg-gradient-to-r from-transparent via-black/20 to-transparent
+                            opacity-0 group-hover:opacity-100 transition-opacity" />
           </button>
-        )}
-        <button className="rounded-2xl bg-green-400 p-8">
-          <Link to="/login">👤</Link>
-        </button>
-        <button className="rounded-2xl bg-purple-300 p-8">
-          <Link to="/question">❓</Link>
-        </button>
-        <button className="rounded-2xl bg-gray-600 p-8">
-          <Link to="/privacy">📋</Link>
-        </button>
-      </div>
+        ))}
+
+
+        <nav className="flex justify-around items-center h-full w-full text-sm text-black">
+          {isLoggedIn && <Link className="dock-link" to="/mypage">成績・履歴</Link>}
+          <Link className="dock-link" to="/login">ログイン</Link>
+          <Link className="dock-link" to="/question">ヘルプ</Link>
+          <Link className="dock-link" to="/">牌姿作成</Link>
+        </nav>
+      </main>
     </div>
   );
-};
+}
 
 export default Home;
-//   return (
-//     <div className="min-h-screen bg-gray-100 flex flex-col justify-between items-center p-6">
-//       <div className="text-center mt-6">
-//         <Link to="/" className="text-4xl font-bold text-green-800 mb-2">麻雀スカウター</Link>
-//       </div>
-
-//       <div className="grid grid-cols-2 gap-6 mt-10">
-//         <div className="bg-white shadow-md rounded-2xl p-6 text-center w-56">
-//           <Link to={`/quiz?category=${encodeURIComponent("牌効率")}`} className="underline text-xl font-bold">牌効率</Link>
-//         </div>
-//         <div className="bg-white shadow-md rounded-2xl p-6 text-center w-56">
-//           <Link to={`/quiz?category=${encodeURIComponent("押し引き")}`} className="underline text-xl font-bold">押し引き</Link>
-//         </div>
-//         <div className="bg-white shadow-md rounded-2xl p-6 text-center w-56">
-//           <Link to={`/quiz?category=${encodeURIComponent("リーチ判断")}`} className="underline text-xl font-bold">リーチ判断</Link>
-//         </div>
-//         <div className="bg-white shadow-md rounded-2xl p-6 text-center w-56">
-//           <Link to={`/quiz?category=${encodeURIComponent("仕掛け")}`} className="underline text-xl font-bold">仕掛け判断</Link>
-//         </div>
-//         <div className="bg-white shadow-md rounded-2xl p-6 text-center col-span-2 w-72 mx-auto">
-//           <Link to={`/quiz?category=${encodeURIComponent("手役意識")}`} className="underline text-xl font-bold">手役意識</Link>
-//         </div>
-//       </div>
-
-//       <div className="flex justify-center gap-8 mt-2 mb-24">
-//         <button className="rounded-2xl bg-gray-300 p-8">
-//           <Link to="/mypage">🔒</Link>
-//         </button>
-//         <button className="rounded-2xl bg-green-400 p-8">
-//           <Link to="/login">👤</Link>
-//         </button>
-//         <button className="rounded-2xl bg-purple-300 p-8">
-//           <Link to="/question">❓</Link>
-//         </button>
-//         <button className="rounded-2xl bg-gray-600 p-8">
-//           <Link to="/privacy">📋</Link>
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Home;

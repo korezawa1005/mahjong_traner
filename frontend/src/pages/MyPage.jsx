@@ -57,7 +57,6 @@ const Mypage = () => {
   return (
     <>
       <div>
-        <h2>マイページ</h2>
         {chartData ? (
           <RadarChart chartData={chartData} />
         ) : (
