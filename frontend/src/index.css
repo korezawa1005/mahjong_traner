@@ -15,3 +15,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.dock-link{
+  @apply text-sm text-gray-300 hover:text-red-500 transition whitespace-nowrap;
+}
