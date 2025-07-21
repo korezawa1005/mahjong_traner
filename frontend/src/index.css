@@ -17,5 +17,5 @@ code {
 }
 
 .dock-link{
-  @apply text-sm text-gray-300 hover:text-red-500 transition whitespace-nowrap;
+  @apply px-2 text-black hover:text-blue-600 transition;
 }
