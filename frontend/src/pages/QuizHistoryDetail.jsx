@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../libs/api';
+import Comment from '../components/Comment'
 
 const QuizHistoryDetail = () => {
   const { sessionId } = useParams();
   const [details, setDetails] = useState([]);
   const [sessionInfo, setSessionInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showComments, setShowComments] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -77,6 +79,14 @@ const QuizHistoryDetail = () => {
               <p>正解牌: {detail.correct_tile_name}</p>
               <p>解説: {detail.explanation}</p>
             </div>
+            {showComments[index] && (
+              <div className="px-4 pb-4">
+                <CommentSection 
+                  sessionId={sessionId} 
+                  questionIndex={index}
+                />
+              </div>
+            )}
           </div>
         ))}
       </div>

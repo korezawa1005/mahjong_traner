@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../libs/api";
-
+import { FaUser, FaBook, FaPen, FaChartLine } from "react-icons/fa";
 
 const Home = () => {
   const [categories, setCategories] = useState([]);
@@ -43,51 +43,79 @@ const Home = () => {
 
   return (
     
-    <div className="relative min-h-screen bg-white text-black flex flex-col items-center">
+<div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black">
+{/* ヘッダー */}
+  <header className="text-center mt-4 mb-2">
+  <h1 className="text-4xl sm:text-6xl font-brush tracking-widest">雀力スカウター</h1>
+</header>
 
-      <header className="text-center pt-6 mb-6">
-        <h1
-          className="
-            font-brush
-            text-4xl sm:text-5xl
-            text-black           /* 白背景なので黒文字 */
-            tracking-widest
-          "
-        >
-          雀力スカウター
-        </h1>
-      </header>
+  {/* メイン（高さ調整可能） */}
+  <main className="flex-1 w-full max-w-[700px] mx-auto px-2 py-2 pb-20 flex flex-col justify-center items-center">
 
-      <main className="grid grid-cols-2 gap-x-4 gap-y-6 px-4 w-full max-w-[760px] pb-16">
+    {/* 上段：3列 */}
+    <div className="grid grid-cols-3 gap-4 mb-4 w-full">
+  {categories.slice(0, 3).map((c) => (
+    <button
+      key={c.id}
+      onClick={() => handleStartQuiz(c)}
+      className="bg-gray-100 hover:bg-gray-200 rounded-xl py-7 px-4 border border-gray-300 shadow-sm flex flex-col items-center justify-center transition duration-150"
+    >
+      <p className="font-semibold text-lg sm:text-xl">{c.name}</p>
+      <p className="text-sm sm:text-base text-gray-500">全10問</p>
+    </button>
+  ))}
+</div>
 
-        {categories.map((c) => (
-          <button
-            key={c.id}
-            onClick={() => handleStartQuiz(c)}
-            className="relative w-full bg-white rounded-xl py-6 flex flex-col items-center
-                      border border-black/15 hover:bg-neutral-100
-                      transition-colors duration-150 group"
-          >
+    {/* 下段：2列 */}
+    <div className="grid grid-cols-2 gap-4 w-full">
+  {categories.slice(3, 5).map((c) => (
+    <button
+      key={c.id}
+      onClick={() => handleStartQuiz(c)}
+      className="bg-gray-100 hover:bg-gray-200 rounded-xl py-7 px-4 border border-gray-300 shadow-sm flex flex-col items-center justify-center transition duration-150"
+    >
+      <p className="font-semibold text-lg sm:text-xl">{c.name}</p>
+      <p className="text-sm sm:text-base text-gray-500">全10問</p>
+    </button>
+  ))}
+</div>
+  </main>
 
-            <p className="font-semibold">{c.name}</p>
-            <p className="text-xs text-gray-500">全10問</p>
-
-            <span className="pointer-events-none absolute top-0 left-0 right-0 h-[2px]
-                            bg-gradient-to-r from-transparent via-black/20 to-transparent
-                            opacity-0 group-hover:opacity-100 transition-opacity" />
-          </button>
-        ))}
-
-
-        <nav className="flex justify-around items-center h-full w-full text-sm text-black">
-          {isLoggedIn && <Link className="dock-link" to="/mypage">成績・履歴</Link>}
-          <Link className="dock-link" to="/login">ログイン</Link>
-          <Link className="dock-link" to="/question">ヘルプ</Link>
-          <Link className="dock-link" to="/">牌姿作成</Link>
-        </nav>
-      </main>
+  {/* フッター */}
+  <div className="w-screen fixed bottom-0 left-0">
+  <footer className="bg-black text-white py-4">
+    <div className="max-w-[700px] px-4 mx-auto flex justify-between text-xs">
+      {isLoggedIn ? (
+        <Link to="/mypage" className="flex flex-col items-center hover:opacity-80">
+          <FaUser className="text-lg mb-1" />
+          マイページ
+        </Link>
+      ) : (
+        <div className="flex flex-col items-center text-gray-400 cursor-not-allowed">
+          <FaUser className="text-lg mb-1" />
+          マイページ
+        </div>
+      )}
+      <Link to="/question" className="flex flex-col items-center hover:opacity-80">
+        <FaBook className="text-lg mb-1" />
+        ヘルプ
+      </Link>
+      <Link to="/login" className="flex flex-col items-center hover:opacity-80">
+        <FaPen className="text-lg mb-1" />
+        ログイン
+      </Link>
+      <Link to="/chart" className="flex flex-col items-center hover:opacity-80">
+        <FaChartLine className="text-lg mb-1" />
+        チャート
+      </Link>
     </div>
+  </footer>
+      </div>
+      </div>
+
   );
-}
+};
+
+
 
 export default Home;
