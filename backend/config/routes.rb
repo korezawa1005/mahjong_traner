@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       get 'charts', to: 'charts#show'
       get 'current_user', to: 'current_user#show'
+      get 'users/search', to: 'users#search' 
   
       resources :quizzes, only: [:index]
       resources :quiz_answers, only: [:create]
