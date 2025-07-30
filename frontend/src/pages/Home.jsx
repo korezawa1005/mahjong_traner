@@ -44,7 +44,10 @@ const Home = () => {
   
     const delayDebounce = setTimeout(() => {
       api.get(`/api/v1/users/search?query=${encodeURIComponent(searchTerm)}`)
-        .then(res => setSearchResults(res.data))
+      .then(res => {
+        console.log("✅ searchResults:", res.data); // ← ここに注目！！
+        setSearchResults(res.data);
+      })
         .catch(() => setSearchResults([]));
     }, 400);
   
@@ -114,18 +117,23 @@ const Home = () => {
               <ul className="max-h-60 overflow-y-auto text-sm">
                 {searchResults.map(user => (
                   <li
-                    key={user.email}
+                    key={user.id}
                     className="py-1 px-2 hover:bg-gray-100 cursor-pointer rounded"
-                    onClick={() => {
-                      console.log("クリックされた", user.email);
-                      alert(`${user.email} をクリック`);
-                    }}
                     style={{
                       position: "relative",
                       zIndex: 9999
                     }}
                   >
-                    {user.email}
+                    <Link
+                      to={`/users/${user.id}`}
+                      className="block w-full h-full text-sm text-gray-700"
+                      onClick={() => {
+                        console.log("クリックされた", user.email);
+                        alert(`${user.email} をクリック`);
+                      }}
+                    >
+                      {user.email}
+                    </Link>
                   </li>
                 ))}
               </ul>

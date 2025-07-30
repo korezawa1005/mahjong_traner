@@ -55,4 +55,27 @@ class Api::V1::QuizHistoriesController < ApplicationController
       session_info: session_info
     }
   end
+
+  def user_histories
+    user = User.find(params[:user_id])
+
+    quiz_sessions = user.quiz_sessions
+                        .includes(:category)
+                        .where.not(correct_count: nil)
+                        .order(created_at: :desc)
+                        .limit(20)
+
+    histories = quiz_sessions.map do |session|
+      {
+        id: session.id,
+        category_name: session.category.name,
+        correct_count: session.correct_count,
+        total_questions: 10,
+        created_at: session.created_at.strftime("%Y年%m月%d日")
+      }
+    end
+
+    render json: { histories: histories }
+  end
+
 end

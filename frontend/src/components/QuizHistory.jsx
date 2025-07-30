@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../libs/api';
 
-const QuizHistory = () => {
+const QuizHistory = ({ userId = null }) => {
   const [histories, setHistories] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -10,7 +10,11 @@ const QuizHistory = () => {
   useEffect(() => {
     const fetchHistories = async () => {
       try {
-        const response = await api.get('/api/v1/quiz_histories');
+        const endpoint = userId
+          ? `/api/v1/users/${userId}/quiz_histories` // 他人のマイページ
+          : `/api/v1/quiz_histories`;               // 自分のマイページ
+
+        const response = await api.get(endpoint);
         setHistories(response.data.histories);
       } catch (err) {
         console.error('履歴取得エラー:', err);
@@ -20,7 +24,7 @@ const QuizHistory = () => {
     };
 
     fetchHistories();
-  }, []);
+  }, [userId]);
 
   const handleDetailClick = (sessionId) => {
     navigate(`/quiz/history/${sessionId}`);

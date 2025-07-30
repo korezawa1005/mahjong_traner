@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
       get 'charts', to: 'charts#show'
+      get 'charts/:user_id', to: 'charts#user_chart'
       get 'current_user', to: 'current_user#show'
       get 'users/search', to: 'users#search' 
   
@@ -18,6 +19,9 @@ Rails.application.routes.draw do
       resources :quiz_sessions, only: [:create, :update]
       resources :categories, only: [:index]
       resources :quiz_histories, only: [:index, :show]
+      resources :users, only: [:show] do
+        get 'quiz_histories', to: 'quiz_histories#user_histories'
+      end
     end
   end
 end
