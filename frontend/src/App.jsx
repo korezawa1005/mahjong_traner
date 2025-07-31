@@ -27,8 +27,9 @@ function App() {
         <Route path="/quiz/answer" element={<Answer />} />
         <Route path="/quiz/result" element={<Result />} />
         <Route path="/mypage" element={<Mypage />} />
-        <Route path="/quiz/history/:sessionId" element={<QuizHistoryDetail />} />
         <Route path="/users/:id" element={<UserPage />} />
+        <Route path="/quiz/history/:sessionId" element={<QuizHistoryDetail />} />
+        <Route path="/quiz/history/:userId/:sessionId" element={<QuizHistoryDetail />} />
       </Routes>
     </BrowserRouter>
   );

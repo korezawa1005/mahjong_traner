@@ -27,7 +27,13 @@ const QuizHistory = ({ userId = null }) => {
   }, [userId]);
 
   const handleDetailClick = (sessionId) => {
-    navigate(`/quiz/history/${sessionId}`);
+    if (userId) {
+      // 他ユーザー
+      navigate(`/quiz/history/${userId}/${sessionId}`);
+    } else {
+      // 自分
+      navigate(`/quiz/history/${sessionId}`);
+    }
   };
 
   if (loading) return <div>読み込み中...</div>;

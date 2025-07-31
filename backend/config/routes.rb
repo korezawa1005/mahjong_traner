@@ -19,6 +19,8 @@ Rails.application.routes.draw do
       resources :quiz_sessions, only: [:create, :update]
       resources :categories, only: [:index]
       resources :quiz_histories, only: [:index, :show]
+      get 'users/:user_id/quiz_histories/:id',
+          to: 'quiz_histories#user_session'
       resources :users, only: [:show] do
         get 'quiz_histories', to: 'quiz_histories#user_histories'
       end
