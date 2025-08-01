@@ -1,164 +1,93 @@
-// components/Comment/CommentSection.jsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../libs/api';
 
-const Comment = ({ sessionId, questionIndex, isReviewer = false }) => {
+export const Comments = ({ userId }) => {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [posting, setPosting] = useState(false);
 
-  // コメント取得
+  /* ① 自分の情報を取得してロール判定用に保持 */
   useEffect(() => {
-    const fetchComments = async () => {
-      setLoading(true);
-      try {
-        const response = await api.get(`/api/v1/quiz_histories/${sessionId}/questions/${questionIndex}/comments`);
-        setComments(response.data.comments || []);
-      } catch (err) {
-        console.error('コメント取得エラー:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    api.get('/api/v1/me')
+       .then(res => setCurrentUser(res.data))   // { id, name, role }
+       .catch(() => setCurrentUser(null))       // 未ログイン
+       .finally(() => setAuthLoading(false));
+  }, []);
+  
+  /* ② コメント一覧取得 */
+  const fetchComments = async () => {
+    const res = await api.get(`/api/v1/users/${userId}/comments`);
+    setComments(res.data);
+  };
 
-    if (sessionId && questionIndex !== undefined) {
-      fetchComments();
-    }
-  }, [sessionId, questionIndex]);
+  useEffect(() => {
+    setLoading(true);
+    fetchComments().finally(() => setLoading(false));
+  }, [userId]);
 
-  // コメント投稿
-  const handleSubmit = async (e) => {
+  /** 投稿 */
+  const handleSubmit = async e => {
     e.preventDefault();
     if (!newComment.trim()) return;
 
-    setSubmitting(true);
+    setPosting(true);
     try {
-      const response = await api.post(`/api/v1/quiz_histories/${sessionId}/questions/${questionIndex}/comments`, {
-        content: newComment.trim()
+      const res = await api.post(`/api/v1/users/${userId}/comments`, {
+        content: newComment,
       });
-      
-      // 新しいコメントを追加
-      setComments([...comments, response.data.comment]);
+      // 先頭に追加
+      setComments(prev => [res.data, ...prev]);
       setNewComment('');
     } catch (err) {
-      console.error('コメント投稿エラー:', err);
-      alert('コメントの投稿に失敗しました');
+      console.error('コメント投稿失敗', err);
     } finally {
-      setSubmitting(false);
+      setPosting(false);
     }
   };
 
-  // コメント削除（自分のコメントのみ）
-  const handleDelete = async (commentId) => {
-    if (!window.confirm('このコメントを削除しますか？')) return;
-
-    try {
-      await api.delete(`/api/v1/quiz_histories/${sessionId}/questions/${questionIndex}/comments/${commentId}`);
-      setComments(comments.filter(comment => comment.id !== commentId));
-    } catch (err) {
-      console.error('コメント削除エラー:', err);
-      alert('コメントの削除に失敗しました');
-    }
-  };
+  if (loading) return <p className="text-sm text-gray-500">コメント読み込み中...</p>;
 
   return (
-    <div className="mt-4 border-t pt-4">
-      <h4 className="font-semibold mb-3 flex items-center">
-        <span className="mr-2">💬</span>
-        コメント ({comments.length})
-      </h4>
-
-      {/* コメント投稿フォーム */}
-      <form onSubmit={handleSubmit} className="mb-4">
-        <div className="flex gap-2">
+    <div className="border-t pt-3 mt-3 space-y-2">
+      {/** 投稿フォーム（レビュワーのみ） */}
+      {currentUser?.role === 'reviewer' && (
+        <form onSubmit={handleSubmit} className="flex gap-2">
           <textarea
             value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="この問題についてのコメントを書く..."
-            className="flex-1 p-2 border rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            onChange={e => setNewComment(e.target.value)}
+            className="flex-1 border rounded p-2 text-sm"
+            placeholder="コメントを書く..."
             rows={2}
-            maxLength={500}
           />
           <button
             type="submit"
-            disabled={submitting || !newComment.trim()}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={posting}
+            className="bg-blue-600 text-white px-3 py-1 rounded text-sm disabled:opacity-50"
           >
-            {submitting ? '投稿中...' : '投稿'}
+            送信
           </button>
-        </div>
-        <div className="text-xs text-gray-500 mt-1">
-          {newComment.length}/500文字
-        </div>
-      </form>
+        </form>
+      )}
 
-      {/* コメント一覧 */}
-      <div className="space-y-3">
-        {loading ? (
-          <div className="text-center py-4 text-gray-500">読み込み中...</div>
-        ) : comments.length === 0 ? (
-          <div className="text-center py-4 text-gray-500">
-            まだコメントがありません。最初のコメントを投稿してみましょう！
-          </div>
-        ) : (
-          comments.map((comment) => (
-            <CommentItem
-              key={comment.id}
-              comment={comment}
-              onDelete={handleDelete}
-            />
-          ))
-        )}
-      </div>
+      {comments.length === 0 ? (
+        <p className="text-xs text-gray-500">コメントはまだありません。</p>
+      ) : (
+        <ul className="space-y-1">
+          {comments.map(c => (
+            <li key={c.id} className="text-sm bg-gray-50 rounded p-2">
+              <p className="whitespace-pre-wrap">{c.content}</p>
+              <p className="text-[10px] text-gray-500 mt-1">
+                by {c.reviewer.name ?? 'Reviewer'} / {c.created_at}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
-};
+}
 
-const CommentItem = ({ comment, onDelete }) => {
-  const isOwner = comment.is_owner; // APIから返される想定
-
-  return (
-    <div className="bg-gray-50 p-3 rounded-lg">
-      <div className="flex justify-between items-start mb-2">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs">
-            {comment.user_name ? comment.user_name[0].toUpperCase() : 'U'}
-          </div>
-          <span className="font-medium text-sm">{comment.user_name || 'ユーザー'}</span>
-          <span className="text-xs text-gray-500">{formatDate(comment.created_at)}</span>
-        </div>
-        {isOwner && (
-          <button
-            onClick={() => onDelete(comment.id)}
-            className="text-red-500 hover:text-red-700 text-xs"
-            title="削除"
-          >
-            削除
-          </button>
-        )}
-      </div>
-      <p className="text-sm whitespace-pre-wrap">{comment.content}</p>
-    </div>
-  );
-};
-
-// 日付フォーマット関数
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diff = now - date;
-  
-  if (diff < 60000) return 'たった今';
-  if (diff < 3600000) return `${Math.floor(diff / 60000)}分前`;
-  if (diff < 86400000) return `${Math.floor(diff / 3600000)}時間前`;
-  
-  return date.toLocaleDateString('ja-JP', {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-};
-
-export default Comment;
+export default Comments;

@@ -2,6 +2,16 @@ class Api::V1::UsersController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_reviewer!
 
+  before_action :authenticate_user!, only: :me
+
+  def me
+    render json: {
+      id:   current_user.id,
+      role: current_user.role
+    }
+  end
+
+
   def search
     query = params[:query].to_s.strip
     return render json: [] if query.blank?

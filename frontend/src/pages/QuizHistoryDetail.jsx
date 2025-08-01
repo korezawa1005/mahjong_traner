@@ -14,7 +14,7 @@ const QuizHistoryDetail = () => {
   const endpoint = userId
   ? `/api/v1/users/${userId}/quiz_histories/${sessionId}`
   : `/api/v1/quiz_histories/${sessionId}`;  
-
+  
   useEffect(() => {
     const fetchDetails = async () => {
       try {
@@ -93,6 +93,7 @@ const QuizHistoryDetail = () => {
             )}
           </div>
         ))}
+        <Comment userId={userId || currentUser.id} />
       </div>
     </div>
   );

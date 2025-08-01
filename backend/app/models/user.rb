@@ -15,21 +15,17 @@ class User < ApplicationRecord
     reviewer: 1   
   }
   
-  # コメント関連の関連付け
   has_many :received_comments, class_name: 'Comment', foreign_key: 'user_id', dependent: :destroy
   has_many :written_comments, class_name: 'Comment', foreign_key: 'reviewer_id', dependent: :destroy
   
-  # バリデーション
   validates :role, presence: true
-  
-  # レビュワーのみがコメント作成可能
+
   def can_write_comments?
-    reviewer?  # reviewerのみ（trainerを除外）
+    reviewer?  
   end
   
-  # 全員がコメント閲覧可能
   def can_read_comments?
-    true  # 全ユーザーが閲覧可能
+    true 
   end
   
   def display_role
@@ -40,7 +36,6 @@ class User < ApplicationRecord
     end
   end
   
-  # スコープ
   scope :reviewers, -> { where(role: :reviewer) }
   scope :general_users, -> { where(role: :general) }
 

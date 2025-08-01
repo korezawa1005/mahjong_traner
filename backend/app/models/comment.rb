@@ -3,8 +3,6 @@ class Comment < ApplicationRecord
   belongs_to :reviewer, class_name: "User"
 
   validates :content, presence: true, length: { minimum: 1, maximum: 1000 }
-  
-  # レビュワーのみがコメント作成できることをバリデーション
   validate :reviewer_must_be_reviewer_role
   
   scope :recent, -> { order(created_at: :desc) }
