@@ -17,19 +17,19 @@ class Api::V1::CommentsController < ApplicationController
   end
 
   def index
-    comments = @target_user.received_comments.includes(:reviewer).order(created_at: :desc)  
+    comments = @target_user.received_comments.where(quiz_session_id: params[:quiz_session_id]).includes(:reviewer).order(created_at: :desc)  
   
     render json: comments.map { |c| serialize(c) }
-    
-  
   end
 
   def create
     comment = @target_user.received_comments.build(
-      reviewer: current_user, content: params[:content]
+      reviewer: current_user, 
+      content: params[:content],
+      quiz_session_id: params[:quiz_session_id] 
     )
     comment.save!
-    render json: comment, status: :created
+    render json: serialize(comment), status: :created
   end
 
   def update

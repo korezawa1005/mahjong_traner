@@ -1,6 +1,7 @@
 class Comment < ApplicationRecord
   belongs_to :user
   belongs_to :reviewer, class_name: "User"
+  belongs_to :quiz_session
 
   validates :content, presence: true, length: { minimum: 1, maximum: 1000 }
   validate :reviewer_must_be_reviewer_role

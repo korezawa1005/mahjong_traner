@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import api from '../libs/api';
+import { useParams } from 'react-router-dom';
 
-export const Comments = ({ userId }) => {
+export const Comments = ({ userId, quizSessionId }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [comments, setComments] = useState([]);
@@ -10,6 +11,8 @@ export const Comments = ({ userId }) => {
   const [posting, setPosting] = useState(false);
   const [editId, setEditId]         = useState(null);
   const [editContent, setEditContent] = useState('');
+
+
   const startEdit = comment => {
     setEditId(comment.id);
     setEditContent(comment.content);
@@ -25,14 +28,18 @@ export const Comments = ({ userId }) => {
   
   /* ② コメント一覧取得 */
   const fetchComments = async () => {
-    const res = await api.get(`/api/v1/users/${userId}/comments`);
-    setComments(res.data);
-  };
+    const res = await api.get(
+      `/api/v1/users/${userId}/comments`,
+      { params: { quiz_session_id: quizSessionId } }
+    );
+      setComments(res.data);
+    
+  }
 
   useEffect(() => {
     setLoading(true);
     fetchComments().finally(() => setLoading(false));
-  }, [userId]);
+  }, [userId,quizSessionId]);
 
   /** 投稿 */
   const handleSubmit = async e => {
@@ -41,9 +48,9 @@ export const Comments = ({ userId }) => {
 
     setPosting(true);
     try {
-      const res = await api.post(`/api/v1/users/${userId}/comments`, {
-        content: newComment,
-      });
+      const res = await api.post(`/api/v1/users/${userId}/comments`, 
+        { content: newComment, quiz_session_id: quizSessionId }
+      );
       // 先頭に追加
       setComments(prev => [res.data, ...prev]);
       setNewComment('');
