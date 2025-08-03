@@ -24,7 +24,7 @@ Rails.application.routes.draw do
       resources :quiz_histories, only: [:index, :show]
       resources :users, only: [:show] do
         get 'quiz_histories', to: 'quiz_histories#user_histories'
-        resources :comments, only: %i[index create], controller: 'comments'
+        resources :comments, only: %i[index create update destroy], controller: 'comments'
       end
     end
   end

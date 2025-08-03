@@ -8,6 +8,12 @@ export const Comments = ({ userId }) => {
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
   const [posting, setPosting] = useState(false);
+  const [editId, setEditId]         = useState(null);
+  const [editContent, setEditContent] = useState('');
+  const startEdit = comment => {
+    setEditId(comment.id);
+    setEditContent(comment.content);
+  };
 
   /* ① 自分の情報を取得してロール判定用に保持 */
   useEffect(() => {
@@ -48,6 +54,25 @@ export const Comments = ({ userId }) => {
     }
   };
 
+  const handleUpdate = async e => {
+    e.preventDefault();
+    if (!editContent.trim()) return;
+  
+    const res = await api.patch(`/api/v1/users/${userId}/comments/${editId}`, {
+      content: editContent,
+    });
+    setComments(prev =>
+      prev.map(c => (c.id === editId ? res.data : c))
+    );
+    setEditId(null);
+  };
+
+  const handleDelete = async id => {
+    if (!window.confirm('コメントを削除しますか？')) return;
+    await api.delete(`/api/v1/users/${userId}/comments/${id}`);
+    setComments(prev => prev.filter(c => c.id !== id));
+  };
+
   if (loading) return <p className="text-sm text-gray-500">コメント読み込み中...</p>;
 
   return (
@@ -77,11 +102,36 @@ export const Comments = ({ userId }) => {
       ) : (
         <ul className="space-y-1">
           {comments.map(c => (
-            <li key={c.id} className="text-sm bg-gray-50 rounded p-2">
-              <p className="whitespace-pre-wrap">{c.content}</p>
-              <p className="text-[10px] text-gray-500 mt-1">
-                by {c.reviewer.name ?? 'Reviewer'} / {c.created_at}
-              </p>
+            <li key={c.id} className="relative text-sm bg-gray-50 rounded p-2 pr-20">
+              {/* ───────── ここが 編集/削除ボタン ───────── */}
+              {currentUser?.id === c.reviewer?.id && (
+                <div className="absolute right-2 top-1 flex gap-1 text-xs">
+                  <button onClick={() => startEdit(c)}  className="text-blue-600">編集</button>
+                  <button onClick={() => handleDelete(c.id)} className="text-red-600">削除</button>
+                </div>
+              )}
+
+              {/* ───────── 表示 or 編集フォーム切替 ───────── */}
+              {editId === c.id ? (
+                <form onSubmit={handleUpdate}>
+                  <textarea
+                    value={editContent}
+                    onChange={e => setEditContent(e.target.value)}
+                    className="w-full border rounded p-1 text-sm mt-4"
+                    rows={2}
+                  />
+                  <button type="submit" className="mt-1 bg-blue-600 text-white px-2 py-0.5 rounded">
+                    保存
+                  </button>
+                </form>
+              ) : (
+                <>
+                  <p className="whitespace-pre-wrap break-words">{c.content}</p>
+                  <p className="text-[10px] text-gray-500 mt-1">
+                    by {c.reviewer?.name ?? 'Reviewer'} / {c.created_at}
+                  </p>
+                </>
+              )}
             </li>
           ))}
         </ul>
