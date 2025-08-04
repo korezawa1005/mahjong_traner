@@ -7,10 +7,10 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        brush: ['"Yuji Syuku"', 'serif'],
+        brush: ['"Zen Antique Soft"', 'serif'],
       },
       backgroundImage: {
-        '1pin': "url('/images/bg-1pin.png')",
+        'mahjong-corner': "url('/images/bg-corner.jpg')",
       },
 
       colors: {

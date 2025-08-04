@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_10_052328) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_03_134329) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -27,6 +27,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_10_052328) do
     t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "quiz_session_id"
+    t.index ["quiz_session_id"], name: "index_comments_on_quiz_session_id"
     t.index ["reviewer_id"], name: "index_comments_on_reviewer_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
@@ -84,11 +86,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_10_052328) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"
-    t.integer "role"
+    t.integer "role", default: 0, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "comments", "quiz_sessions"
   add_foreign_key "comments", "users"
   add_foreign_key "comments", "users", column: "reviewer_id"
   add_foreign_key "quiz_answers", "quiz_sessions"

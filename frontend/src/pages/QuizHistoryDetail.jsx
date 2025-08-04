@@ -1,18 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../libs/api';
+import Comment from '../components/Comment'
+
 
 const QuizHistoryDetail = () => {
-  const { sessionId } = useParams();
+  const { userId, sessionId } = useParams();
   const [details, setDetails] = useState([]);
   const [sessionInfo, setSessionInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showComments, setShowComments] = useState({});
   const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState(null);
+
+  const endpoint = userId
+  ? `/api/v1/users/${userId}/quiz_histories/${sessionId}`
+  : `/api/v1/quiz_histories/${sessionId}`;  
+  
+  useEffect(() => {
+    api.get('/api/v1/me')
+       .then(res => setCurrentUser(res.data))
+       .catch(()  => setCurrentUser(null));
+  }, []);   
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        const response = await api.get(`/api/v1/quiz_histories/${sessionId}`);
+        const response = await api.get(endpoint);
         setDetails(response.data.details);
         setSessionInfo(response.data.session_info);
       } catch (err) {
@@ -77,8 +91,19 @@ const QuizHistoryDetail = () => {
               <p>正解牌: {detail.correct_tile_name}</p>
               <p>解説: {detail.explanation}</p>
             </div>
+            {showComments[index] && (
+              <div className="px-4 pb-4">
+                <CommentSection 
+                  sessionId={sessionId} 
+                  questionIndex={index}
+                />
+              </div>
+            )}
           </div>
         ))}
+        <Comment userId={userId || currentUser.id}
+          quizSessionId={sessionId}
+        />
       </div>
     </div>
   );
