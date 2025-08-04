@@ -1,6 +1,6 @@
 class Api::V1::QuizHistoriesController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_reviewer_or_self!, only: %i[user_histories show index]
+  before_action :authorize_reviewer_or_self!, only: %i[user_histories]
 
 
   def index
