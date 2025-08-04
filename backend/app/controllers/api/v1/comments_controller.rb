@@ -17,8 +17,9 @@ class Api::V1::CommentsController < ApplicationController
   end
 
   def index
-    comments = @target_user.received_comments.where(quiz_session_id: params[:quiz_session_id]).includes(:reviewer).order(created_at: :desc)  
-  
+    comments = @target_user.received_comments
+                           .where(quiz_session_id: params[:quiz_session_id])
+                           .includes(:reviewer).order(created_at: :desc)  
     render json: comments.map { |c| serialize(c) }
   end
 

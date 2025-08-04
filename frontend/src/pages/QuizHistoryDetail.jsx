@@ -101,9 +101,11 @@ const QuizHistoryDetail = () => {
             )}
           </div>
         ))}
-        <Comment userId={userId || currentUser.id}
-          quizSessionId={sessionId}
-        />
+        {(userId || currentUser?.id) && (
+          <Comment userId={userId || currentUser.id}
+            quizSessionId={sessionId}
+          />
+        )}
       </div>
     </div>
   );
