@@ -175,3 +175,20 @@ create_quizzes(押し引き_quiz_data, 2)
 create_quizzes(リーチ判断_quiz_data, 3)
 create_quizzes(仕掛け_quiz_data, 4)
 create_quizzes(手役意識_quiz_data, 5)
+
+puts '== Seeding default reviewer =='
+
+reviewer = User.find_or_initialize_by(email: ENV.fetch('REVIEWER_EMAIL', 'reviewer@example.com'))
+
+reviewer.assign_attributes(
+  password:              ENV.fetch('REVIEWER_PASSWORD', 'Password123'),
+  password_confirmation: ENV.fetch('REVIEWER_PASSWORD', 'Password123'),
+  role:                  'reviewer',     # enum の場合は :reviewer
+  confirmed_at:          Time.current    # Devise confirmable を使っている場合
+)
+
+if reviewer.save
+  puts "✔️  Reviewer created: #{reviewer.email}"
+else
+  puts "⚠️  Reviewer not saved: #{reviewer.errors.full_messages.join(', ')}"
+end
