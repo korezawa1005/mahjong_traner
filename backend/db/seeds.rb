@@ -183,8 +183,7 @@ reviewer = User.find_or_initialize_by(email: ENV.fetch('REVIEWER_EMAIL', 'review
 reviewer.assign_attributes(
   password:              ENV.fetch('REVIEWER_PASSWORD', 'Password123'),
   password_confirmation: ENV.fetch('REVIEWER_PASSWORD', 'Password123'),
-  role:                  'reviewer',     # enum の場合は :reviewer
-  confirmed_at:          Time.current    # Devise confirmable を使っている場合
+  role:                  'reviewer'
 )
 
 if reviewer.save
