@@ -19,7 +19,7 @@ const LoginForm = () => {
       });
 
       const token = res.headers["authorization"];    
-      localStorage.setItem("jwt", token);
+      localStorage.setItem("jwt", token);   
       
       console.log('ログイン成功:', res.data);
       navigate('/', { replace: true });

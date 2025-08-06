@@ -5,7 +5,8 @@ const api = axios.create({ //axiosはHTTPクライアントライブラリ。awa
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("jwt");
+  let token = localStorage.getItem("jwt");
+  if (token && !token.startsWith("Bearer ")) token = `Bearer ${token}`;
   if (token) config.headers.Authorization = token;
   return config;
 });
