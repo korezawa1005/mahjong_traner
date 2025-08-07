@@ -1,14 +1,13 @@
 class Api::V1::UsersController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_reviewer!
-
-  before_action :authenticate_user!, only: :me
+  before_action :authorize_reviewer!, except: [:me]
 
   def me
-    render json: {
-      id:   current_user.id,
-      role: current_user.role
-    }
+    if current_user
+      render json: { id: current_user.id, role: current_user.role }
+    else
+      render json: { error: 'unauthorized' }, status: :unauthorized
+    end
   end
 
 
@@ -31,8 +30,6 @@ class Api::V1::UsersController < ApplicationController
   private
 
   def authorize_reviewer!
-    unless current_user&.reviewer? || current_user&.admin?
-      render json: { error: "Unauthorized" }, status: :unauthorized
-    end
+    head :forbidden unless current_user&.role == 'reviewer' 
   end
 end

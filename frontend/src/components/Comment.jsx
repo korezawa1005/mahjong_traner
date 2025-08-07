@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../libs/api';
-import { useParams } from 'react-router-dom';
+
 
 export const Comments = ({ userId, quizSessionId }) => {
   const [currentUser, setCurrentUser] = useState(null);
