@@ -10,24 +10,24 @@ class User < ApplicationRecord
   has_many :quiz_answers, through: :quiz_sessions
   has_many :comments, dependent: :destroy
 
-  enum role: { 
+  enum role: {
     general: 0,
-    reviewer: 1   
+    reviewer: 1
   }
-  
+
   has_many :received_comments, class_name: 'Comment', foreign_key: 'user_id', dependent: :destroy
   has_many :written_comments, class_name: 'Comment', foreign_key: 'reviewer_id', dependent: :destroy
-  
+
   validates :role, presence: true
 
   def can_write_comments?
-    reviewer?  
+    reviewer?
   end
-  
+
   def can_read_comments?
-    true 
+    true
   end
-  
+
   def display_role
     case role
     when 'general' then '一般ユーザー'
@@ -35,8 +35,7 @@ class User < ApplicationRecord
     else '不明'
     end
   end
-  
+
   scope :reviewers, -> { where(role: :reviewer) }
   scope :general_users, -> { where(role: :general) }
-
 end
