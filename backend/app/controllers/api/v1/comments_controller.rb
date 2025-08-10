@@ -9,7 +9,7 @@ class Api::V1::CommentsController < ApplicationController
     {
       id: c.id,
       content: c.content,
-      reviewer: { id: c.reviewer&.id}
+      reviewer: { id: c.reviewer&.id},
                   # name: c.reviewer&.username,
       created_at: c.created_at.strftime('%Y/%m/%d %H:%M')
     }

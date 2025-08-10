@@ -161,7 +161,7 @@ const Answer = () => {
                   src={url}
                   alt={`手牌${i + 1}`}
                   className={[
-                    "w-12 h-16 md:w-14 md:h-18 border border-gray-400 rounded-sm transition",
+                    "w-14 h-18 md:w-14 md:h-18 border border-gray-400 rounded-sm transition",
                     ringClass,
                   ].join(" ")}
                 />

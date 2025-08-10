@@ -135,7 +135,7 @@ export const Comments = ({ userId, quizSessionId }) => {
                 <>
                   <p className="whitespace-pre-wrap break-words">{c.content}</p>
                   <p className="text-[10px] text-gray-500 mt-1">
-                    by {c.reviewer?.name ?? 'Reviewer'} / {c.created_at}
+                    by {c.reviewer?.name ?? 'NEET'} / {c.created_at}
                   </p>
                 </>
               )}
