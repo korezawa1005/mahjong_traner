@@ -1,104 +1,135 @@
-import React, { useState } from 'react';
-import api from "../libs/api";  
-import { FcGoogle } from 'react-icons/fc';
-import { FaLine, FaXTwitter } from 'react-icons/fa6';
-import { useNavigate, Link } from 'react-router-dom';
+// src/pages/SignUp.jsx
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FcGoogle } from "react-icons/fc";
+import { FaLine } from "react-icons/fa6";
+import api from "../libs/api";
+import Footer from "../components/Footer";
 
-
-const SignupForm = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordConfirmation, setPasswordConfirmation] = useState('');
+const SignUp = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [errors, setErrors] = useState([]);
-
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setErrors([]);
     try {
-      const response = await api.post(
-        `${import.meta.env.VITE_API_BASE_URL}/users`,
-        {
-          user: {
-            email,
-            password,
-            password_confirmation: passwordConfirmation
-          }
-        },
-      );
-      console.log('サインアップ成功:', response.data);
-      navigate('/', { replace: true });
+      await api.post("/users", {
+        user: { email, password, password_confirmation: passwordConfirmation },
+      });
+      // 成功後はトップへ（必要ならここで自動ログイン処理を追加）
+      navigate("/", { replace: true });
     } catch (error) {
-      console.error('サインアップ失敗:', error.response?.data || error.message);
-      const resErrors = error.response?.data?.errors || ['アカウント作成に失敗しました。'];
+      const resErrors = error.response?.data?.errors || ["アカウント作成に失敗しました。"];
       setErrors(resErrors);
     }
-    
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f6f6f6]">
-      <div className="max-w-xs w-full bg-[#fdf7ed] p-6 rounded-xl shadow-md space-y-4 mt-20">
-        <form onSubmit={handleSignup} className="space-y-4">
-          <input
-            type="email"
-            placeholder="メールアドレス"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          <input
-            type="password"
-            placeholder="パスワード"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          <input
-            type="password"
-            placeholder="パスワード確認"
-            value={passwordConfirmation}
-            onChange={(e) => setPasswordConfirmation(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          {errors.length > 0 && (
-            <ul className="text-red-600 mb-3 text-sm">
-              {errors.map((error, idx) => (
-                <li key={idx}>・{error}</li>
-              ))}
-            </ul>
-          )}
-          <button
-            type="submit"
-            className="w-full py-2 bg-emerald-700 text-white font-semibold rounded hover:bg-emerald-800"
-          >
-            サインアップ
-          </button>
-        </form>
+    <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black">
+      <main className="flex-1 w-full max-w-[700px] mx-auto px-2 pt-6 pb-20 flex flex-col justify-center items-center">
+        <section className="w-full bg-[#fdf7ed] border border-gray-200 rounded-2xl shadow-sm p-6 sm:p-8">
+          {/* タイトル */}
+          <div className="mb-6 text-center">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">サインアップ</h1>
+            <p className="text-sm sm:text-base text-gray-600 mt-1">
+              メールアドレスとパスワードで新規登録
+            </p>
+          </div>
 
-        <div className="text-center text-sm text-gray-500">または</div>
+          {/* フォーム */}
+          <form onSubmit={handleSignup} className="space-y-4">
+            <label className="block">
+              <span className="block text-sm font-medium text-gray-700 mb-1">メールアドレス</span>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-xl border border-gray-300 bg-white p-3 outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                placeholder="you@example.com"
+                autoComplete="email"
+                required
+              />
+            </label>
 
-        <button className="flex items-center justify-center w-full py-2 border border-green-500 rounded hover:bg-green-100">
-          <FaLine className="text-green-500 mr-2" />
-          <span className="text-green-700 font-semibold">LINEで登録</span>
-        </button>
+            <label className="block">
+              <span className="block text-sm font-medium text-gray-700 mb-1">パスワード</span>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-xl border border-gray-300 bg-white p-3 outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                placeholder="8文字以上を推奨"
+                autoComplete="new-password"
+                required
+              />
+            </label>
 
-        <button className="flex items-center justify-center w-full py-2 border rounded hover:bg-gray-100">
-          <FcGoogle className="mr-2" />
-          <span className="text-gray-700 font-medium">Googleで登録</span>
-        </button>
+            <label className="block">
+              <span className="block text-sm font-medium text-gray-700 mb-1">パスワード確認</span>
+              <input
+                type="password"
+                value={passwordConfirmation}
+                onChange={(e) => setPasswordConfirmation(e.target.value)}
+                className="w-full rounded-xl border border-gray-300 bg-white p-3 outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                placeholder="もう一度入力"
+                autoComplete="new-password"
+                required
+              />
+            </label>
 
-        <button className="flex items-center justify-center w-full py-2 bg-black text-white font-semibold rounded hover:bg-gray-900">
-          <FaXTwitter className="mr-2" />
-          <span>X で登録</span>
-        </button>
+            {errors.length > 0 && (
+              <ul className="text-red-600 text-sm" aria-live="polite">
+                {errors.map((err, i) => (
+                  <li key={i}>・{err}</li>
+                ))}
+              </ul>
+            )}
 
-        <div className="text-center text-sm text-gray-500 mt-4">
-          すでにアカウントをお持ちですか？ <Link to="/login" className="underline">ログイン</Link>
-        </div>
-      </div>
+            <button
+              type="submit"
+              className="w-full py-3 rounded-xl bg-emerald-700 text-white font-semibold hover:bg-emerald-800 transition"
+            >
+              サインアップ
+            </button>
+          </form>
+
+          {/* 区切り */}
+          <div className="flex items-center my-6">
+            <div className="flex-1 h-px bg-gray-200" />
+            <span className="px-3 text-sm text-gray-500">または</span>
+            <div className="flex-1 h-px bg-gray-200" />
+          </div>
+
+          {/* ソーシャル登録（実装時はonClick追加） */}
+          <div className="space-y-3">
+            <button className="w-full py-3 rounded-xl border border-green-500 bg-white hover:bg-green-50 transition flex items-center justify-center gap-2">
+              <FaLine className="text-green-500" />
+              <span className="text-green-700 font-semibold">LINEで登録</span>
+            </button>
+
+            <button className="w-full py-3 rounded-xl border bg-white hover:bg-gray-50 transition flex items-center justify-center gap-2">
+              <FcGoogle />
+              <span className="text-gray-700 font-medium">Googleで登録</span>
+            </button>
+          </div>
+
+          {/* ログイン導線 */}
+          <p className="text-center text-sm text-gray-600 mt-6">
+            すでにアカウントをお持ちですか？{" "}
+            <Link to="/login" className="underline hover:opacity-80">
+              ログイン
+            </Link>
+          </p>
+        </section>
+      </main>
+
+      <Footer isLoggedIn={false} />
     </div>
   );
 };
 
-export default SignupForm;
+export default SignUp;

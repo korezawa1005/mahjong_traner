@@ -87,9 +87,9 @@ const Answer = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black">
-      <main className="flex-1 w-full mx-auto px-4 py-20 pb-24">
+      <main className="flex-1 w-full mx-auto px-4 pt-6 pb-24 pb-24">
         {/* 見出し（カテゴリ & 局面情報 + バッジ + ドラ表示牌） */}
-        <div className="flex justify-between items-start mb-4 gap-4 mt-4">
+        <div className="flex justify-between items-start mb-4 gap-4">
           <div className="ml-8">
             <div className="text-3xl font-bold mb-1">{quiz.category}</div>
             <div className="text-2xl text-gray-800">{quiz.round_info}</div>

@@ -110,7 +110,6 @@ export const Comments = ({ userId, quizSessionId }) => {
         <ul className="space-y-1">
           {comments.map(c => (
             <li key={c.id} className="relative text-sm bg-gray-50 rounded p-2 pr-20">
-              {/* ───────── ここが 編集/削除ボタン ───────── */}
               {currentUser?.id === c.reviewer?.id && (
                 <div className="absolute right-2 top-1 flex gap-1 text-xs">
                   <button onClick={() => startEdit(c)}  className="text-blue-600">編集</button>
@@ -118,7 +117,6 @@ export const Comments = ({ userId, quizSessionId }) => {
                 </div>
               )}
 
-              {/* ───────── 表示 or 編集フォーム切替 ───────── */}
               {editId === c.id ? (
                 <form onSubmit={handleUpdate}>
                   <textarea
