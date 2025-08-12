@@ -1,57 +1,55 @@
+// 変更点だけ：Enter送信（Shift+Enterは改行）、IME中は送信しない
 import { useState, useEffect } from 'react';
 import api from '../libs/api';
 
-
 export const Comments = ({ userId, quizSessionId }) => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [authLoading, setAuthLoading] = useState(true);
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [posting, setPosting] = useState(false);
-  const [editId, setEditId]         = useState(null);
-  const [editContent, setEditContent] = useState('');
+  const [currentUser, setCurrentUser]   = useState(null);
+  const [authLoading, setAuthLoading]   = useState(true);
+  const [comments, setComments]         = useState([]);
+  const [newComment, setNewComment]     = useState('');
+  const [loading, setLoading]           = useState(true);
+  const [posting, setPosting]           = useState(false);
+  const [editId, setEditId]             = useState(null);
+  const [editContent, setEditContent]   = useState('');
 
+  // ← 追加：IME中フラグ
+  const [isComposing, setIsComposing]   = useState(false);
 
-  const startEdit = comment => {
+  const startEdit = (comment) => {
     setEditId(comment.id);
     setEditContent(comment.content);
   };
 
-  /* ① 自分の情報を取得してロール判定用に保持 */
   useEffect(() => {
     api.get('/api/v1/me')
-       .then(res => setCurrentUser(res.data))   // { id, name, role }
-       .catch(() => setCurrentUser(null))       // 未ログイン
-       .finally(() => setAuthLoading(false));
+      .then(res => setCurrentUser(res.data))
+      .catch(() => setCurrentUser(null))
+      .finally(() => setAuthLoading(false));
   }, []);
-  
-  /* ② コメント一覧取得 */
+
   const fetchComments = async () => {
-    const res = await api.get(
-      `/api/v1/users/${userId}/comments`,
-      { params: { quiz_session_id: quizSessionId } }
-    );
-      setComments(res.data);
-    
-  }
+    const res = await api.get(`/api/v1/users/${userId}/comments`, {
+      params: { quiz_session_id: quizSessionId }
+    });
+    setComments(res.data);
+  };
 
   useEffect(() => {
     setLoading(true);
     fetchComments().finally(() => setLoading(false));
-  }, [userId,quizSessionId]);
+  }, [userId, quizSessionId]);
 
-  /** 投稿 */
-  const handleSubmit = async e => {
-    e.preventDefault();
-    if (!newComment.trim()) return;
+  // ← 変更：イベント不要にして、どこからでも呼べる submit 関数へ
+  const submitNewComment = async () => {
+    const content = newComment.trim();
+    if (!content || posting) return;
 
     setPosting(true);
     try {
-      const res = await api.post(`/api/v1/users/${userId}/comments`, 
-        { content: newComment, quiz_session_id: quizSessionId }
-      );
-      // 先頭に追加
+      const res = await api.post(`/api/v1/users/${userId}/comments`, {
+        content,
+        quiz_session_id: quizSessionId
+      });
       setComments(prev => [res.data, ...prev]);
       setNewComment('');
     } catch (err) {
@@ -61,20 +59,23 @@ export const Comments = ({ userId, quizSessionId }) => {
     }
   };
 
-  const handleUpdate = async e => {
+  // 既存のボタン送信用（form onSubmit）も対応しておく
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await submitNewComment();
+  };
+
+  const handleUpdate = async (e) => {
     e.preventDefault();
     if (!editContent.trim()) return;
-  
     const res = await api.patch(`/api/v1/users/${userId}/comments/${editId}`, {
       content: editContent,
     });
-    setComments(prev =>
-      prev.map(c => (c.id === editId ? res.data : c))
-    );
+    setComments(prev => prev.map(c => (c.id === editId ? res.data : c)));
     setEditId(null);
   };
 
-  const handleDelete = async id => {
+  const handleDelete = async (id) => {
     if (!window.confirm('コメントを削除しますか？')) return;
     await api.delete(`/api/v1/users/${userId}/comments/${id}`);
     setComments(prev => prev.filter(c => c.id !== id));
@@ -84,20 +85,35 @@ export const Comments = ({ userId, quizSessionId }) => {
 
   return (
     <div className="border-t pt-3 mt-3 space-y-2">
-      {/** 投稿フォーム（レビュワーのみ） */}
+      {/* 投稿フォーム（レビュワーのみ） */}
       {currentUser?.role === 'reviewer' && (
         <form onSubmit={handleSubmit} className="flex gap-2">
           <textarea
             value={newComment}
             onChange={e => setNewComment(e.target.value)}
             className="flex-1 border rounded p-2 text-sm"
-            placeholder="コメントを書く..."
+            placeholder="コメントを書く…（Enterで送信 / Shift+Enterで改行）"
             rows={2}
+            // ← 追加：IME状態のハンドリング
+            onCompositionStart={() => setIsComposing(true)}
+            onCompositionEnd={() => setIsComposing(false)}
+            onKeyDown={(e) => {
+              // Enter単体で送信、Shift+Enterは改行
+              if (e.key === 'Enter' && !e.shiftKey) {
+                // 変換中や送信中はブロック
+                if (isComposing || posting) return;
+                e.preventDefault(); // 改行を防止
+                submitNewComment();
+              }
+              // Ctrl/Cmd+Enter送信を許可したい場合は以下を追加（任意）
+              // if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { ... }
+            }}
           />
           <button
             type="submit"
             disabled={posting}
             className="bg-blue-600 text-white px-3 py-1 rounded text-sm disabled:opacity-50"
+            aria-label="コメント送信"
           >
             送信
           </button>
@@ -112,7 +128,7 @@ export const Comments = ({ userId, quizSessionId }) => {
             <li key={c.id} className="relative text-sm bg-gray-50 rounded p-2 pr-20">
               {currentUser?.id === c.reviewer?.id && (
                 <div className="absolute right-2 top-1 flex gap-1 text-xs">
-                  <button onClick={() => startEdit(c)}  className="text-blue-600">編集</button>
+                  <button onClick={() => startEdit(c)} className="text-blue-600">編集</button>
                   <button onClick={() => handleDelete(c.id)} className="text-red-600">削除</button>
                 </div>
               )}
@@ -143,6 +159,6 @@ export const Comments = ({ userId, quizSessionId }) => {
       )}
     </div>
   );
-}
+};
 
 export default Comments;

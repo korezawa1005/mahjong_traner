@@ -28,7 +28,7 @@ const Mypage = () => {
         const chartRes = await api.get("/api/v1/charts");
         setChartData({
           labels: chartRes.data.labels,
-          datasets: [
+          datasets: [ ///TODO ユーティリティ化する
             {
               label: "最新",
               data: chartRes.data.current_data,
@@ -58,8 +58,6 @@ const Mypage = () => {
     <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black">
       {/* Home と同じセンター幅 */}
       <main className="flex-1 w-full max-w-[700px] mx-auto px-2 pt-6 pb-20 flex flex-col gap-6">
-        {/* タイトル */}
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-center">マイページ</h1>
 
         {/* レーダーチャート：前の見せ方（カードで囲わない・フル幅に近い） */}
         <section className="w-full">

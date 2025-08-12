@@ -73,7 +73,8 @@ const Home = () => {
 
   return (
 
-    <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black">
+    <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black flex flex-col">
+
       <Header
         isReviewer={isReviewer}
         showReviewerSearch={showReviewerSearch}
@@ -83,29 +84,48 @@ const Home = () => {
         searchResults={searchResults}
       />
 
-      <main className="flex-1 w-full max-w-[700px] mx-auto px-2 py-2 pb-20 flex flex-col justify-center items-center">
-        <div className="grid grid-cols-3 gap-4 mb-4 w-full">
+      <main
+        className="
+          flex-1 w-full max-w-[700px] lg:max-w-[1200px]  /* PCで横幅少し広げる */
+          mx-auto px-2 py-2 pb-20
+          flex flex-col items-center justify-center
+          lg:justify-start lg:mt-8 lg:pb-8
+        "
+      >
+        <div className="grid grid-cols-3 gap-4 lg:gap-8 mb-4 w-full">
           {categories.slice(0, 3).map((c) => (
             <button
               key={c.id}
               onClick={() => handleStartQuiz(c)}
-              className="bg-gray-100 hover:bg-gray-200 rounded-xl py-7 px-4 border border-gray-300 shadow-sm flex flex-col items-center justify-center transition duration-150"
+              className="
+                bg-gray-100 hover:bg-gray-200 rounded-xl border border-gray-300 shadow-sm
+                transition duration-150
+                flex flex-col items-center justify-center
+                py-7 px-4
+                lg:py-14 lg:px-10 lg:h-[200px] lg:rounded-3xl lg:shadow-lg lg:gap-1
+              "
             >
-              <p className="font-semibold text-lg sm:text-xl">{c.name}</p>
-              <p className="text-sm sm:text-base text-gray-500">全10問</p>
+              <p className="font-semibold text-lg sm:text-xl lg:text-4xl">{c.name}</p>
+              <p className="text-sm sm:text-base lg:text-2xl text-gray-500 mt-1">全10問</p>
             </button>
           ))}
         </div>
-              
-        <div className="grid grid-cols-2 gap-4 w-full">
+
+        <div className="grid grid-cols-2 gap-4 lg:gap-8 w-full">
           {categories.slice(3, 5).map((c) => (
             <button
               key={c.id}
               onClick={() => handleStartQuiz(c)}
-              className="bg-gray-100 hover:bg-gray-200 rounded-xl py-7 px-4 border border-gray-300 shadow-sm flex flex-col items-center justify-center transition duration-150"
+              className="
+                bg-gray-100 hover:bg-gray-200 rounded-xl border border-gray-300 shadow-sm
+                transition duration-150
+                flex flex-col items-center justify-center
+                py-7 px-4
+                lg:py-10 lg:px-6 lg:h-[150px] lg:rounded-2xl lg:shadow-md
+              "
             >
-              <p className="font-semibold text-lg sm:text-xl">{c.name}</p>
-              <p className="text-sm sm:text-base text-gray-500">全10問</p>
+              <p className="font-semibold text-lg sm:text-xl lg:text-2xl">{c.name}</p>
+              <p className="text-sm sm:text-base lg:text-lg text-gray-500 mt-1">全10問</p>
             </button>
           ))}
         </div>
@@ -117,9 +137,7 @@ const Home = () => {
           onClick={() => setShowReviewerSearch(false)}
         />
       )}
-
       <Footer />
-      
     </div>
   );
 };

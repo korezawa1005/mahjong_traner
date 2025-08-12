@@ -11,7 +11,9 @@ const Header = ({
 }) => {
   return (
     <header className="text-center mt-4 mb-2 relative">
-      <h1 className="text-4xl sm:text-6xl font-brush tracking-widest">雀力スカウター</h1>
+      <h1 className="text-4xl sm:text-6xl lg:text-8xl font-brush tracking-widest lg:mb-4">
+        雀力スカウター
+      </h1>
 
       {isReviewer && (
         <div className="absolute top-0 right-4">
