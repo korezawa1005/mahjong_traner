@@ -139,36 +139,38 @@ const Result = () => {
       </div>
 
 
-      <main className="relative z-10 px-4 pb-20 flex flex-col items-center justify-center">
+      <main className="relative z-10 px-4 pb-20 flex flex-col items-center justify-center lg:justify-start lg:pt-12 lg:pb-8">
 
-        <h1 className="text-center text-4xl md:text-6xl font-extrabold tracking-widest mb-6">{category}</h1>
+      <h1 className="text-center text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-widest mb-6 lg:mb-12">
+        {category}
+      </h1>
 
-        <section className="w-[min(92vw,56rem)] bg-white/90 backdrop-blur rounded-2xl shadow-xl border p-6 md:p-8">
+        <section className="w-[min(96vw,70rem)] bg-white/90 backdrop-blur rounded-2xl shadow-xl border px-6 md:px-8 py-10 md:py-14">
           {/* 上段：円形ゲージ + スコア */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center">
             {/* 円形プログレス（CSSのconic-gradientで描画） */}
-            <div className="flex justify-center">
+            <div className="flex justify-center pl-20">
               <div
-                className="relative w-36 h-36 md:w-44 md:h-44 rounded-full grid place-items-center"
+                className="relative w-36 h-36 md:w-44 md:h-44 lg:w-56 lg:h-56 rounded-full grid place-items-center"
                 style={{
                   background: `conic-gradient(${gaugeColor} ${animPercent}%, #e5e7eb 0)`
                 }}
                 aria-hidden="true"
               >
                 <div className="absolute inset-2 bg-white rounded-full grid place-items-center">
-                  <div className="text-3xl md:text-4xl font-extrabold">{correct}</div>
-                  <div className="text-xs md:text-sm text-gray-500">/ {total} 問</div>
+                  <div className="text-3xl md:text-4xl lg:text-5xl font-extrabold">{correct}</div>
+                  <div className="text-xs md:text-sm lg:text-base text-gray-500">/ {total} 問</div>
                 </div>
               </div>
             </div>
 
             {/* スコア文字 + フィードバック */}
-            <div className="text-center md:text-left">
-              <div className="text-[48px] md:text-[64px] font-extrabold leading-none">
+            <div className="text-center md:text-left pl-28">
+              <div className="text-[48px] md:text-[64px] lg:text-[80px] font-extrabold leading-none">
                 {correct}
                 <span className="ml-2 text-2xl md:text-2xl font-bold">問 / {total}問中</span>
               </div>
-              <div className="mt-3">
+              <div className="mt-3 lg:mt-4">
                 <span className="inline-flex items-center rounded-2xl border-2 px-4 py-1.5 font-bold"
                   style={{ borderColor: gaugeColor, color: gaugeColor }}>
                   {feedback}
@@ -181,16 +183,16 @@ const Result = () => {
           <div className="mt-8 h-px w-full bg-gray-100" />
 
           {/* アクション */}
-          <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="mt-6 lg:mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <button
               onClick={handleShare}
-              className="bg-white border border-gray-300 px-6 py-2 rounded-full shadow hover:bg-gray-50 active:shadow-lg"
+              className="bg-white border border-gray-300 px-6 py-2 lg:px-8 lg:py-3 rounded-full shadow hover:bg-gray-50 active:shadow-lg"
             >
               成績をシェア
             </button>
             <button
               onClick={handleHome}
-              className="bg-white border border-gray-300 px-6 py-2 rounded-full shadow hover:bg-gray-50 active:shadow-lg"
+              className="bg-white border border-gray-300 px-6 py-2 lg:px-8 lg:py-3 rounded-full shadow hover:bg-gray-50 active:shadow-lg"
             >
               トップページへ
             </button>

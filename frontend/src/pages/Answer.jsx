@@ -87,16 +87,19 @@ const Answer = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black">
-      <main className="flex-1 w-full mx-auto px-4 pt-6 pb-24 pb-24">
+      <main className="flex-1 w-full mx-auto px-4 pt-6 lg:pt-12 lg:pl-8 pb-24">
         {/* 見出し（カテゴリ & 局面情報 + バッジ + ドラ表示牌） */}
-        <div className="flex justify-between items-start mb-4 gap-4">
-          <div className="ml-8">
-            <div className="text-3xl font-bold mb-1">{quiz.category}</div>
-            <div className="text-2xl text-gray-800">{quiz.round_info}</div>
+        <div className="max-w-[1200px] mx-auto
+                 grid grid-cols-[1fr_auto] items-center
+                 gap-x-6 sm:gap-x-8 lg:gap-x-10
+                 mt-12 mb-10">
+          <div>
+            <div className="text-3xl lg:text-5xl font-bold mb-1">{quiz.category}</div>
+            <div className="text-2xl lg:text-4xl text-gray-800">{quiz.round_info}</div>
             <span
               aria-live="polite"
               className={[
-                "inline-flex items-center rounded-full px-6 py-2 text-sm font-semibold shadow border mt-4",
+                "inline-flex items-center rounded-full px-6 py-2 text-sm lg:text-base font-semibold shadow border mt-4",
                 isCorrect
                   ? "bg-green-50 text-green-700 border-green-200"
                   : "bg-red-50 text-red-700 border-red-200",
@@ -106,16 +109,16 @@ const Answer = () => {
             </span>
           </div>
 
-          <div className="mr-6 flex flex-col items-end gap-2">
+          <div className="justify-self-start flex flex-col items-end gap-2">
             {doraIndicators.length > 0 && (
-              <div className="p-2 rounded-md bg-white shadow border w-fit mt-16">
+              <div className="p-2 lg:p-3 rounded-md bg-white shadow border w-fit mt-6 lg:mt-10">
                 <div className="flex items-center">
                   {[...Array(2)].map((_, i) => (
                     <img
                       key={`back-left-${i}`}
                       src="/images/Back.png"
                       alt="裏"
-                      className="w-10 h-14 md:w-12 md:h-16 rounded-sm"
+                      className="w-10 h-14 md:w-12 md:h-16 lg:w-16 lg:h-20 rounded-sm"
                     />
                   ))}
                   {doraIndicators.map((url, i) => (
@@ -123,7 +126,7 @@ const Answer = () => {
                       key={`dora-${url}-${i}`}
                       src={url}
                       alt="ドラ表示牌"
-                      className="w-10 h-14 md:w-12 md:h-16 border border-gray-400 rounded-sm"
+                      className="w-10 h-14 md:w-12 md:h-16 lg:w-16 lg:h-20 border border-gray-400 rounded-sm"
                     />
                   ))}
                   {[...Array(4)].map((_, i) => (
@@ -131,7 +134,7 @@ const Answer = () => {
                       key={`back-right-${i}`}
                       src="/images/Back.png"
                       alt="裏"
-                      className="w-10 h-14 md:w-12 md:h-16 rounded-sm"
+                      className="w-10 h-14 md:w-12 md:h-16 lg:w-16 lg:h-20 rounded-sm"
                     />
                   ))}
                 </div>
@@ -140,8 +143,8 @@ const Answer = () => {
           </div>
         </div>
 
-        <div className="p-3 bg-white rounded-md shadow border w-fit mx-auto mt-6">
-          <div className="flex gap-1 justify-center">
+        <div className="p-3 bg-white rounded-md shadow border w-fit mx-auto mt-5 lg:mt-12">
+          <div className="flex justify-center gap-1 sm:gap-1.5 lg:gap-2">
             {quiz.hand_tile_urls.map((url, i) => {
               const isAnswerTile = sameTile(url, quiz.correct_tile_url);
               const isSelectedTile = sameTile(url, selectedTileUrl);
@@ -161,7 +164,7 @@ const Answer = () => {
                   src={url}
                   alt={`手牌${i + 1}`}
                   className={[
-                    "w-14 h-18 md:w-14 md:h-18 border border-gray-400 rounded-sm transition",
+                    "w-14 h-18 md:w-14 md:h-18 lg:w-20 lg:h-28 border border-gray-400 rounded-sm transition",
                     ringClass,
                   ].join(" ")}
                 />
@@ -170,13 +173,13 @@ const Answer = () => {
           </div>
         </div>
 
-        <div className="mt-6 bg-white p-4 rounded-md shadow border max-w-3xl mx-auto">
+        <div className="mt-6 bg-white p-4 lg:p-6 rounded-md shadow border max-w-3xl lg:max-w-4xl mx-auto">
           <div className="text-base leading-relaxed text-gray-800 whitespace-pre-wrap">
             {quiz.explanation}
           </div>
         </div>
 
-        <div className="mt-8 flex justify-center gap-3">
+        <div className="mt-8 lg:mt-10 flex justify-center gap-3">
           <button
             onClick={handleNext}
             className="bg-white border border-gray-400 px-6 py-2 rounded shadow hover:bg-gray-100 active:shadow-lg"

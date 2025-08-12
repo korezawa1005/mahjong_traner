@@ -1,4 +1,3 @@
-// src/pages/QuizHistoryDetail.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../libs/api";
@@ -14,7 +13,6 @@ const QuizHistoryDetail = () => {
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
 
-  // userId がある: 他ユーザーの履歴 / ない: 自分の履歴
   const endpoint = userId
     ? `/api/v1/users/${userId}/quiz_histories/${sessionId}`
     : `/api/v1/quiz_histories/${sessionId}`;
