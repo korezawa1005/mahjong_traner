@@ -1,112 +1,161 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import api from '../libs/api';
-import Comment from '../components/Comment'
-
+// src/pages/QuizHistoryDetail.jsx
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import api from "../libs/api";
+import Comment from "../components/Comment";
+import Footer from "../components/Footer";
 
 const QuizHistoryDetail = () => {
   const { userId, sessionId } = useParams();
+  const navigate = useNavigate();
+
   const [details, setDetails] = useState([]);
   const [sessionInfo, setSessionInfo] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showComments, setShowComments] = useState({});
-  const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
 
+  // userId がある: 他ユーザーの履歴 / ない: 自分の履歴
   const endpoint = userId
-  ? `/api/v1/users/${userId}/quiz_histories/${sessionId}`
-  : `/api/v1/quiz_histories/${sessionId}`;  
-  
+    ? `/api/v1/users/${userId}/quiz_histories/${sessionId}`
+    : `/api/v1/quiz_histories/${sessionId}`;
+
+  // ログイン中ユーザー（コメント権限などで利用）
   useEffect(() => {
-    api.get('/api/v1/me')
-       .then(res => setCurrentUser(res.data))
-       .catch(()  => setCurrentUser(null));
-  }, []);   
+    let cancel = false;
+    api
+      .get("/api/v1/me")
+      .then((res) => !cancel && setCurrentUser(res.data))
+      .catch(() => !cancel && setCurrentUser(null));
+    return () => {
+      cancel = true;
+    };
+  }, []);
 
   useEffect(() => {
+    let cancel = false;
     const fetchDetails = async () => {
       try {
-        const response = await api.get(endpoint);
-        setDetails(response.data.details);
-        setSessionInfo(response.data.session_info);
+        setLoading(true);
+        const res = await api.get(endpoint);
+        if (cancel) return;
+        setDetails(res.data.details || []);
+        setSessionInfo(res.data.session_info || null);
       } catch (err) {
-        console.error('詳細取得エラー:', err);
+        console.error("詳細取得エラー:", err);
       } finally {
-        setLoading(false);
+        if (!cancel) setLoading(false);
       }
     };
-
     fetchDetails();
-  }, [sessionId]);
+  }, [endpoint]);
 
-  if (loading) return <div>読み込み中...</div>;
+  const tileRingClass = (tileId, correctId, selectedId) => {
+    if (tileId === correctId) return "ring-2 ring-green-500";
+    if (tileId === selectedId) return "ring-2 ring-red-500";
+    return "";
+
+  };
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <button 
-        onClick={() => navigate('/mypage')}
-        className="mb-4 text-blue-600 hover:underline"
-      >
-        ← 履歴一覧に戻る
-      </button>
-      
-      {sessionInfo && (
-        <div className="mb-6">
-          <h2 className="text-xl font-bold">{sessionInfo.category_name}</h2>
-          <p className="text-gray-600">{sessionInfo.created_at}</p>
-          <p>正解数: {sessionInfo.correct_count}/{sessionInfo.total_questions}</p>
+    <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black">
+      <main className="flex-1 w-full max-w-[700px] mx-auto px-2 pt-6 pb-24 flex flex-col gap-6">
+        {/* 見出し＆戻る導線 */}
+        <div className="w-full">
+          <button
+            onClick={() => navigate(-1)}
+            className="text-sm text-gray-600 hover:underline"
+          >
+            ← 戻る
+          </button>
         </div>
-      )}
 
-      <div className="space-y-4">
-        {details.map((detail, index) => (
-          <div key={index} className="bg-white rounded-lg shadow p-4">
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="font-semibold">問題 {index + 1}</h3>
-              <span className={`px-2 py-1 rounded text-sm ${
-                detail.correct ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-              }`}>
-                {detail.correct ? '正解' : '不正解'}
-              </span>
+        <section className="w-full bg-[#fdf7ed] border border-gray-200 rounded-2xl shadow-sm p-6 sm:p-8">
+          {loading ? (
+            <div className="h-24 rounded-xl bg-gray-200/60 animate-pulse" />
+          ) : sessionInfo ? (
+            <div className="grid gap-2">
+              <div className="text-lg font-semibold">{sessionInfo.category_name}</div>
+              <div className="text-sm text-gray-600">{sessionInfo.created_at}</div>
+              <div className="text-sm">
+                正解数:{" "}
+                <span className="font-semibold">
+                  {sessionInfo.correct_count}
+                </span>
+                / {sessionInfo.total_questions}
+              </div>
             </div>
-            
-            {/* 手牌表示 */}
-            <div className="flex items-center gap-2 mb-2">
-              {detail.hand_tiles.map((tile, idx) => (
-                <img 
-                  key={idx}
-                  src={tile.image_url} 
-                  alt={tile.name}
-                  className={`w-8 h-12 ${
-                    tile.id === detail.selected_tile_id ? 'ring-2 ring-blue-500' : ''
-                  } ${
-                    tile.id === detail.correct_tile_id ? 'ring-2 ring-green-500' : ''
-                  }`}
-                />
+          ) : (
+            <p className="text-sm text-gray-600">セッション情報が見つかりませんでした。</p>
+          )}
+        </section>
+
+        <section className="w-full">
+          {loading ? (
+            <div className="space-y-3">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="h-28 rounded-xl bg-gray-200/60 animate-pulse" />
               ))}
             </div>
-            
-            <div className="text-sm text-gray-600">
-              <p>選択した牌: {detail.selected_tile_name}</p>
-              <p>正解牌: {detail.correct_tile_name}</p>
-              <p>解説: {detail.explanation}</p>
+          ) : (
+            <div className="space-y-4">
+              {details.map((detail, index) => (
+                <div key={index} className="bg-white rounded-2xl shadow p-4 border border-gray-200">
+                  <div className="flex justify-between items-center mb-3">
+                    <h3 className="font-semibold">問題 {index + 1}</h3>
+                    <span
+                      className={`px-2 py-1 rounded text-xs sm:text-sm ${
+                        detail.correct
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {detail.correct ? "正解" : "不正解"}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 mb-3">
+                    {detail.hand_tiles.map((tile, idx) => (
+                      <img
+                        key={idx}
+                        src={tile.image_url}
+                        alt={tile.name || `tile-${tile.id}`}
+                        className={`w-8 h-12 rounded-sm ${tileRingClass(
+                          tile.id,
+                          detail.correct_tile_id,
+                          detail.selected_tile_id
+                        )}`}
+                      />
+                    ))}
+                  </div>
+
+                  <div className="text-sm text-gray-700 space-y-1">
+                    <p>
+                      選択した牌:{" "}
+                      <span className="font-medium">{detail.selected_tile_name}</span>
+                    </p>
+                    <p>
+                      正解牌:{" "}
+                      <span className="font-medium">{detail.correct_tile_name}</span>
+                    </p>
+                    {detail.explanation && (
+                      <p className="text-gray-600">解説: {detail.explanation}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
-            {showComments[index] && (
-              <div className="px-4 pb-4">
-                <CommentSection 
-                  sessionId={sessionId} 
-                  questionIndex={index}
-                />
-              </div>
-            )}
-          </div>
-        ))}
-        {(userId || currentUser?.id) && (
-          <Comment userId={userId || currentUser.id}
-            quizSessionId={sessionId}
-          />
+          )}
+        </section>
+
+        {!loading && (userId || currentUser?.id) && (
+          <section className="w-full bg-white/70 backdrop-blur rounded-2xl border border-gray-200 p-4 sm:p-6">
+            <h2 className="text-lg font-semibold mb-3">コメント</h2>
+            <Comment userId={userId || currentUser.id} quizSessionId={sessionId} />
+          </section>
         )}
-      </div>
+      </main>
+
+      <Footer />
     </div>
   );
 };

@@ -114,7 +114,7 @@ const Login = () => {
         </section>
       </main>
 
-      <Footer isLoggedIn={false} />
+      <Footer />
     </div>
   );
 };

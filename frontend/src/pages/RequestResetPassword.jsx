@@ -100,9 +100,11 @@ const RequestResetPassword = () => {
         </section>
       </main>
 
-      <Footer isLoggedIn={false} />
+      <Footer />
     </div>
   );
 };
 
 export default RequestResetPassword;
+
+// TODO パスワードリセットした後にそのままログインした方がUX的には良さそう

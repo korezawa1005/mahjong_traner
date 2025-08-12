@@ -3,11 +3,14 @@ class Api::V1::QuizHistoriesController < ApplicationController
   before_action :authorize_reviewer_or_self!, only: %i[user_histories]
 
   def index
+    per  = (params[:per] || 10).to_i.clamp(1, 100)
+    page = (params[:page] || 1).to_i
+    
     quiz_sessions = current_user.quiz_sessions
                                 .includes(:category)
                                 .where.not(correct_count: nil)
                                 .order(created_at: :desc)
-                                .limit(20)
+                                .page(page).per(per)
 
     histories = quiz_sessions.map do |session|
       {
@@ -19,7 +22,13 @@ class Api::V1::QuizHistoriesController < ApplicationController
       }
     end
 
-    render json: { histories: histories }
+    render json: {
+      histories: histories,
+      current_page: quiz_sessions.current_page,
+      total_pages: quiz_sessions.total_pages,
+      total_count: quiz_sessions.total_count
+    }
+
   end
 
   def show
@@ -58,13 +67,16 @@ class Api::V1::QuizHistoriesController < ApplicationController
   end
 
   def user_histories
+    per  = (params[:per] || 10).to_i.clamp(1, 100)
+    page = (params[:page] || 1).to_i
+
     user = User.find(params[:user_id])
 
     quiz_sessions = user.quiz_sessions
                         .includes(:category)
                         .where.not(correct_count: nil)
                         .order(created_at: :desc)
-                        .limit(20)
+                        .page(page).per(per)
 
     histories = quiz_sessions.map do |session|
       {
@@ -76,7 +88,12 @@ class Api::V1::QuizHistoriesController < ApplicationController
       }
     end
 
-    render json: { histories: histories }
+    render json: {
+      histories: histories,
+      current_page: quiz_sessions.current_page,
+      total_pages: quiz_sessions.total_pages,
+      total_count: quiz_sessions.total_count
+    }
   end
 
   def user_session

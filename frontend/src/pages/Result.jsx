@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../libs/api";
+import Footer from "../components/Footer";
 
 const Result = () => {
   const { state } = useLocation();
@@ -137,19 +138,18 @@ const Result = () => {
         })}
       </div>
 
-      {/* 中央レイアウト */}
-      <main className="relative z-10 min-h-[100svh] px-4 pb-4 flex flex-col items-center justify-center">
-        {/* タイトル */}
+
+      <main className="relative z-10 px-4 pb-20 flex flex-col items-center justify-center">
+
         <h1 className="text-center text-4xl md:text-6xl font-extrabold tracking-widest mb-6">{category}</h1>
 
-        {/* 成績カード */}
-        <section className="w-[min(92vw,56rem)] bg-white/90 backdrop-blur rounded-2xl shadow-xl border p-8 md:p-10">
+        <section className="w-[min(92vw,56rem)] bg-white/90 backdrop-blur rounded-2xl shadow-xl border p-6 md:p-8">
           {/* 上段：円形ゲージ + スコア */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center">
             {/* 円形プログレス（CSSのconic-gradientで描画） */}
             <div className="flex justify-center">
               <div
-                className="relative w-40 h-40 md:w-48 md:h-48 rounded-full grid place-items-center"
+                className="relative w-36 h-36 md:w-44 md:h-44 rounded-full grid place-items-center"
                 style={{
                   background: `conic-gradient(${gaugeColor} ${animPercent}%, #e5e7eb 0)`
                 }}
@@ -164,12 +164,12 @@ const Result = () => {
 
             {/* スコア文字 + フィードバック */}
             <div className="text-center md:text-left">
-              <div className="text-[56px] md:text-[72px] font-extrabold leading-none">
+              <div className="text-[48px] md:text-[64px] font-extrabold leading-none">
                 {correct}
-                <span className="ml-2 text-2xl md:text-3xl font-bold">問 / {total}問中</span>
+                <span className="ml-2 text-2xl md:text-2xl font-bold">問 / {total}問中</span>
               </div>
-              <div className="mt-4">
-                <span className="inline-flex items-center rounded-2xl border-2 px-5 py-2 font-bold"
+              <div className="mt-3">
+                <span className="inline-flex items-center rounded-2xl border-2 px-4 py-1.5 font-bold"
                   style={{ borderColor: gaugeColor, color: gaugeColor }}>
                   {feedback}
                 </span>
@@ -197,6 +197,7 @@ const Result = () => {
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   );
 };

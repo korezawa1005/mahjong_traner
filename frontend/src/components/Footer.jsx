@@ -16,7 +16,7 @@ const Footer = () => {
   };
 
   return (
-    <div className="w-screen fixed bottom-0 left-0">
+    <div className="w-screen fixed bottom-0 left-0 z-30">
       <footer className="bg-black text-white py-4">
         <div className="max-w-[700px] px-4 mx-auto flex justify-between text-xs">
           {/* Home */}

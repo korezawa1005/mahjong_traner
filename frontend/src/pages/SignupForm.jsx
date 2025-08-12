@@ -127,9 +127,11 @@ const SignUp = () => {
         </section>
       </main>
 
-      <Footer isLoggedIn={false} />
+      <Footer />
     </div>
   );
 };
 
 export default SignUp;
+
+// todo サインアップした後にログイン状態になった方がいいのでは？
