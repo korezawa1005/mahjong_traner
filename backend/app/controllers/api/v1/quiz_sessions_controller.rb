@@ -12,14 +12,14 @@ class Api::V1::QuizSessionsController < ApplicationController
 
   def update
     quiz_session = QuizSession.find(params[:id])
-    
+
     Rails.logger.info("Updating QuizSession #{quiz_session.id} with correct_count: #{params[:correct_count]}")
-    
+
     if quiz_session.update(correct_count: params[:correct_count])
-      render json: { 
-        message: "QuizSession updated successfully",
+      render json: {
+        message: 'QuizSession updated successfully',
         quiz_session_id: quiz_session.id,
-        correct_count: quiz_session.correct_count 
+        correct_count: quiz_session.correct_count
       }
     else
       Rails.logger.error(quiz_session.errors.full_messages)

@@ -1,17 +1,16 @@
 class Api::V1::CommentsController < ApplicationController
-  before_action :authenticate_user! 
+  before_action :authenticate_user!
   before_action :set_target_user
   before_action :set_comment, only: %i[update destroy]
   before_action :ensure_reviewer!, only: %i[create update destroy]
   before_action :ensure_author!,   only: %i[update destroy]
-  
+
   def serialize(c)
     {
-      id:       c.id,
-      content:  c.content,
-      reviewer: { id: c.reviewer&.id, 
-                  # name: c.reviewer&.username 
-                },
+      id: c.id,
+      content: c.content,
+      reviewer: { id: c.reviewer&.id},
+                  # name: c.reviewer&.username,
       created_at: c.created_at.strftime('%Y/%m/%d %H:%M')
     }
   end
@@ -19,15 +18,15 @@ class Api::V1::CommentsController < ApplicationController
   def index
     comments = @target_user.received_comments
                            .where(quiz_session_id: params[:quiz_session_id])
-                           .includes(:reviewer).order(created_at: :desc)  
+                           .includes(:reviewer).order(created_at: :desc)
     render json: comments.map { |c| serialize(c) }
   end
 
   def create
     comment = @target_user.received_comments.build(
-      reviewer: current_user, 
+      reviewer: current_user,
       content: params[:content],
-      quiz_session_id: params[:quiz_session_id] 
+      quiz_session_id: params[:quiz_session_id]
     )
     comment.save!
     render json: serialize(comment), status: :created
@@ -63,5 +62,4 @@ class Api::V1::CommentsController < ApplicationController
   def ensure_author!
     head :forbidden unless @comment.reviewer_id == current_user.id
   end
-
 end

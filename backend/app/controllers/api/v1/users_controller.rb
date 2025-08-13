@@ -10,12 +10,11 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
-
   def search
     query = params[:query].to_s.strip
     return render json: [] if query.blank?
 
-    users = User.where("email ILIKE :q", q: "%#{query}%")
+    users = User.where('email ILIKE :q', q: "%#{query}%")
                 .select(:id, :email, :role)
                 .limit(20)
 
@@ -30,6 +29,6 @@ class Api::V1::UsersController < ApplicationController
   private
 
   def authorize_reviewer!
-    head :forbidden unless current_user&.role == 'reviewer' 
+    head :forbidden unless current_user&.role == 'reviewer'
   end
 end

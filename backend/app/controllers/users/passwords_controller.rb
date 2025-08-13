@@ -4,7 +4,7 @@ class Users::PasswordsController < Devise::PasswordsController
   def create
     self.resource = resource_class.send_reset_password_instructions(resource_params)
     if successfully_sent?(resource)
-      render json: { message: "メールを送信しました。" }, status: :ok
+      render json: { message: 'メールを送信しました。' }, status: :ok
     else
       render json: { errors: resource.errors.full_messages }, status: :unprocessable_entity
     end

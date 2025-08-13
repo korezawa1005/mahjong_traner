@@ -3,7 +3,7 @@ class Api::V1::CurrentUserController < ActionController::Base
   def show
     if current_user
       render json: {
-        logged_in: true, 
+        logged_in: true,
         user: {
           id: current_user.id,
           name: current_user.name,
@@ -12,7 +12,7 @@ class Api::V1::CurrentUserController < ActionController::Base
         }
       }
     else
-      render json: { 
+      render json: {
         logged_in: false,
         user: nil
       }
