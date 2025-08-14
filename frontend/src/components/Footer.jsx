@@ -17,7 +17,7 @@ const Footer = () => {
 
   return (
     <div className="w-screen fixed bottom-0 left-0 z-30">
-      <footer className="bg-black text-white sm:py-4 lg:py-8">
+      <footer className="bg-black text-white sm:py-4 lg:py-3">
         <div className="sm:max-w-[700px] lg:max-w-[1100px] px-4 mx-auto flex justify-between text-xs">
           {/* Home */}
           <Link to="/" className="flex flex-col items-center hover:opacity-80">

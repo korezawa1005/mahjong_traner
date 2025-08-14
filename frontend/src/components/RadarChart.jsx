@@ -33,7 +33,10 @@ const RadarChart = ({ chartData }) => {
         beginAtZero: true,
         max: 100,
         ticks: {
-          stepSize: 20
+          stepSize: 10
+        },
+        pointLabels: {
+          font: { size: 16 }
         }
       },
     },
@@ -41,7 +44,7 @@ const RadarChart = ({ chartData }) => {
 
   return (
     <div className="w-full h-96">
-      <h3 className="text-xl font-bold mb-4 text-center">スキルレーダーチャート</h3>
+      <h3 className="text-xl font-bold mb-4 text-center">雀力チャート図</h3>
       <Radar data={chartData} options={options} />
     </div>
   );

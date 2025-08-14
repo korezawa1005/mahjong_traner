@@ -156,7 +156,26 @@ def tile_id(name)
 end
 
 def create_quizzes(quiz_data, category_id)
-  quiz_data.each do |data|
+  quiz_data.each_with_index do |data, i|
+    # ---- 1. スペースや余分な空白チェック ----
+    all_fields = data[:tiles] + [data[:correct], data[:dora]]
+    all_fields.each do |name|
+      if name != name.strip
+        raise "Quiz #{i+1}: '#{name}' has leading/trailing spaces"
+      end
+      if name.match?(/\s/)
+        raise "Quiz #{i+1}: '#{name}' contains space characters"
+      end
+    end
+
+    # ---- 2. 枚数チェック ----
+    raise "Quiz #{i+1}: tiles must be 14" unless data[:tiles].size == 14
+
+    # ---- 3. 正解牌がtilesに含まれているか ----
+    unless data[:tiles].include?(data[:correct])
+      raise "Quiz #{i+1}: correct '#{data[:correct]}' not in tiles"
+    end
+
     Quiz.create!(
       category_id: category_id,
       quiz_tile_ids: data[:tiles].map { |name| tile_id(name) },

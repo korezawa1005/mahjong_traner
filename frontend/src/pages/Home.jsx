@@ -73,7 +73,7 @@ const Home = () => {
 
   return (
 
-    <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black flex flex-col lg:mt-14">
 
       <Header
         isReviewer={isReviewer}
