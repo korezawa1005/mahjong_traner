@@ -29,6 +29,24 @@ class Api::V1::QuizzesController < ApplicationController
     }
   end
 
+
+  def show
+    quiz = Quiz.find(params[:id])
+
+    ids   = (quiz.quiz_tile_ids + quiz.dora_indicator_tile_ids + [quiz.correct_tile_id]).compact.uniq
+    tiles = Tile.where(id: ids).pluck(:id, :image_url).to_h
+
+    render json: {
+      id: quiz.id,
+      situation: quiz.situation,
+      explanation: quiz.explanation,
+      hand_tiles: quiz.quiz_tile_ids.map { |id| { id:, image_url: tiles[id] } },
+      dora_tiles: quiz.dora_indicator_tile_ids.map { |id| { id:, image_url: tiles[id] } },
+      correct_tile_url: tiles[quiz.correct_tile_id],
+      accept_tiles_expanded: quiz.accept_tiles_expanded
+    }
+  end
+
   private
 
   def tile_urls_from_ids(ids)

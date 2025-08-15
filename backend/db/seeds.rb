@@ -51,6 +51,15 @@ tiles.each do |tile|
   end
 end
 
+Comment.delete_all
+QuizAnswer.delete_all
+QuizSession.delete_all
+Quiz.delete_all
+Category.delete_all
+
+ActiveRecord::Base.connection.reset_pk_sequence!('comments')
+ActiveRecord::Base.connection.reset_pk_sequence!('quiz_answers')
+ActiveRecord::Base.connection.reset_pk_sequence!('quiz_sessions')
 ActiveRecord::Base.connection.reset_pk_sequence!('quizzes')
 ActiveRecord::Base.connection.reset_pk_sequence!('categories')
 
@@ -66,89 +75,123 @@ categories.each do |category_attrs|
   Category.find_or_create_by!(category_attrs)
 end
 
+def category_id_by_name(name)
+  Category.find_by!(name: name).id
+end
+
 牌効率_quiz_data = [
   {
-    tiles: %w[三萬 三萬 五萬 六萬 七萬 八萬 九萬 五筒 六筒 七筒 七筒 七筒 八筒 八筒],
-    correct: '九萬',
-    dora: '白',
-    situation: '南４局 ６巡目 西家 上がりトップ',
-    explanation: '鳴いて進める九萬が正着'
+    tiles: %w[三萬 四萬 五萬 六萬 七萬 二筒 三筒 八筒 八筒 五索 七索 七索 九索 一筒],
+    correct: '七索',
+    dora: '二筒',
+    situation: '東1局 西家 8巡目',
+    explanation: 'ソーズはどれを切っても受け入れ枚数は変わらない。ピンフをつけれるようにリャン間に構える。',
+    accept_tiles: {
+    "五筒" => 24,
+    "三索" => 22,
+    "一萬" => 16,
+    "九筒" => 8
+    }
   },
-  {
-    tiles: %w[五萬 六萬 六萬 七萬 八萬 三筒 五筒 三索 四索 五索 六索 七索 八索 九萬],
-    correct: '九萬',
-    dora: '五筒',
-    situation: '東3局 7巡目 東家 30,000点',
-    explanation: '最高打点を見て九萬切りが正解'
-  }
+  # {
+  #   tiles: %w[三萬 四萬 五萬 六萬 七萬 二筒 三筒 八筒 八筒 五索 七索 七索 九索 四筒],
+  #   correct: '九索',
+  #   dora: '二筒',
+  #   situation: '東1局 西家 8巡目',
+  #   explanation: 'タンヤオを確定させましょう。打点面で有利かつ、かわし手にとすることもできる'
+  # },
+  
+  # {
+  #   tiles: %w[六萬 七萬 八萬 八萬 八萬 九萬 四筒 五筒 赤五筒 七筒 九筒 三索 三索 八筒],
+  #   correct: '五筒',
+  #   dora: '九索',
+  #   situation: '東1局 東家 6巡目',
+  #   explanation: 'リャンメン固定で平和になりやすい形にする。マンズは五七八萬の3種が有効牌のため大事にしよう'
+  # },
+  # {
+  #   tiles: %w[三萬 三萬 二筒 二筒 三筒 六筒 七筒 七筒 八筒 八筒 八筒 四索 五索 六索],
+  #   correct: '二筒',
+  #   dora: '一萬',
+  #   situation: '東1局 西家 6巡目',
+  #   explanation: '二筒と八筒の選択。打八筒の方が一盃口になりやすいが、打二筒の方が単純に広い。打二筒と打八筒で5枚差があるためここは広さをとって打二筒としたい。'
+  # },
+  # {
+  #   tiles: %w[六萬 七萬 三筒 四筒 五筒 五筒 六筒 七筒 七筒 七筒 三索 三索 四索 六筒],
+  #   correct: '四索',
+  #   dora: '六萬',
+  #   situation: '東1局 東家 7巡目',
+  #   explanation: '567筒のメンツを抜き出すと、3面受けに七筒がくっついた形。ソーズヘッド固定の打四索が受け入れ、打点面ともに優秀'
+  # },
+  # {
+  #   tiles: %w[六萬 七萬 二筒 三筒 四筒 五筒 五筒 六筒 七筒 七筒 七筒 三索 三索 四索],
+  #   correct: '五筒',
+  #   dora: '六萬',
+  #   situation: '東1局 東家 7巡目',
+  #   explanation: 'ヘッド候補が2つあるかどうかで受け入れ枚数が大きく変わる形。2ヘッドに構える打五筒、四索の2択になる。受け入れ枚数的に3枚差で打五筒の方が多い。また、打点が必要な局面の場合は打二筒の方が手役意識的には良い。'
+  # },
+  # {
+  #   tiles: %w[二萬 二萬 三萬 赤五萬 六萬 七萬 五筒 五筒 七筒 二索 三索 四索 五索 六索],
+  #   correct: '七筒',
+  #   dora: '西',
+  #   situation: '東1局 東家 4巡目',
+  #   explanation: '567の三色が見えるが、ここは素直に完全1シャンテンに受ける。三色狙いの打三萬は七索を引いたとしても、最終系がカンチャン待ちとなり苦しいため打七筒としたい。'
+  # },
+  # {
+  #   tiles: %w[二筒 二筒 三筒 赤五萬 五筒 五筒 六筒 七筒 七筒 二索  三索 四索 五索 六索],
+  #   correct: '七筒',
+  #   dora: '西',
+  #   situation: '東1局 東家 4巡目',
+  #   explanation: '複雑そうに見えるが、567筒の完成メンツを抜き出せば受け入れ枚数が少ない牌が七筒だとわかる'
+  # },
+  # {
+  #   tiles: %w[六萬 六萬 一筒 二筒 三筒 三筒 三筒 四筒 三索 三索 四索 中 中 中],
+  #   correct: '三筒',
+  #   dora: '發',
+  #   situation: '東1局 東家 7巡目',
+  #   explanation: '3ヘッドなので打3筒か打4索でのリャンメン固定が良い。ピンズは必要牌を自分で一枚使っているのでソーズを残したい。ポンテンは4倍速と言われており、たった1枚差だがバカにできない1枚差だ'
+  # },
+  # {
+  #   tiles: %w[六萬 六萬 二筒 三筒 三筒 三筒 四筒 五筒 二索 二索 三索 中 中 中],
+  #   correct: '二索',
+  #   dora: '發',
+  #   situation: '東1局 東家 7巡目',
+  #   explanation: '打2索が最大受け入れ。シンプルに受けよう。'
+  # },
+  # {
+  #   tiles: %w[一筒 三筒 三筒 三筒 四筒 五筒 六筒 七筒 八筒 二索 二索 五萬 五萬 六萬],
+  #   correct: '五萬',
+  #   dora: '七筒',
+  #   situation: '東1局 東家 7巡目',
+  #   explanation: '喰いタン狙いで打一筒としない。3ヘッドなので、2ヘッドに構える。打五萬が2枚差で受け入れ最大になる。556m133p22s+345678pと完成メンツを抜くと3ヘッドであることがわかる。'
+  # },
 ]
 
 押し引き_quiz_data = [
   {
-    tiles: %w[二萬 三萬 六萬 七萬 四筒 五筒 五筒 五筒 六筒 七筒 四索 四索 五索 四萬],
-    correct: '四筒',
-    dora: '六索',
-    situation: '東3局 7巡目 西家 28000点 トップ目32000点',
-    explanation: '目一杯に受けよう'
+    tiles: %w[三萬 四萬 五萬 六萬 七萬 二筒 三筒 八筒 八筒 五索 七索 七索 九索 七索],
+    correct: '五索',
+    dora: '二筒',
+    situation: '東1局 西家 8巡目',
+    explanation: '浮いている五索と九索の比較。五索を残せば、赤五索や六索引きでのピンフ追加もあるが、マンズ3面待ち、ピンズはドラ含みのいい形のため今回は危険度重視で五索から切るようにしたい'
   },
-  {
-    tiles: %w[三萬 三萬 四萬 四萬 五萬 八萬 九萬 一筒 二筒 二筒 四索 四索 五索 三筒],
-    correct: '二筒',
-    dora: '六索',
-    situation: '東3局 7巡目 東家 30,000点',
-    explanation: 'もうこの辺テストだから適当'
-  }
 ]
 
 リーチ判断_quiz_data = [
-  {
-    tiles: %w[三萬 三萬 五萬 六萬 七萬 八萬 九萬 五筒 六筒 七筒 七筒 七筒 八筒 八筒],
-    correct: '九萬',
-    dora: '白',
-    situation: 'これはリーチ判断',
-    explanation: '鳴いて進める九萬が正着'
-  },
-  {
-    tiles: %w[五萬 六萬 六萬 七萬 八萬 三筒 五筒 三索 四索 五索 六索 七索 八索 九萬],
-    correct: '九萬',
-    dora: '五筒',
-    situation: 'これはリーチ判断２',
-    explanation: '最高打点を見て九萬切りが正解'
-  }
+  
 ]
 
 仕掛け_quiz_data = [
-  {
-    tiles: %w[三萬 三萬 五萬 六萬 七萬 八萬 九萬 五筒 六筒 七筒 七筒 七筒 八筒 八筒],
-    correct: '九萬',
-    dora: '白',
-    situation: '仕掛け',
-    explanation: '鳴いて進める九萬が正着'
-  },
-  {
-    tiles: %w[五萬 六萬 六萬 七萬 八萬 三筒 五筒 三索 四索 五索 六索 七索 八索 九萬],
-    correct: '九萬',
-    dora: '五筒',
-    situation: '仕掛け2',
-    explanation: '最高打点を見て九萬切りが正解'
-  }
+  
 ]
 
 手役意識_quiz_data = [
   {
-    tiles: %w[三萬 三萬 五萬 六萬 七萬 八萬 九萬 五筒 六筒 七筒 七筒 七筒 八筒 八筒],
+    tiles: %w[六萬 七萬 八萬 八萬 八萬 九萬 四筒 五筒 赤五筒 七筒 九筒 東 東 八筒],
     correct: '九萬',
-    dora: '白',
-    situation: '手役意識',
-    explanation: '鳴いて進める九萬が正着'
+    dora: '九索',
+    situation: '東1局 東家 6巡目',
+    explanation: 'ダブ東の2ハンは大きいので最終的に東待ちにできるように構える。打五筒と比べてわずか1枚損。'
   },
-  {
-    tiles: %w[五萬 六萬 六萬 七萬 八萬 三筒 五筒 三索 四索 五索 六索 七索 八索 九萬],
-    correct: '九萬',
-    dora: '五筒',
-    situation: '手役意識2',
-    explanation: '最高打点を見て九萬切りが正解'
-  }
 ]
 
 def tile_id(name)
@@ -156,6 +199,7 @@ def tile_id(name)
 end
 
 def create_quizzes(quiz_data, category_id)
+  created = 0
   quiz_data.each_with_index do |data, i|
     # ---- 1. スペースや余分な空白チェック ----
     all_fields = data[:tiles] + [data[:correct], data[:dora]]
@@ -166,7 +210,9 @@ def create_quizzes(quiz_data, category_id)
       if name.match?(/\s/)
         raise "Quiz #{i+1}: '#{name}' contains space characters"
       end
+      created += 1
     end
+    puts "category_id=#{category_id}: created #{created} quizzes"
 
     # ---- 2. 枚数チェック ----
     raise "Quiz #{i+1}: tiles must be 14" unless data[:tiles].size == 14
@@ -182,16 +228,17 @@ def create_quizzes(quiz_data, category_id)
       correct_tile_id: tile_id(data[:correct]),
       dora_indicator_tile_ids: [tile_id(data[:dora])],
       situation: data[:situation],
-      explanation: data[:explanation]
+      explanation: data[:explanation],
+      accept_tiles: data[:accept_tiles] || {}
     )
   end
 end
 
-create_quizzes(牌効率_quiz_data, 1)
-create_quizzes(押し引き_quiz_data, 2)
-create_quizzes(リーチ判断_quiz_data, 3)
-create_quizzes(仕掛け_quiz_data, 4)
-create_quizzes(手役意識_quiz_data, 5)
+create_quizzes(牌効率_quiz_data,   category_id_by_name('牌効率'))
+create_quizzes(押し引き_quiz_data, category_id_by_name('押し引き'))
+create_quizzes(リーチ判断_quiz_data, category_id_by_name('リーチ判断'))
+create_quizzes(仕掛け_quiz_data,   category_id_by_name('仕掛け'))
+create_quizzes(手役意識_quiz_data,  category_id_by_name('手役意識'))
 
 puts '== Seeding default reviewer =='
 

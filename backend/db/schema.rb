@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_03_134329) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_14_135717) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -64,6 +64,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_03_134329) do
     t.bigint "correct_tile_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "accept_tiles"
     t.index ["category_id"], name: "index_quizzes_on_category_id"
     t.index ["correct_tile_id"], name: "index_quizzes_on_correct_tile_id"
   end
