@@ -65,10 +65,10 @@ ActiveRecord::Base.connection.reset_pk_sequence!('categories')
 
 categories = [
   { name: '牌効率' },
+  { name: '手役意識' },
   { name: '押し引き' },
   { name: 'リーチ判断' },
-  { name: '仕掛け' },
-  { name: '手役意識' }
+  { name: '仕掛け' }
 ]
 
 categories.each do |category_attrs|

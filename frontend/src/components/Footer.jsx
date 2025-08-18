@@ -38,13 +38,13 @@ const Footer = () => {
           </Link>
 
           {/* ヘルプ */}
-          <Link to="/question" className="flex flex-col items-center hover:opacity-80">
+          <Link to="#" className="flex flex-col items-center hover:opacity-80">
             <FaBook className="sm:text-xl lg:text-4xl mb-1" />
             ヘルプ
           </Link>
 
           {/* 問題一覧 */}
-          <Link to="/problems" className="flex flex-col items-center hover:opacity-80">
+          <Link to="#" className="flex flex-col items-center hover:opacity-80">
             <FaBookOpen className="sm:text-xl lg:text-4xl mb-1" />
             問題一覧
           </Link>
