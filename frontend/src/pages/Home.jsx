@@ -92,17 +92,16 @@ const Home = () => {
           lg:justify-start lg:mt-8 lg:pb-8
         "
       >
-        <div className="grid grid-cols-3 gap-4 lg:gap-8 mb-4 w-full">
-          {categories.slice(0, 3).map((c) => (
+        <div className="grid grid-cols-2 gap-4 lg:gap-8 w-full">
+          {categories.slice(0, 2).map((c) => (
             <button
               key={c.id}
               onClick={() => handleStartQuiz(c)}
-              className="
-                bg-gray-100 hover:bg-gray-200 rounded-xl border border-gray-300 shadow-sm
+              className="bg-gray-100 hover:bg-gray-200 rounded-xl border border-gray-300 shadow-sm
                 transition duration-150
                 flex flex-col items-center justify-center
                 py-7 px-4
-                lg:py-14 lg:px-10 lg:h-[200px] lg:rounded-3xl lg:shadow-lg lg:gap-1
+                lg:py-10 lg:px-6 lg:h-[200px] lg:rounded-2xl lg:shadow-md lg:gap-1
               "
             >
               <p className="font-semibold text-lg sm:text-xl lg:text-4xl">{c.name}</p>
@@ -111,20 +110,20 @@ const Home = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-2 gap-4 lg:gap-8 w-full">
-          {categories.slice(3, 5).map((c) => (
+        <div className="grid grid-cols-3 gap-2 lg:gap-4 mb-4 w-full mt-6">
+          {categories.slice(2, 5).map((c) => (
             <button
               key={c.id}
-              onClick={() => handleStartQuiz(c)}
+              // onClick={() => handleStartQuiz(c)}
               className="
-                bg-gray-100 hover:bg-gray-200 rounded-xl border border-gray-300 shadow-sm
+              bg-gray-100 hover:bg-gray-200 rounded-xl border border-gray-300 shadow-sm
                 transition duration-150
                 flex flex-col items-center justify-center
                 py-7 px-4
-                lg:py-10 lg:px-6 lg:h-[200px] lg:rounded-2xl lg:shadow-md lg:gap-1
+                lg:py-14 lg:px-10 lg:h-[200px] lg:rounded-3xl lg:shadow-lg lg:gap-1
               "
             >
-              <p className="font-semibold text-lg sm:text-xl lg:text-4xl">{c.name}</p>
+              <p className="font-semibold text-lg sm:text-xl lg:text-4xl">{c.name} 準備中</p>
               <p className="text-sm sm:text-base lg:text-2xl text-gray-500 mt-1">全10問</p>
             </button>
           ))}
