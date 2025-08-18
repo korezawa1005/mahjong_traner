@@ -73,7 +73,7 @@ const Home = () => {
 
   return (
 
-    <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black flex flex-col lg:mt-14">
 
       <Header
         isReviewer={isReviewer}
@@ -121,11 +121,11 @@ const Home = () => {
                 transition duration-150
                 flex flex-col items-center justify-center
                 py-7 px-4
-                lg:py-10 lg:px-6 lg:h-[150px] lg:rounded-2xl lg:shadow-md
+                lg:py-10 lg:px-6 lg:h-[200px] lg:rounded-2xl lg:shadow-md lg:gap-1
               "
             >
-              <p className="font-semibold text-lg sm:text-xl lg:text-2xl">{c.name}</p>
-              <p className="text-sm sm:text-base lg:text-lg text-gray-500 mt-1">全10問</p>
+              <p className="font-semibold text-lg sm:text-xl lg:text-4xl">{c.name}</p>
+              <p className="text-sm sm:text-base lg:text-2xl text-gray-500 mt-1">全10問</p>
             </button>
           ))}
         </div>

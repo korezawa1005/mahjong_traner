@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../libs/api";
+import AcceptTilesList from '../components/AcceptTilesList';
+
 
 const normalize = (s) => (s ?? "").trim().toLowerCase();
 const sameTile = (a, b) => !!a && !!b && normalize(a) === normalize(b);
@@ -9,11 +11,50 @@ const Answer = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const { quizSessionId, quiz, previous_ids, selectedTileUrl, selectedTileId } = state || {};
+  const [detail, setDetail] = useState(null); 
+
+  const acceptItems = (() => {
+    if (!detail) return [];
+    if (Array.isArray(detail.accept_tiles_expanded)) return detail.accept_tiles_expanded;
+    if (detail.accept_tiles && typeof detail.accept_tiles === "object") {
+      return Object.entries(detail.accept_tiles).map(([name, count]) => ({
+        name,
+        count: Number(count) || 0,
+        image_url: undefined, // 画像辞書を別で用意しない限りはundefined
+      }));
+    }
+    return [];
+  })();
 
   if (!quiz) return null;
 
+  useEffect(() => {
+    if (!quiz?.id) return;
+    (async () => {
+      try {
+        const res = await api.get(`/api/v1/quizzes/${quiz.id}`);
+        // console.log("detail:", res.data);
+        setDetail(res.data);
+      } catch (e) {
+        console.error("詳細取得に失敗:", e);
+      }
+    })();
+  }, [quiz?.id]);
+
   const isCorrect = sameTile(selectedTileUrl, quiz.correct_tile_url);
   const doraIndicators = quiz.dora_indicator_urls || quiz.discard_tile_urls || [];
+
+  useEffect(() => {
+    if (!quiz?.id) return;
+    (async () => {
+      try {
+        const res = await api.get(`/api/v1/quizzes/${quiz.id}`);
+        setDetail(res.data);
+      } catch (e) {
+        console.error("詳細取得に失敗:", e);
+      }
+    })();
+  }, [quiz?.id]);
 
   const handleSaveAnswer = async () => {
     try {
@@ -39,7 +80,7 @@ const Answer = () => {
     const correctCount = state?.correctCount || 0;
     const updatedCorrect = isCorrect ? correctCount + 1 : correctCount;
 
-    if (excludeIds.length >= 3) {
+    if (excludeIds.length >= 10) {
       navigate("/quiz/result", {
         state: {
           quizSessionId,
@@ -177,6 +218,13 @@ const Answer = () => {
           <div className="text-base leading-relaxed text-gray-800 whitespace-pre-wrap">
             {quiz.explanation}
           </div>
+          {acceptItems.length > 0 && (
+          <div className="mt-6 bg-white p-4 lg:p-6 rounded-md shadow border max-w-3xl lg:max-w-4xl mx-auto">
+            <div className="font-medium mb-3">受け入れ枚数</div>
+            <AcceptTilesList items={acceptItems} />
+          </div>
+        )}
+
         </div>
 
         <div className="mt-8 lg:mt-10 flex justify-center gap-3">
@@ -191,6 +239,10 @@ const Answer = () => {
     </div>
   );
 };
+
+
+
+
 
 export default Answer;
 

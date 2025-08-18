@@ -29,6 +29,34 @@ class Api::V1::QuizzesController < ApplicationController
     }
   end
 
+
+  def show
+    quiz = Quiz.find(params[:id])
+  
+    ids   = (quiz.quiz_tile_ids + quiz.dora_indicator_tile_ids + [quiz.correct_tile_id]).compact.uniq
+    tiles = Tile.where(id: ids).pluck(:id, :image_url).to_h
+  
+    hand_tiles = quiz.quiz_tile_ids.map { |id| { id:, image_url: tiles[id] } }
+    dora_tiles = quiz.dora_indicator_tile_ids.map { |id| { id:, image_url: tiles[id] } }
+  
+    render json: {
+      id: quiz.id,
+      situation: quiz.situation,
+      explanation: quiz.explanation,
+  
+      # 既存フロント互換（URLのみ）
+      hand_tile_urls: hand_tiles.map { |t| t[:image_url] },
+      dora_indicator_urls: dora_tiles.map { |t| t[:image_url] },
+      correct_tile_url: tiles[quiz.correct_tile_id],
+  
+      # 将来用（idもある）
+      hand_tiles: hand_tiles,
+      dora_tiles: dora_tiles,
+  
+      accept_tiles_expanded: quiz.accept_tiles_expanded # ← 下のモデル実装が必要
+    }
+  end
+
   private
 
   def tile_urls_from_ids(ids)
