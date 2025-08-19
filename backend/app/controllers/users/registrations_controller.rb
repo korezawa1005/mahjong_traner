@@ -5,6 +5,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def respond_with(resource, _opts = {})
     if resource.persisted?
+      sign_in(resource_name, resource)
+
       render json: { status: :ok, user: resource }
     else
       render json: { status: :error, errors: ["登録できませんでした。入力内容をご確認ください"] }, status: :unprocessable_entity
