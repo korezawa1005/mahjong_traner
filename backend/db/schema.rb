@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_14_135717) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_19_065055) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -31,6 +31,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_14_135717) do
     t.index ["quiz_session_id"], name: "index_comments_on_quiz_session_id"
     t.index ["reviewer_id"], name: "index_comments_on_reviewer_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "jwt_denylist", force: :cascade do |t|
+    t.string "jti", null: false
+    t.datetime "exp", null: false
+    t.index ["jti"], name: "index_jwt_denylist_on_jti", unique: true
   end
 
   create_table "quiz_answers", force: :cascade do |t|
