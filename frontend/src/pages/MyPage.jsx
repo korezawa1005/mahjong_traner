@@ -17,14 +17,12 @@ const Mypage = () => {
       try {
         setLoading(true);
 
-        // ① 認証チェック
         const userRes = await api.get("/api/v1/current_user");
         if (!userRes.data?.logged_in) {
           navigate("/login", { replace: true });
           return;
         }
 
-        // ② チャートデータ取得
         const chartRes = await api.get("/api/v1/charts");
         setChartData({
           labels: chartRes.data.labels,
@@ -56,10 +54,9 @@ const Mypage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black">
-      {/* Home と同じセンター幅 */}
+
       <main className="flex-1 w-full max-w-[700px] mx-auto px-2 pt-6 pb-20 flex flex-col gap-6 mb-4">
 
-        {/* レーダーチャート：前の見せ方（カードで囲わない・フル幅に近い） */}
         <section className="w-full">
           <h2 className="text-lg font-semibold mb-3">直近の成績</h2>
           {loading ? (
@@ -75,7 +72,6 @@ const Mypage = () => {
           )}
         </section>
 
-        {/* 履歴：読みやすさ優先で軽めのカード */}
         <section className="w-full bg-[#fdf7ed] border border-gray-200 rounded-2xl shadow-sm p-6 sm:p-8">
           <h2 className="text-lg font-semibold mb-4">クイズ履歴</h2>
           <QuizHistory />
