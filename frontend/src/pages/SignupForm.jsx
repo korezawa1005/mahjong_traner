@@ -1,4 +1,3 @@
-// src/pages/SignUp.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
@@ -20,7 +19,7 @@ const SignUp = () => {
       await api.post("/users", {
         user: { email, password, password_confirmation: passwordConfirmation },
       });
-      // 成功後はトップへ（必要ならここで自動ログイン処理を追加）
+
       navigate("/", { replace: true });
     } catch (error) {
       const resErrors = error.response?.data?.errors || ["アカウント作成に失敗しました。"];
@@ -32,7 +31,7 @@ const SignUp = () => {
     <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black">
       <main className="flex-1 w-full max-w-[700px] mx-auto px-2 pt-6 pb-20 flex flex-col justify-center items-center">
         <section className="w-full bg-[#fdf7ed] border border-gray-200 rounded-2xl shadow-sm p-6 sm:p-8">
-          {/* タイトル */}
+
           <div className="mb-6 text-center">
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">サインアップ</h1>
             <p className="text-sm sm:text-base text-gray-600 mt-1">
@@ -40,7 +39,6 @@ const SignUp = () => {
             </p>
           </div>
 
-          {/* フォーム */}
           <form onSubmit={handleSignup} className="space-y-4">
             <label className="block">
               <span className="block text-sm font-medium text-gray-700 mb-1">メールアドレス</span>
@@ -97,14 +95,12 @@ const SignUp = () => {
             </button>
           </form>
 
-          {/* 区切り */}
           <div className="flex items-center my-6">
             <div className="flex-1 h-px bg-gray-200" />
             <span className="px-3 text-sm text-gray-500">または</span>
             <div className="flex-1 h-px bg-gray-200" />
           </div>
 
-          {/* ソーシャル登録（実装時はonClick追加） */}
           <div className="space-y-3">
             <button className="w-full py-3 rounded-xl border border-green-500 bg-white hover:bg-green-50 transition flex items-center justify-center gap-2">
               <FaLine className="text-green-500" />
@@ -117,7 +113,6 @@ const SignUp = () => {
             </button>
           </div>
 
-          {/* ログイン導線 */}
           <p className="text-center text-sm text-gray-600 mt-6">
             すでにアカウントをお持ちですか？{" "}
             <Link to="/login" className="underline hover:opacity-80">
