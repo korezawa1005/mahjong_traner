@@ -15,12 +15,27 @@ const SignUp = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     setErrors([]);
-    try {
-      await api.post("/users", {
+    try
+    {
+      const res = await api.post("/users", {
         user: { email, password, password_confirmation: passwordConfirmation },
       });
+    const token =
+      res.headers["authorization"] ??
+      res.headers["Authorization"];
+    
+    if (token)
+      {
+        localStorage.setItem("jwt", token);
+        api.defaults.headers.common["Authorization"] = token;
 
-      navigate("/", { replace: true });
+        navigate("/", { replace: true });
+      
+      } else
+      {
+        console.warn("Authorization ヘッダが取得できませんでした。");
+        navigate("/", { replace: true });
+      }
     } catch (error) {
       const resErrors = error.response?.data?.errors || ["アカウント作成に失敗しました。"];
       setErrors(resErrors);
