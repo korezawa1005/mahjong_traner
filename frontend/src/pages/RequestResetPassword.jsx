@@ -1,4 +1,3 @@
-// src/pages/RequestResetPassword.jsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../libs/api";

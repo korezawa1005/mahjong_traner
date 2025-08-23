@@ -20,7 +20,7 @@ const Answer = () => {
       return Object.entries(detail.accept_tiles).map(([name, count]) => ({
         name,
         count: Number(count) || 0,
-        image_url: undefined, // 画像辞書を別で用意しない限りはundefined
+        image_url: undefined
       }));
     }
     return [];
@@ -33,7 +33,6 @@ const Answer = () => {
     (async () => {
       try {
         const res = await api.get(`/api/v1/quizzes/${quiz.id}`);
-        // console.log("detail:", res.data);
         setDetail(res.data);
       } catch (e) {
         console.error("詳細取得に失敗:", e);
@@ -62,7 +61,7 @@ const Answer = () => {
         quiz_answer: {
           quiz_id: quiz.id,
           quiz_session_id: quizSessionId,
-          selected_tile_id: selectedTileId, // 可能ならID比較/保存がベター
+          selected_tile_id: selectedTileId,
           correct: isCorrect,
         },
       });
@@ -129,7 +128,6 @@ const Answer = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black">
       <main className="flex-1 w-full mx-auto px-4 pt-6 lg:pt-12 lg:pl-8 pb-24">
-        {/* 見出し（カテゴリ & 局面情報 + バッジ + ドラ表示牌） */}
         <div className="max-w-[1200px] mx-auto
                  grid grid-cols-[1fr_auto] items-center
                  gap-x-6 sm:gap-x-8 lg:gap-x-10

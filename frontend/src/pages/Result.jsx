@@ -12,7 +12,6 @@ const Result = () => {
   const correct = state?.correctCount || 0;
   const quizSessionId = state?.quizSessionId;
 
-  // 成績更新
   useEffect(() => {
     const update = async () => {
       if (!quizSessionId) return;
@@ -25,14 +24,12 @@ const Result = () => {
     if (quizSessionId && correct >= 0) update();
   }, [quizSessionId, correct]);
 
-  // 日付
   const today = useMemo(() => {
     const d = new Date();
     const pad = (n) => String(n).padStart(2, "0");
     return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())}`;
   }, []);
 
-  // メッセージ（10問前提）
   const feedback = useMemo(() => {
     if (correct === 10) return "極めし者。";
     if (correct >= 8)  return "何切る上級者です！";
@@ -56,12 +53,11 @@ const Result = () => {
     return () => cancelAnimationFrame(raf);
   }, [percent]);
 
-  // スコアに応じて色味を変える（低/中/高/満点）
   const gaugeColor =
-    correct === total ? "#f59e0b" : // amber-500
-    correct >= Math.ceil(total * 0.7) ? "#22c55e" : // green-500
-    correct >= Math.ceil(total * 0.4) ? "#3b82f6" : // blue-500
-    "#ef4444"; // red-500
+    correct === total ? "#f59e0b" :
+    correct >= Math.ceil(total * 0.7) ? "#22c55e" :
+    correct >= Math.ceil(total * 0.4) ? "#3b82f6" :
+    "#ef4444";
 
   const handleShare = async () => {
     const text = `「${category}」を${total}問中 ${correct}問 解きました！`;
@@ -97,33 +93,30 @@ const Result = () => {
 
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
         {Array.from({ length: 12 }).map((_, i) => {
-          const left = (i * 8.5) % 100;           // 横位置（%）
-          const delay = (i % 10) * 0.5;           // 開始ディレイ
-          const fallDur = 7 + (i % 6) * 0.7;      // 落下時間（秒）
-          const driftDur = 3.5 + (i % 4) * 0.5;   // 横ゆれ時間（秒）
+          const left = (i * 8.5) % 100;    
+          const delay = (i % 10) * 0.5;
+          const fallDur = 7 + (i % 6) * 0.7;
+          const driftDur = 3.5 + (i % 4) * 0.5;
           const drift = i % 2 === 0 ? "wind-drift-left" : "wind-drift-right";
           const sizeClass = i % 3 === 0 ? "text-7xl" : i % 3 === 1 ? "text-6xl" : "text-5xl";
           const char = ["東","南","西","北"][i % 4];
 
           return (
-            // 1) 横ゆれ：translateX
             <span
               key={i}
               className={`absolute ${sizeClass} select-none`}
               style={{
                 left: `${left}%`,
-                top: `-10vh`, // 画面上からスタート
+                top: `-10vh`,
                 animation: `${drift} ${driftDur}s ease-in-out ${delay}s infinite`,
               }}
             >
-              {/* 2) 落下：translateY */}
               <span
                 className="inline-block"
                 style={{
                   animation: `wind-fall ${fallDur}s linear ${delay}s infinite`,
                 }}
               >
-                {/* 3) 回転：rotate */}
                 <span
                   className="inline-block font-extrabold text-gray-800/10"
                   style={{
@@ -146,9 +139,7 @@ const Result = () => {
       </h1>
 
         <section className="w-[min(96vw,70rem)] bg-white/90 backdrop-blur rounded-2xl shadow-xl border px-6 md:px-8 py-10 md:py-14">
-          {/* 上段：円形ゲージ + スコア */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center">
-            {/* 円形プログレス（CSSのconic-gradientで描画） */}
             <div className="flex justify-center pl-20">
               <div
                 className="relative w-36 h-36 md:w-44 md:h-44 lg:w-56 lg:h-56 rounded-full grid place-items-center"
@@ -164,7 +155,6 @@ const Result = () => {
               </div>
             </div>
 
-            {/* スコア文字 + フィードバック */}
             <div className="text-center md:text-left pl-28">
               <div className="text-[48px] md:text-[64px] lg:text-[80px] font-extrabold leading-none">
                 {correct}
@@ -179,10 +169,8 @@ const Result = () => {
             </div>
           </div>
 
-          {/* 仕切り */}
           <div className="mt-8 h-px w-full bg-gray-100" />
 
-          {/* アクション */}
           <div className="mt-6 lg:mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <button
               onClick={handleShare}

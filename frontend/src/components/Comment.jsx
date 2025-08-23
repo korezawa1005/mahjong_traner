@@ -1,4 +1,3 @@
-// 変更点だけ：Enter送信（Shift+Enterは改行）、IME中は送信しない
 import { useState, useEffect } from 'react';
 import api from '../libs/api';
 
@@ -12,7 +11,6 @@ export const Comments = ({ userId, quizSessionId }) => {
   const [editId, setEditId]             = useState(null);
   const [editContent, setEditContent]   = useState('');
 
-  // ← 追加：IME中フラグ
   const [isComposing, setIsComposing]   = useState(false);
 
   const startEdit = (comment) => {
@@ -39,7 +37,6 @@ export const Comments = ({ userId, quizSessionId }) => {
     fetchComments().finally(() => setLoading(false));
   }, [userId, quizSessionId]);
 
-  // ← 変更：イベント不要にして、どこからでも呼べる submit 関数へ
   const submitNewComment = async () => {
     const content = newComment.trim();
     if (!content || posting) return;
@@ -59,7 +56,6 @@ export const Comments = ({ userId, quizSessionId }) => {
     }
   };
 
-  // 既存のボタン送信用（form onSubmit）も対応しておく
   const handleSubmit = async (e) => {
     e.preventDefault();
     await submitNewComment();
@@ -85,7 +81,6 @@ export const Comments = ({ userId, quizSessionId }) => {
 
   return (
     <div className="border-t pt-3 mt-3 space-y-2">
-      {/* 投稿フォーム（レビュワーのみ） */}
       {currentUser?.role === 'reviewer' && (
         <form onSubmit={handleSubmit} className="flex gap-2">
           <textarea
@@ -94,19 +89,14 @@ export const Comments = ({ userId, quizSessionId }) => {
             className="flex-1 border rounded p-2 text-sm"
             placeholder="コメントを書く…（Enterで送信 / Shift+Enterで改行）"
             rows={2}
-            // ← 追加：IME状態のハンドリング
             onCompositionStart={() => setIsComposing(true)}
             onCompositionEnd={() => setIsComposing(false)}
             onKeyDown={(e) => {
-              // Enter単体で送信、Shift+Enterは改行
               if (e.key === 'Enter' && !e.shiftKey) {
-                // 変換中や送信中はブロック
                 if (isComposing || posting) return;
-                e.preventDefault(); // 改行を防止
+                e.preventDefault();
                 submitNewComment();
               }
-              // Ctrl/Cmd+Enter送信を許可したい場合は以下を追加（任意）
-              // if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { ... }
             }}
           />
           <button

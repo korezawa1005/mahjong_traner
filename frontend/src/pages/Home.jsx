@@ -23,7 +23,6 @@ const Home = () => {
   useEffect(() => {
     api.get("/api/v1/current_user")
       .then(res => {
-        console.log('current_user:', res.data);
         setIsLoggedIn(res.data.logged_in);
       if (res.data.logged_in) {
         setUser(res.data.user); 
@@ -46,7 +45,6 @@ const Home = () => {
     const delayDebounce = setTimeout(() => {
       api.get(`/api/v1/users/search?query=${encodeURIComponent(searchTerm)}`)
       .then(res => {
-        console.log("✅ searchResults:", res.data);
         setSearchResults(res.data);
       })
         .catch(() => setSearchResults([]));

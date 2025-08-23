@@ -1,4 +1,3 @@
-// src/pages/UserPage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../libs/api";
@@ -7,7 +6,7 @@ import QuizHistory from "../components/QuizHistory";
 import Footer from "../components/Footer";
 
 const UserPage = () => {
-  const { id } = useParams(); // URLからユーザーID
+  const { id } = useParams();
   const [chartData, setChartData] = useState(null);
   const [user, setUser] = useState(null);
   const [uLoading, setULoading] = useState(true);

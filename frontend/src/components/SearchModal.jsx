@@ -9,7 +9,6 @@ const SearchModal = ({
 }) => {
   return (
     <div className="bg-white rounded-lg shadow-xl p-4 w-80 border border-gray-200 relative">
-      {/* モーダルヘッダー */}
       <div className="flex justify-between items-center mb-3">
         <h3 className="font-semibold text-gray-800 text-sm">ユーザー検索</h3>
         <button
@@ -23,7 +22,6 @@ const SearchModal = ({
         </button>
       </div>
 
-      {/* 入力欄 */}
       <input
         type="text"
         value={searchTerm}
@@ -33,7 +31,6 @@ const SearchModal = ({
         autoFocus
       />
 
-      {/* 検索結果リスト */}
       <div className="mt-3 pt-3 border-t border-gray-100">
         {searchResults.length > 0 ? (
           <ul className="max-h-60 overflow-y-auto text-sm">
@@ -46,10 +43,6 @@ const SearchModal = ({
                 <Link
                   to={`/users/${user.id}`}
                   className="block w-full h-full text-sm text-gray-700"
-                  onClick={() => {
-                    console.log("クリックされた", user.email);
-                    alert(`${user.email} をクリック`);
-                  }}
                 >
                   {user.email}
                 </Link>
