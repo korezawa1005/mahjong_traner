@@ -54,7 +54,7 @@ const Header = ({
 
       <MahjongModal open={openMenu} onClose={() => setOpenMenu(false)} title="メニュー">
         <nav className="flex flex-col divide-y divide-amber-200">
-          <MenuLink to="/help" label="使い方" onSelect={() => setOpenMenu(false)} />
+          <MenuLink to="/guide" label="使い方" onSelect={() => setOpenMenu(false)} />
           <MenuLink to="/terms" label="利用規約" onSelect={() => setOpenMenu(false)} />
           <MenuLink to="/privacy" label="プライバシー" onSelect={() => setOpenMenu(false)} />
         </nav>

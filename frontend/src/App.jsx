@@ -13,6 +13,7 @@ import QuizHistoryDetail from "./pages/QuizHistoryDetail";
 import UserPage from "./pages/UserPage";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import Guide from "./pages/Guide";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/quiz/history/:userId/:sessionId" element={<QuizHistoryDetail />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/guide" element={<Guide />} />
       </Routes>
     </BrowserRouter>
   );
