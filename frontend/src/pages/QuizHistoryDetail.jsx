@@ -17,7 +17,6 @@ const QuizHistoryDetail = () => {
     ? `/api/v1/users/${userId}/quiz_histories/${sessionId}`
     : `/api/v1/quiz_histories/${sessionId}`;
 
-  // ログイン中ユーザー（コメント権限などで利用）
   useEffect(() => {
     let cancel = false;
     api
@@ -57,7 +56,6 @@ const QuizHistoryDetail = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black">
       <main className="flex-1 w-full max-w-[700px] mx-auto px-2 pt-6 pb-24 flex flex-col gap-6">
-        {/* 見出し＆戻る導線 */}
         <div className="w-full">
           <button
             onClick={() => navigate(-1)}

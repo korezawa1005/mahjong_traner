@@ -15,7 +15,6 @@ const GenericQuiz = ({ category }) => {
   const navigate = useNavigate(); 
   const currentCorrectCount = state?.correctCount || 0;
   useEffect(() => {
-    console.log("カテゴリ:", category); 
     if (initialQuiz) return;
 
     api.get("/api/v1/quizzes", {

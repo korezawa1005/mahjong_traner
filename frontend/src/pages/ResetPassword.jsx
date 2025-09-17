@@ -1,4 +1,3 @@
-// src/pages/ResetPassword.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import api from "../libs/api";
@@ -13,7 +12,6 @@ const ResetPassword = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // クエリからトークン取得
   const token = useMemo(() => {
     const params = new URLSearchParams(location.search);
     return params.get("reset_password_token");

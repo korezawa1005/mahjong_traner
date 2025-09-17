@@ -1,6 +1,5 @@
 FROM --platform=linux/amd64 ruby:3.3.6
 
-# 必要なパッケージをインストール
 RUN apt-get update -qq && \
     apt-get install -y curl gnupg postgresql-client && \
     curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \

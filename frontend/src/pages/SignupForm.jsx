@@ -143,5 +143,3 @@ const SignUp = () => {
 };
 
 export default SignUp;
-
-// todo サインアップした後にログイン状態になった方がいいのでは？
