@@ -8,13 +8,13 @@ const Guide = () => {
 
       <h2 className="text-xl font-semibold mt-6 mb-2">クイズの始め方</h2>
       <ul className="list-disc pl-5 mb-4">
-        <li>トップページから「クイズを始める」をクリックしてください。</li>
+        <li>ホームページからお好きなジャンルのクイズをクリックしてください。</li>
         <li>表示された問題に対し、選択肢の牌をクリックして解答してください。</li>
       </ul>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">解答後の表示</h2>
       <p className="mb-4">
-        解答後は正解・解説が表示されます。続けて次の問題に進むことができます。
+        解答後は正解・解説が表示されます。続けて次の問題に進むことができます。（トータルで10問）
       </p>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">成績確認</h2>

@@ -58,7 +58,7 @@ const Footer = () => {
             </Link>
           )}
 
-          <Link to="#" className="flex flex-col items-center hover:opacity-80">
+          <Link to="/guide" className="flex flex-col items-center hover:opacity-80">
             <FaBook className="sm:text-xl lg:text-4xl mb-1" />
             ヘルプ
           </Link>
