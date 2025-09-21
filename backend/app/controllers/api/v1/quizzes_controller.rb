@@ -44,12 +44,10 @@ class Api::V1::QuizzesController < ApplicationController
       situation: quiz.situation,
       explanation: quiz.explanation,
   
-      # 既存フロント互換（URLのみ）
       hand_tile_urls: hand_tiles.map { |t| t[:image_url] },
       dora_indicator_urls: dora_tiles.map { |t| t[:image_url] },
       correct_tile_url: tiles[quiz.correct_tile_id],
   
-      # 将来用（idもある）
       hand_tiles: hand_tiles,
       dora_tiles: dora_tiles,
   

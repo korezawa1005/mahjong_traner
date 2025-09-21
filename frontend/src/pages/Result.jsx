@@ -8,7 +8,7 @@ const Result = () => {
   const navigate = useNavigate();
 
   const total = state?.total || 0;
-  const category = state?.category || "ノーマル/ランダム";
+  const category = state?.category;
   const correct = state?.correctCount || 0;
   const quizSessionId = state?.quizSessionId;
 
@@ -37,13 +37,12 @@ const Result = () => {
     return "精進あるのみ！";
   }, [correct]);
 
-  // ゲージ用パーセント & カウントアップ表示
   const percent = useMemo(() => (total > 0 ? Math.round((correct / total) * 100) : 0), [correct, total]);
   const [animPercent, setAnimPercent] = useState(0);
   useEffect(() => {
     let raf; 
     const start = performance.now();
-    const dur = 700; // ms
+    const dur = 700;
     const tick = (t) => {
       const p = Math.min(1, (t - start) / dur);
       setAnimPercent(Math.round(percent * p));
@@ -59,15 +58,13 @@ const Result = () => {
     correct >= Math.ceil(total * 0.4) ? "#3b82f6" :
     "#ef4444";
 
-  const handleShare = async () => {
-    const text = `「${category}」を${total}問中 ${correct}問 解きました！`;
-    if (navigator.share) {
-      try { await navigator.share({ text, title: "成績", url: location.origin }); } catch {}
-    } else {
-      await navigator.clipboard.writeText(text);
-      alert("成績をコピーしました。お好きなアプリに貼り付けてください。");
-    }
-  };
+    const handleShareToX = () => {
+      const text = `「${category}」を${total}問中 ${correct}問 解きました！`;
+      const url = location.origin;
+      const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+    
+      window.open(shareUrl, "_blank");
+    };
   const handleHome = () => navigate("/");
 
   return (
@@ -173,10 +170,10 @@ const Result = () => {
 
           <div className="mt-6 lg:mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <button
-              onClick={handleShare}
-              className="bg-white border border-gray-300 px-6 py-2 lg:px-8 lg:py-3 rounded-full shadow hover:bg-gray-50 active:shadow-lg"
+              onClick={handleShareToX}
+              className="bg-sky-500 text-white px-6 py-2 lg:px-8 lg:py-3 rounded-full shadow hover:bg-sky-600 active:shadow-lg"
             >
-              成績をシェア
+              Xでシェア
             </button>
             <button
               onClick={handleHome}
