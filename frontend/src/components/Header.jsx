@@ -21,7 +21,7 @@ const Header = ({
           className="absolute top-1/2 -translate-y-1/2 left-16 sm:left-8 md:left-12 w-12 h-12 md:w-14 md:h-14 bg-white/80 hover:bg-white text-amber-800 p-3 rounded-full border border-amber-300 shadow-lg transition-all duration-200 flex items-center justify-center"
           title="メニュー"
           aria-label="メニュー"
-        >
+      >
           <FaBars className="text-base" />
       </button>
       
