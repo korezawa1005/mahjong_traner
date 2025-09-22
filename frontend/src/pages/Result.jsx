@@ -59,7 +59,14 @@ const Result = () => {
     "#ef4444";
 
     const handleShareToX = () => {
-      const text = `「${category}」を${total}問中 ${correct}問 解きました！`;
+      const text = [
+        `🀄️ ${category} に挑戦！`,
+        `結果は ${total}問中 ${correct}問 正解（${percent}%）`,
+        `${feedback}`,
+        "",
+        "#雀力スカウター"
+      ].join("\n");
+
       const url = location.origin;
       const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     
