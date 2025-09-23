@@ -26,10 +26,12 @@ const Answer = () => {
     return [];
   })();
 
-  if (!quiz) return null;
 
   useEffect(() => {
-    if (!quiz?.id) return;
+    if (!quiz) {
+      navigate('/', { replace: true });
+      return;
+    }
     (async () => {
       try {
         const res = await api.get(`/api/v1/quizzes/${quiz.id}`);
@@ -38,22 +40,11 @@ const Answer = () => {
         console.error("詳細取得に失敗:", e);
       }
     })();
-  }, [quiz?.id]);
+  }, [quiz?.id, navigate]);
 
+  if (!quiz) return null;
   const isCorrect = sameTile(selectedTileUrl, quiz.correct_tile_url);
   const doraIndicators = quiz.dora_indicator_urls || quiz.discard_tile_urls || [];
-
-  useEffect(() => {
-    if (!quiz?.id) return;
-    (async () => {
-      try {
-        const res = await api.get(`/api/v1/quizzes/${quiz.id}`);
-        setDetail(res.data);
-      } catch (e) {
-        console.error("詳細取得に失敗:", e);
-      }
-    })();
-  }, [quiz?.id]);
 
   const handleSaveAnswer = async () => {
     try {
@@ -146,6 +137,7 @@ const Answer = () => {
             >
               {isCorrect ? "正解" : "不正解"}
             </span>
+            <p className="mt-3 text-sm text-gray-600">※ページを再読み込みするとトップページに戻ります。</p>
           </div>
 
           <div className="justify-self-start flex flex-col items-end gap-2">
