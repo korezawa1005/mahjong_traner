@@ -137,7 +137,6 @@ const Answer = () => {
             >
               {isCorrect ? "正解" : "不正解"}
             </span>
-            <p className="mt-3 text-sm text-gray-600">※ページを再読み込みするとトップページに戻ります。</p>
           </div>
 
           <div className="justify-self-start flex flex-col items-end gap-2">
