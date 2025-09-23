@@ -25,7 +25,8 @@ class Api::V1::QuizzesController < ApplicationController
       end,
       discard_tile_urls: tile_urls_from_ids(quiz.dora_indicator_tile_ids),
       correct_tile_url: quiz.correct_tile.image_url,
-      explanation: quiz.explanation
+      explanation: quiz.explanation,
+      table_state: quiz.table_state
     }
   end
 
@@ -43,6 +44,7 @@ class Api::V1::QuizzesController < ApplicationController
       id: quiz.id,
       situation: quiz.situation,
       explanation: quiz.explanation,
+      table_state: quiz.table_state,
   
       hand_tile_urls: hand_tiles.map { |t| t[:image_url] },
       dora_indicator_urls: dora_tiles.map { |t| t[:image_url] },
