@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate  } from "react-router-dom";
 import api from "../libs/api";
+import TableStateCard from "./TableStateCard";
 
 const GenericQuiz = ({ category }) => {
   const { state } = useLocation();
@@ -61,6 +62,7 @@ const GenericQuiz = ({ category }) => {
           <div>
             <div className="text-3xl lg:text-6xl font-bold mb-1">{quiz.category}</div>
             <div className="text-2xl lg:text-5xl text-gray-800">{quiz.round_info}</div>
+            <TableStateCard text={quiz.table_state} className="mt-6" />
           </div>
 
           <div className="justify-self-start p-2 lg:p-3 rounded-md bg-white shadow border w-fit">

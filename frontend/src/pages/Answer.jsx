@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../libs/api";
-import AcceptTilesList from '../components/AcceptTilesList';
+import AcceptTilesList from "../components/AcceptTilesList";
+import TableStateCard from "../components/TableStateCard";
 
 
 const normalize = (s) => (s ?? "").trim().toLowerCase();
@@ -45,6 +46,7 @@ const Answer = () => {
   if (!quiz) return null;
   const isCorrect = sameTile(selectedTileUrl, quiz.correct_tile_url);
   const doraIndicators = quiz.dora_indicator_urls || quiz.discard_tile_urls || [];
+  const tableState = detail?.table_state || quiz.table_state;
 
   const handleSaveAnswer = async () => {
     try {
@@ -126,6 +128,7 @@ const Answer = () => {
           <div>
             <div className="text-3xl lg:text-5xl font-bold mb-1">{quiz.category}</div>
             <div className="text-2xl lg:text-4xl text-gray-800">{quiz.round_info}</div>
+            <TableStateCard text={tableState} className="mt-6" />
             <span
               aria-live="polite"
               className={[

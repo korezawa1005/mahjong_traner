@@ -112,7 +112,7 @@ const Home = () => {
           {categories.slice(2, 5).map((c) => (
             <button
               key={c.id}
-              // onClick={() => handleStartQuiz(c)}
+              onClick={() => handleStartQuiz(c)}
               className="
               bg-gray-100 hover:bg-gray-200 rounded-xl border border-gray-300 shadow-sm
                 transition duration-150
