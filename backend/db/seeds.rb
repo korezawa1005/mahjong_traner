@@ -475,15 +475,13 @@ end
     correct: '五索',
     dora: '二筒',
     situation: '東1局 西家 8巡目',
-    table_state: '原点持ち。',
-    explanation: '浮き牌となっている五索と九索の比較です。五索を残せば赤五索や六索を引いた際にピンフが付く可能性がありますが、
-                  マンズは三面待ち、ピンズもドラを含む良形になっています。そのため今回は、危険度を考慮して五索から切るのが適切です。',
-    accept_tiles: {
-    "五索" => 19,
-    "九索" => 19
-    }
-  },
+    table_state: '親リーチがかかり、西家の自分は原点25000点。1巡前に対面がドラ表示の二筒を切ってリーチ。',
+    explanation: '二筒切りでリーチをかけるか、危険度を考えてダマ継続か、それともオリるかを判断する問題です。',
+    decision_options: %w[reach dama fold],
+    correct_decision: 'dama'
+  }
 ]
+
 
 リーチ判断_quiz_data = [
   
@@ -834,7 +832,9 @@ def create_quizzes(quiz_data, category_id)
       situation: data[:situation],
       table_state: data[:table_state],
       explanation: data[:explanation],
-      accept_tiles: data[:accept_tiles] || {}
+      accept_tiles: data[:accept_tiles] || {},
+      decision_options: data[:decision_options] || [],
+      correct_decision: data[:correct_decision]
     )
   end
 end
