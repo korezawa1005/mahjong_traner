@@ -81,7 +81,6 @@ const Answer = () => {
       payload.selected_decision = selectedDecision;
     } else {
       payload.selected_tile_id = selectedTileId;
-      payload.selected_tile_url = selectedTileUrl;
     }
 
     try {
