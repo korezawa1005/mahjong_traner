@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../libs/api";
-import AcceptTilesList from '../components/AcceptTilesList';
+import AcceptTilesList from "../components/AcceptTilesList";
+import TableStateCard from "../components/TableStateCard";
+import { DECISION_LABELS } from "../components/DecisionButtons";
 
 
 const normalize = (s) => (s ?? "").trim().toLowerCase();
@@ -10,7 +12,7 @@ const sameTile = (a, b) => !!a && !!b && normalize(a) === normalize(b);
 const Answer = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { quizSessionId, quiz, previous_ids, selectedTileUrl, selectedTileId } = state || {};
+  const { quizSessionId, quiz, previous_ids, selectedTileUrl, selectedTileId, selectedDecision } = state || {};
   const [detail, setDetail] = useState(null); 
 
   const acceptItems = (() => {
@@ -43,18 +45,47 @@ const Answer = () => {
   }, [quiz?.id, navigate]);
 
   if (!quiz) return null;
-  const isCorrect = sameTile(selectedTileUrl, quiz.correct_tile_url);
   const doraIndicators = quiz.dora_indicator_urls || quiz.discard_tile_urls || [];
+  const tableState = detail?.table_state || quiz.table_state;
+
+  const decisionOptions = useMemo(() => {
+    const source = detail?.decision_options ?? quiz.decision_options;
+    return Array.isArray(source) ? source.filter(Boolean) : [];
+  }, [detail?.decision_options, quiz.decision_options]);
+  const isDecisionQuiz = decisionOptions.length > 0;
+  const correctDecision = detail?.correct_decision;
+  const displaySelectedDecision = selectedDecision ? (DECISION_LABELS[selectedDecision] || selectedDecision) : null;
+  const displayCorrectDecision = correctDecision ? (DECISION_LABELS[correctDecision] || correctDecision) : null;
+
+  const decisionResult = isDecisionQuiz
+    ? (correctDecision ? selectedDecision === correctDecision : null)
+    : sameTile(selectedTileUrl, quiz.correct_tile_url);
+
+  const isCorrect = decisionResult === null ? false : decisionResult;
+  const hasResult = !isDecisionQuiz || decisionResult !== null;
+  const badgeLabel = hasResult ? (isCorrect ? "正解" : "不正解") : "判定中";
+  const badgeTone = hasResult
+    ? (isCorrect
+        ? "bg-green-50 text-green-700 border-green-200"
+        : "bg-red-50 text-red-700 border-red-200")
+    : "bg-gray-50 text-gray-500 border-gray-200";
 
   const handleSaveAnswer = async () => {
+    const payload = {
+      quiz_id: quiz.id,
+      quiz_session_id: quizSessionId,
+      correct: isCorrect,
+    };
+
+    if (isDecisionQuiz) {
+      payload.selected_decision = selectedDecision;
+    } else {
+      payload.selected_tile_id = selectedTileId;
+    }
+
     try {
       await api.post("/api/v1/quiz_answers", {
-        quiz_answer: {
-          quiz_id: quiz.id,
-          quiz_session_id: quizSessionId,
-          selected_tile_id: selectedTileId,
-          correct: isCorrect,
-        },
+        quiz_answer: payload,
       });
     } catch (err) {
       alert("回答保存に失敗しました");
@@ -62,6 +93,7 @@ const Answer = () => {
   };
 
   const handleNext = async () => {
+    if (!hasResult) return;
     await handleSaveAnswer();
 
     const excludeIds = Array.from(new Set([...(previous_ids || []), quiz.id].flat()))
@@ -114,7 +146,7 @@ const Answer = () => {
     }
   };
 
-  const userIsCorrect = sameTile(selectedTileUrl, quiz.correct_tile_url);
+  const userIsCorrect = isDecisionQuiz ? (hasResult ? isCorrect : false) : sameTile(selectedTileUrl, quiz.correct_tile_url);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black">
@@ -126,16 +158,15 @@ const Answer = () => {
           <div>
             <div className="text-3xl lg:text-5xl font-bold mb-1">{quiz.category}</div>
             <div className="text-2xl lg:text-4xl text-gray-800">{quiz.round_info}</div>
+            <TableStateCard text={tableState} className="mt-6" />
             <span
               aria-live="polite"
               className={[
                 "inline-flex items-center rounded-full px-6 py-2 text-sm lg:text-base font-semibold shadow border mt-4",
-                isCorrect
-                  ? "bg-green-50 text-green-700 border-green-200"
-                  : "bg-red-50 text-red-700 border-red-200",
+                badgeTone,
               ].join(" ")}
             >
-              {isCorrect ? "正解" : "不正解"}
+              {badgeLabel}
             </span>
           </div>
 
@@ -180,11 +211,11 @@ const Answer = () => {
               const isSelectedTile = sameTile(url, selectedTileUrl);
 
               let ringClass = "";
-              if (isSelectedTile) {
+              if (!isDecisionQuiz && isSelectedTile) {
                 ringClass = userIsCorrect
                   ? "ring-2 ring-green-400 scale-105"
                   : "ring-2 ring-red-400"; 
-              } else if (!userIsCorrect && isAnswerTile) {
+              } else if (!isDecisionQuiz && !userIsCorrect && isAnswerTile) {
                 ringClass = "ring-2 ring-green-400";  
               }
 
@@ -203,6 +234,23 @@ const Answer = () => {
           </div>
         </div>
 
+        {isDecisionQuiz && (
+          <div className="mt-6 bg-white p-4 lg:p-6 rounded-md shadow border max-w-3xl lg:max-w-4xl mx-auto">
+            <div className="text-sm text-gray-600">あなたの選択</div>
+            <div className="text-lg font-semibold text-gray-900">
+              {displaySelectedDecision || "-"}
+            </div>
+            {displayCorrectDecision && (
+              <div className="mt-3 text-sm text-gray-600">正解</div>
+            )}
+            {displayCorrectDecision && (
+              <div className="text-lg font-semibold text-gray-900">
+                {displayCorrectDecision}
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="mt-6 bg-white p-4 lg:p-6 rounded-md shadow border max-w-3xl lg:max-w-4xl mx-auto">
           <div className="text-base leading-relaxed text-gray-800 whitespace-pre-wrap">
             {quiz.explanation}
@@ -219,7 +267,8 @@ const Answer = () => {
         <div className="mt-8 lg:mt-10 flex justify-center gap-3">
           <button
             onClick={handleNext}
-            className="bg-white border border-gray-400 px-6 py-2 rounded shadow hover:bg-gray-100 active:shadow-lg"
+            disabled={!hasResult}
+            className="bg-white border border-gray-400 px-6 py-2 rounded shadow hover:bg-gray-100 active:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
           >
             次へ
           </button>

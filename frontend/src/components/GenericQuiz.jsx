@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate  } from "react-router-dom";
 import api from "../libs/api";
+import TableStateCard from "./TableStateCard";
+import DecisionButtons from "./DecisionButtons";
 
 const GenericQuiz = ({ category }) => {
   const { state } = useLocation();
@@ -28,7 +30,13 @@ const GenericQuiz = ({ category }) => {
 
   if (!quiz) return <div>読み込み中...</div>;
 
+  const decisionOptions = Array.isArray(quiz.decision_options)
+    ? quiz.decision_options.filter(Boolean)
+    : [];
+  const isDecisionQuiz = decisionOptions.length > 0;
+
   const handleTileClick = async (selectedUrl) => {
+    if (isDecisionQuiz) return;
     const selectedTileObj = quiz.hand_tiles.find(tile => tile.image_url === selectedUrl);
     const selectedTileId = selectedTileObj?.id;
 
@@ -50,6 +58,22 @@ const GenericQuiz = ({ category }) => {
       });
   };
 
+  const handleDecisionSelect = (decisionKey) => {
+    if (!decisionKey) return;
+    navigate("/quiz/answer",
+      {
+        state: {
+          quiz,
+          quizSessionId,
+          selectedDecision: decisionKey,
+          selectedTileId: null,
+          selectedTileUrl: null,
+          previous_ids: [...previousIds, quiz.id],
+          correctCount: currentCorrectCount,
+        }
+      });
+  };
+
   return (    
     <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black">
       <main className="flex-1 w-full mx-auto px-4 pt-10 lg:pt-12 lg:pl-8 pb-24">
@@ -61,6 +85,7 @@ const GenericQuiz = ({ category }) => {
           <div>
             <div className="text-3xl lg:text-6xl font-bold mb-1">{quiz.category}</div>
             <div className="text-2xl lg:text-5xl text-gray-800">{quiz.round_info}</div>
+            <TableStateCard text={quiz.table_state} className="mt-6" />
           </div>
 
           <div className="justify-self-start p-2 lg:p-3 rounded-md bg-white shadow border w-fit">
@@ -87,14 +112,18 @@ const GenericQuiz = ({ category }) => {
               <img
                 key={`${url}-${i}`}
                 src={url}
-                className="w-12 h-16 sm:w-14 sm:h-18 lg:w-20 lg:h-28 
+                className={`w-12 h-16 sm:w-14 sm:h-18 lg:w-20 lg:h-28 
                            border border-gray-400 rounded-sm transition duration-150
-                           active:shadow-lg active:border-yellow-400"
-                onClick={() => handleTileClick(url)}
+                           ${isDecisionQuiz ? "cursor-default" : "active:shadow-lg active:border-yellow-400"}`}
+                onClick={!isDecisionQuiz ? () => handleTileClick(url) : undefined}
               />
             ))}
           </div>
         </div>
+
+        {isDecisionQuiz && (
+          <DecisionButtons options={decisionOptions} onSelect={handleDecisionSelect} />
+        )}
       </main>
     </div>
   );

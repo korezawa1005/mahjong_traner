@@ -14,8 +14,8 @@ class Api::V1::QuizAnswersController < ApplicationController
   def quiz_answer_params
     params.require(:quiz_answer).permit(
       :quiz_id,
-      :selected_tile_url,
       :selected_tile_id,
+      :selected_decision,
       :correct,
       :user_id,
       :quiz_session_id

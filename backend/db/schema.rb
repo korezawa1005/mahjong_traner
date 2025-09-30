@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_22_090000) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_22_093100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,10 +42,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_22_090000) do
   create_table "quiz_answers", force: :cascade do |t|
     t.bigint "quiz_id", null: false
     t.bigint "quiz_session_id", null: false
-    t.bigint "selected_tile_id", null: false
+    t.bigint "selected_tile_id"
     t.boolean "correct"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "selected_decision"
     t.index ["quiz_id"], name: "index_quiz_answers_on_quiz_id"
     t.index ["quiz_session_id"], name: "index_quiz_answers_on_quiz_session_id"
     t.index ["selected_tile_id"], name: "index_quiz_answers_on_selected_tile_id"
@@ -72,6 +73,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_22_090000) do
     t.datetime "updated_at", null: false
     t.jsonb "accept_tiles"
     t.text "table_state"
+    t.jsonb "decision_options", default: []
+    t.string "correct_decision"
     t.index ["category_id"], name: "index_quizzes_on_category_id"
     t.index ["correct_tile_id"], name: "index_quizzes_on_correct_tile_id"
   end
