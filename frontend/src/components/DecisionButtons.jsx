@@ -1,7 +1,6 @@
 export const DECISION_LABELS = {
-  reach: "リーチ",
-  dama: "ダマ",
-  fold: "オリ"
+  push: "オシ",
+  fold: "ヒキ"
 };
 
 const DecisionButtons = ({ options = [], onSelect }) => {
