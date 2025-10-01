@@ -15,7 +15,7 @@ class Api::V1::ChartsController < ApplicationController
                                   .group_by(&:category_id)
                                   .transform_values { |sessions| sessions.first(2) }
 
-    categories = Category.order(:id)
+    categories = Category.where.not(name: 'リーチ判断').order(:id)
     labels = categories.pluck(:name)
 
     # 最新データ
@@ -50,7 +50,7 @@ class Api::V1::ChartsController < ApplicationController
                           .group_by(&:category_id)
                           .transform_values { |sessions| sessions.first(2) }
 
-    categories = Category.order(:id)
+    categories = Category.where.not(name: 'リーチ判断').order(:id)
     labels = categories.pluck(:name)
 
     current_data = categories.map do |cat|

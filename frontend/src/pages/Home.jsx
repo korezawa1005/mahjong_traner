@@ -108,8 +108,8 @@ const Home = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-3 gap-2 lg:gap-4 mb-4 w-full mt-6">
-          {categories.slice(2, 5).map((c) => (
+        <div className="grid grid-cols-2 gap-4 lg:gap-8 w-full mt-6">
+          {categories.slice(2, 4).map((c) => (
             <button
               key={c.id}
               onClick={() => handleStartQuiz(c)}

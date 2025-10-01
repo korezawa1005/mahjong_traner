@@ -471,15 +471,156 @@ end
 
 押し引き_quiz_data = [
   {
-    tiles: %w[三萬 四萬 五萬 六萬 七萬 二筒 三筒 八筒 八筒 五索 七索 七索 九索 七索],
-    correct: '五索',
-    dora: '二筒',
-    situation: '東1局 西家 8巡目',
-    table_state: '親リーチがかかり、西家の自分は原点25000点。1巡前に対面がドラ表示の二筒を切ってリーチ。',
-    explanation: '二筒切りでリーチをかけるか、危険度を考えてダマ継続か、それともオリるかを判断する問題です。',
-    decision_options: %w[reach dama fold],
-    correct_decision: 'dama'
-  }
+    tiles: %w[三筒 四筒 七筒 八筒 九筒 五萬 六萬 七萬 八萬 八萬 一索 一索 二索 三索],
+    correct: '一索',
+    dora: '二萬',
+    situation: '東1局 北家 9巡目',
+    table_state: '点数状況はフラット。ピンフのみで聴牌し、他家からリーチはかかってない。リーチするか',
+    explanation: 'リーチピンフは子で3500点程度の期待値。鉄リーチ。',
+    decision_options: %w[push fold],
+    correct_decision: 'push'
+  },
+  {
+    tiles: %w[三筒 四筒 七筒 八筒 九筒 五萬 六萬 七萬 八萬 八萬 一索 一索 二索 三索],
+    correct: '一索',
+    dora: '二萬',
+    situation: '東1局 北家 9巡目',
+    table_state: '点数状況はフラット。子からリーチがかかってる状況でピンフのみで聴牌。リーチするか',
+    explanation: '9巡目まではリーチ優位。10巡目以降はダマもしくはオリたほう無難である。',
+    decision_options: %w[push fold],
+    correct_decision: 'push'
+  },
+  {
+    tiles: %w[三筒 四筒 七筒 八筒 九筒 五萬 六萬 七萬 八萬 八萬 一索 一索 二索 三索],
+    correct: '一索',
+    dora: '二萬',
+    situation: '東1局 北家 9巡目',
+    table_state: '点数状況はフラット。親からリーチがかかってる状況でピンフのみで聴牌。リーチするか',
+    explanation: '親リーチに対して、子のリーチピンフは弱い。ここはダマにして、危険牌を引いたら降りるようにしよう。強引な押しで自爆しないように。',
+    decision_options: %w[push fold],
+    correct_decision: 'fold'
+  },
+  {
+    tiles: %w[三筒 四筒 七筒 八筒 九筒 五萬 六萬 七萬 八萬 八萬 一索 一索 二索 三索],
+    correct: '一索',
+    dora: '八筒',
+    situation: '東1局 北家 5巡目',
+    table_state: '点数状況はフラット。ピンフドラ1で聴牌し、他家からリーチはかかってない。リーチするか',
+    explanation: 'リーチピンフドラ1は得点アップ効率がものすごくいい。ダイヤモンドリーチ。',
+    decision_options: %w[push fold],
+    correct_decision: 'push'
+  },
+  {
+    tiles: %w[三筒 四筒 九筒 九筒 九筒 五萬 六萬 七萬 八萬 八萬 一索 一索 二索 三索],
+    correct: '一索',
+    dora: '二萬',
+    situation: '東1局 北家 5巡目',
+    table_state: '点数状況はフラット。のみ手で聴牌し、他家からリーチはかかってない。リーチするか',
+    explanation: 'のみ手でもリャンメンなら鉄リーチ。得点期待値2500点程度、他家の上がりを潰せるメリットもある',
+    decision_options: %w[push fold],
+    correct_decision: 'push'
+  },
+  {
+    tiles: %w[三筒 四筒 九筒 九筒 九筒 五萬 六萬 七萬 八萬 八萬 一索 一索 二索 三索],
+    correct: '一索',
+    dora: '二萬',
+    situation: '東1局 北家 11巡目',
+    table_state: '点数状況はフラット。中盤より深い順目、のみ手で聴牌し、他家からリーチはかかってない。リーチするか',
+    explanation: '中盤以降で先制リーチがかかっていないなら基本リーチでいい。ただ、ドラが全く見えてない、もしくは高そうな他家がいる（染めてそうなど）の状況だと判断が難しい。ただそのケースを含めてもリャンメンであればアガリ率が高いため、振り込む可能性はそこまで高くない。',
+    decision_options: %w[push fold],
+    correct_decision: 'push'
+  },
+  {
+    tiles: %w[三筒 四筒 九筒 九筒 九筒 五萬 六萬 七萬 八萬 八萬 一索 一索 二索 三索],
+    correct: '一索',
+    dora: '二萬',
+    situation: '東1局 北家 6巡目',
+    table_state: '点数状況はフラット。他家（子）からリーチがかかっている中で、のみ手で聴牌。リーチするか',
+    explanation: '子のリーチのみは子リーチと勝負するのはギリギリOK。親リーチと勝負するのはOUT。子のリーチに対しては9巡目くらいまでは追いかけリーチでいいが、10巡目以降になると勝負しない方が無難。',
+    decision_options: %w[push fold],
+    correct_decision: 'push'
+  },
+  {
+    tiles: %w[二筒 四筒 九筒 九筒 九筒 五萬 六萬 七萬 八萬 八萬 一索 一索 二索 三索],
+    correct: '一索',
+    dora: '二萬',
+    situation: '東1局 北家 6巡目',
+    table_state: '点数状況はフラット。のみ手カンちゃん待ちで聴牌し、他家からリーチはかかってない。リーチするか',
+    explanation: '基本的にはダマ。のみ手カンチャン待ちでのリーチは期待値的にもダマと変わらない。のみ手カンチャン待ちにならないように手組みしていきたい。',
+    decision_options: %w[push fold],
+    correct_decision: 'fold'
+  },
+  {
+    tiles: %w[二筒 四筒 七筒 八筒 九筒 五萬 六萬 七萬 八萬 八萬 一索 一索 二索 三索],
+    correct: '一索',
+    dora: '七筒',
+    situation: '東1局 北家 6巡目',
+    table_state: '点数状況はフラット。ドラ1カンちゃん待ちで聴牌し、他家からリーチはかかってない。リーチするか',
+    explanation: 'カンチャンドラ1はリーチが基本。手替わり牌も少ない。2枚以上切れてる場合はダマ推奨',
+    decision_options: %w[push fold],
+    correct_decision: 'push'
+  },
+  {
+    tiles: %w[一筒 三筒 四筒 五筒 六筒 五萬 六萬 七萬 八萬 八萬 一索 一索 二索 三索],
+    correct: '一索',
+    dora: '六萬',
+    situation: '東1局 北家 6巡目',
+    table_state: '点数状況はフラット。ドラ1カンちゃん待ちで聴牌し、他家からリーチはかかってない。発展性のある形だが、リーチするか',
+    explanation: '手替わりとなるなる牌が457pと3種類。3種類ほどであればそのままリーチした方が実践的である。4連形が二つある程度であれば聴牌はずしが優位になってくる',
+    decision_options: %w[push fold],
+    correct_decision: 'push'
+  },
+  {
+    tiles: %w[三筒 五筒 七筒 八筒 九筒 五萬 六萬 七萬 八萬 八萬 一索 一索 二索 三索],
+    correct: '一索',
+    dora: '七筒',
+    situation: '東1局 東家 6巡目',
+    table_state: '点数状況はフラット。親でドラ1真ん中カンちゃん待ちで聴牌し、他家からリーチはかかってない。リーチするか',
+    explanation: '親のリーチドラ1は3900点、ツモれば6000点と安くないので基本リーチ。切れてる枚数、場況によっては引いたりダマにしたり個別に対応しよう',
+    decision_options: %w[push fold],
+    correct_decision: 'push'
+  },
+  {
+    tiles: %w[二筒 四筒 七筒 八筒 九筒 五萬 六萬 七萬 八萬 八萬 一索 一索 二索 三索],
+    correct: '一索',
+    dora: '七筒',
+    situation: '東1局 北家 6巡目',
+    table_state: '点数状況はフラット。他家からリーチがかかっている中でドラ1カンチャン待ちで聴牌。追いかけリーチするか',
+    explanation: '追いかけリーチするのは少し損な選択。大損というわけではないので手牌に安全牌がない場合は追いかけるのもあり。',
+    decision_options: %w[push fold],
+    correct_decision: 'fold'
+  },
+  {
+    tiles: %w[二筒 四筒 七筒 八筒 九筒 五萬 六萬 七萬 八萬 八萬 一索 一索 二索 三索],
+    correct: '一索',
+    dora: '七筒',
+    situation: '東1局 北家 6巡目',
+    table_state: '点数状況はフラット。親からリーチがかかっている中でドラ1カンチャン待ちで聴牌。追いかけリーチするか',
+    explanation: '',
+    decision_options: %w[push fold],
+    correct_decision: 'fold'
+  },
+  {
+    tiles: %w[一筒 一筒 三筒 三萬 四萬 赤五萬 六索 八索 九索 九索 中 中 中 二筒],
+    correct: '一筒',
+    dora: '九萬',
+    situation: '東1局 北家 4巡目',
+    table_state: '点数状況はフラット。早々と中ドラ1カンチャン待ちを聴牌。リーチするか',
+    explanation: '鉄リーチ。役ありでダマにしたくなってしまうかもしれないが、手替わりも少なく、打点アップ効果も多いのでリーチしよう。',
+    decision_options: %w[push fold],
+    correct_decision: 'push'
+  },
+  {
+    tiles: %w[一筒 一筒 三筒 三萬 四萬 赤五萬 六索 八索 九索 九索 中 中 中 二筒],
+    correct: '一筒',
+    dora: '九萬',
+    situation: '東1局 北家 4巡目',
+    table_state: '点数状況はフラット。早々と中ドラ1カンチャン待ちを聴牌。リーチするか',
+    explanation: '鉄リーチ。役ありでダマにしたくなってしまうかもしれないが、手替わりも少なく、打点アップ効果も多いのでリーチしよう。',
+    decision_options: %w[push fold],
+    correct_decision: 'push'
+  },
+  
 ]
 
 
@@ -824,6 +965,8 @@ def create_quizzes(quiz_data, category_id)
       raise "Quiz #{i+1}: correct '#{data[:correct]}' not in tiles"
     end
 
+    options = Array(data[:decision_options]).map(&:to_s).select { |opt| %w[push fold].include?(opt) }
+    options = %w[push fold] if options.empty? && data[:correct_decision].present?
     Quiz.create!(
       category_id: category_id,
       quiz_tile_ids: data[:tiles].map { |name| tile_id(name) },
@@ -833,7 +976,7 @@ def create_quizzes(quiz_data, category_id)
       table_state: data[:table_state],
       explanation: data[:explanation],
       accept_tiles: data[:accept_tiles] || {},
-      decision_options: data[:decision_options] || [],
+      decision_options: options,
       correct_decision: data[:correct_decision]
     )
   end
