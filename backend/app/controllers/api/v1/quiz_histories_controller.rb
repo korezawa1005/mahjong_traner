@@ -36,6 +36,9 @@ class Api::V1::QuizHistoriesController < ApplicationController
     quiz_answers = quiz_session.quiz_answers.includes(:quiz, :selected_tile)
 
     details = quiz_answers.map do |answer|
+      decision_options = answer.quiz&.decision_options || []
+      correct_decision  = answer.quiz&.correct_decision
+      selected_decision = answer.selected_decision
       {
         quiz_id: answer.quiz&.id,
         # クイズコントローラと同じ形式で hand_tiles を追加
@@ -48,7 +51,10 @@ class Api::V1::QuizHistoriesController < ApplicationController
         correct_tile_id: answer.quiz&.correct_tile&.id,
         correct_tile_name: answer.quiz&.correct_tile&.name,
         correct: answer.correct,
-        explanation: answer.quiz&.explanation
+        explanation: answer.quiz&.explanation,
+        decision_options: decision_options,
+        selected_decision: selected_decision,
+        correct_decision: correct_decision
 
       }
     end
@@ -103,6 +109,9 @@ class Api::V1::QuizHistoriesController < ApplicationController
     quiz_answers = quiz_session.quiz_answers.includes(:quiz, :selected_tile)
 
     details = quiz_answers.map do |answer|
+      decision_options = answer.quiz&.decision_options || []
+      correct_decision  = answer.quiz&.correct_decision
+      selected_decision = answer.selected_decision
       {
         quiz_id: answer.quiz&.id,
         hand_tiles: answer.quiz&.quiz_tile_ids&.map do |id|
@@ -114,7 +123,10 @@ class Api::V1::QuizHistoriesController < ApplicationController
         correct_tile_id: answer.quiz&.correct_tile&.id,
         correct_tile_name: answer.quiz&.correct_tile&.name,
         correct: answer.correct,
-        explanation: answer.quiz&.explanation
+        explanation: answer.quiz&.explanation,
+        decision_options: decision_options,
+        selected_decision: selected_decision,
+        correct_decision: correct_decision
 
       }
     end

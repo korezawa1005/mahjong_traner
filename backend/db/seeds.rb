@@ -596,7 +596,7 @@ end
     dora: '七筒',
     situation: '東1局 北家 6巡目',
     table_state: '点数状況はフラット。親からリーチがかかっている中でドラ1カンチャン待ちで聴牌。追いかけリーチするか',
-    explanation: '',
+    explanation: 'この状況で親リーを追っかけるのは絶対に損。ドラ2あっても少し分が悪い。鉄引き!',
     decision_options: %w[push fold],
     correct_decision: 'fold'
   },

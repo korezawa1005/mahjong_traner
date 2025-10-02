@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../libs/api";
 import Comment from "../components/Comment";
 import Footer from "../components/Footer";
+import { DECISION_LABELS } from "../components/DecisionButtons";
 
 const QuizHistoryDetail = () => {
   const { userId, sessionId } = useParams();
@@ -46,9 +47,11 @@ const QuizHistoryDetail = () => {
     fetchDetails();
   }, [endpoint]);
 
-  const tileRingClass = (tileId, correctId, selectedId) => {
-    if (tileId === correctId) return "ring-2 ring-green-500";
-    if (tileId === selectedId) return "ring-2 ring-red-500";
+  const tileRingClass = (detail, tileId) => {
+    const isDecision = Array.isArray(detail.decision_options) && detail.decision_options.length > 0;
+    if (isDecision) return "";
+    if (tileId === detail.correct_tile_id) return "ring-2 ring-green-500";
+    if (tileId === detail.selected_tile_id) return "ring-2 ring-red-500";
     return "";
 
   };
@@ -115,24 +118,37 @@ const QuizHistoryDetail = () => {
                         key={idx}
                         src={tile.image_url}
                         alt={tile.name || `tile-${tile.id}`}
-                        className={`w-8 h-12 rounded-sm ${tileRingClass(
-                          tile.id,
-                          detail.correct_tile_id,
-                          detail.selected_tile_id
-                        )}`}
+                        className={`w-8 h-12 rounded-sm ${tileRingClass(detail, tile.id)}`}
                       />
                     ))}
                   </div>
 
                   <div className="text-sm text-gray-700 space-y-1">
-                    <p>
-                      選択した牌:{" "}
-                      <span className="font-medium">{detail.selected_tile_name}</span>
-                    </p>
-                    <p>
-                      正解牌:{" "}
-                      <span className="font-medium">{detail.correct_tile_name}</span>
-                    </p>
+                    {Array.isArray(detail.decision_options) && detail.decision_options.length > 0 ? (
+                      <>
+                        <p>
+                          選択: <span className="font-medium">
+                            {detail.selected_decision ? (DECISION_LABELS[detail.selected_decision] || detail.selected_decision) : "ー"}
+                          </span>
+                        </p>
+                        <p>
+                          正解: <span className="font-medium">
+                            {detail.correct_decision ? (DECISION_LABELS[detail.correct_decision] || detail.correct_decision) : "ー"}
+                          </span>
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p>
+                          選択した牌:{" "}
+                          <span className="font-medium">{detail.selected_tile_name}</span>
+                        </p>
+                        <p>
+                          正解牌:{" "}
+                          <span className="font-medium">{detail.correct_tile_name}</span>
+                        </p>
+                      </>
+                    )}
                     {detail.explanation && (
                       <p className="text-gray-600">解説: {detail.explanation}</p>
                     )}
