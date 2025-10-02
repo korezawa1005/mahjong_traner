@@ -16,6 +16,7 @@ class Api::V1::QuizAnswersController < ApplicationController
       :quiz_id,
       :selected_tile_id,
       :selected_decision,
+      :selected_calls,
       :correct,
       :user_id,
       :quiz_session_id

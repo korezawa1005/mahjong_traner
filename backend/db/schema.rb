@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_01_082000) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_01_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -47,6 +47,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_01_082000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "selected_decision"
+    t.jsonb "selected_calls", default: []
     t.index ["quiz_id"], name: "index_quiz_answers_on_quiz_id"
     t.index ["quiz_session_id"], name: "index_quiz_answers_on_quiz_session_id"
     t.index ["selected_tile_id"], name: "index_quiz_answers_on_selected_tile_id"
