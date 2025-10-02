@@ -11,4 +11,5 @@ class Quiz < ApplicationRecord
       { name:, count: cnt.to_i, image_url: dict[name] }
     }.sort_by { |h| -h[:count] }
   end
+
 end

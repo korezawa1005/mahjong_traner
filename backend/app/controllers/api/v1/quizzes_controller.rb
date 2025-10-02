@@ -27,7 +27,8 @@ class Api::V1::QuizzesController < ApplicationController
       correct_tile_url: quiz.correct_tile.image_url,
       explanation: quiz.explanation,
       table_state: quiz.table_state,
-      decision_options: quiz.decision_options
+      decision_options: quiz.decision_options,
+      call_options: quiz.call_options
     }
   end
 
@@ -48,6 +49,8 @@ class Api::V1::QuizzesController < ApplicationController
       table_state: quiz.table_state,
       decision_options: quiz.decision_options,
       correct_decision: quiz.correct_decision,
+      call_options: quiz.call_options,
+      correct_calls: quiz.correct_calls,
 
       hand_tile_urls: hand_tiles.map { |t| t[:image_url] },
       dora_indicator_urls: dora_tiles.map { |t| t[:image_url] },
