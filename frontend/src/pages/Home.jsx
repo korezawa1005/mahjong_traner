@@ -121,7 +121,7 @@ const Home = () => {
                 lg:py-14 lg:px-10 lg:h-[200px] lg:rounded-3xl lg:shadow-lg lg:gap-1
               "
             >
-              <p className="font-semibold text-lg sm:text-xl lg:text-4xl">{c.name} 準備中</p>
+              <p className="font-semibold text-lg sm:text-xl lg:text-4xl">{c.name}</p>
               <p className="text-sm sm:text-base lg:text-2xl text-gray-500 mt-1">全10問</p>
             </button>
           ))}
