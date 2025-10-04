@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate  } from "react-router-dom";
 import api from "../libs/api";
 import TableStateCard from "./TableStateCard";
 import DecisionButtons from "./DecisionButtons";
+import CallOptionsSelector from "./CallOptionsSelector";
 
 const GenericQuiz = ({ category }) => {
   const { state } = useLocation();
@@ -13,7 +14,8 @@ const GenericQuiz = ({ category }) => {
       ? initialPreviousIds.filter(id => typeof id === "number" && !isNaN(id))
       : []
   );
-  
+  const [selectedCallKeys, setSelectedCallKeys] = useState([]);
+
   const navigate = useNavigate(); 
   const currentCorrectCount = state?.correctCount || 0;
   useEffect(() => {
@@ -28,15 +30,44 @@ const GenericQuiz = ({ category }) => {
     });
   },[]);
 
-  if (!quiz) return <div>読み込み中...</div>;
-
-  const decisionOptions = Array.isArray(quiz.decision_options)
-    ? quiz.decision_options.filter(Boolean)
-    : [];
+  const decisionOptions = useMemo(() => {
+    if (!Array.isArray(quiz?.decision_options)) return [];
+    return quiz.decision_options.filter(Boolean);
+  }, [quiz?.decision_options]);
   const isDecisionQuiz = decisionOptions.length > 0;
 
+  const callOptions = useMemo(() => {
+    const source = Array.isArray(quiz?.call_options) ? quiz.call_options : [];
+    return source
+      .map((option, index) => {
+        if (typeof option === "string") {
+          const key = option;
+          return { key, label: option };
+        }
+        if (Array.isArray(option)) {
+          const key = option.join(",");
+          return { key, label: option.join(" ") };
+        }
+        if (option && typeof option === "object") {
+          const key = option.key ?? String(index);
+          const label = option.label
+            ?? (Array.isArray(option.tiles) ? option.tiles.join(" ") : String(option.value ?? key));
+          return { key, label };
+        }
+        return null;
+      })
+      .filter(Boolean);
+  }, [quiz?.call_options]);
+  const isCallQuiz = callOptions.length > 0;
+
+  useEffect(() => {
+    setSelectedCallKeys([]);
+  }, [quiz?.id]);
+
+  if (!quiz) return <div>読み込み中...</div>;
+
   const handleTileClick = async (selectedUrl) => {
-    if (isDecisionQuiz) return;
+    if (isDecisionQuiz || isCallQuiz) return;
     const selectedTileObj = quiz.hand_tiles.find(tile => tile.image_url === selectedUrl);
     const selectedTileId = selectedTileObj?.id;
 
@@ -66,6 +97,30 @@ const GenericQuiz = ({ category }) => {
           quiz,
           quizSessionId,
           selectedDecision: decisionKey,
+          selectedTileId: null,
+          selectedTileUrl: null,
+          previous_ids: [...previousIds, quiz.id],
+          correctCount: currentCorrectCount,
+        }
+      });
+  };
+
+  const toggleCallKey = (key) => {
+    setSelectedCallKeys((prev) =>
+      prev.includes(key)
+        ? prev.filter((value) => value !== key)
+        : [...prev, key]
+    );
+  };
+
+  const handleSubmitCalls = () => {
+    if (!isCallQuiz) return;
+    navigate("/quiz/answer",
+      {
+        state: {
+          quiz,
+          quizSessionId,
+          selectedCalls: selectedCallKeys,
           selectedTileId: null,
           selectedTileUrl: null,
           previous_ids: [...previousIds, quiz.id],
@@ -114,8 +169,8 @@ const GenericQuiz = ({ category }) => {
                 src={url}
                 className={`w-12 h-16 sm:w-14 sm:h-18 lg:w-20 lg:h-28 
                            border border-gray-400 rounded-sm transition duration-150
-                           ${isDecisionQuiz ? "cursor-default" : "active:shadow-lg active:border-yellow-400"}`}
-                onClick={!isDecisionQuiz ? () => handleTileClick(url) : undefined}
+                           ${(isDecisionQuiz || isCallQuiz) ? "cursor-default" : "active:shadow-lg active:border-yellow-400"}`}
+                onClick={(!isDecisionQuiz && !isCallQuiz) ? () => handleTileClick(url) : undefined}
               />
             ))}
           </div>
@@ -123,6 +178,26 @@ const GenericQuiz = ({ category }) => {
 
         {isDecisionQuiz && (
           <DecisionButtons options={decisionOptions} onSelect={handleDecisionSelect} />
+        )}
+
+        {isCallQuiz && (
+          <>
+            <CallOptionsSelector
+              options={callOptions}
+              selectedKeys={selectedCallKeys}
+              onToggle={toggleCallKey}
+            />
+            <div className="mt-6 flex justify-center">
+              <button
+                type="button"
+                onClick={handleSubmitCalls}
+                disabled={selectedCallKeys.length === 0}
+                className="rounded-full bg-amber-500 px-6 py-2 text-white font-semibold shadow transition hover:bg-amber-600 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+              >
+                回答する
+              </button>
+            </div>
+          </>
         )}
       </main>
     </div>

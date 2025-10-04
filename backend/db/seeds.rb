@@ -458,15 +458,6 @@ end
     "六索" => 33,
     }
   },
-  
-  
-  
-  
-
-
-  
-  
-  
 ]
 
 押し引き_quiz_data = [
@@ -623,13 +614,99 @@ end
   
 ]
 
-
-リーチ判断_quiz_data = [
-  
-]
-
 仕掛け_quiz_data = [
-  
+  {
+    tiles: %w[一筒 一筒 五筒 六筒 二萬 三萬 五萬 七萬 八索 九索 九索 白 白],
+    correct: '白',
+    dora: '二筒',
+    situation: '東1局 南家 2巡目',
+    explanation: '序盤で6ブロックのため、白以外はスルーでOK。例えば6mを鳴いたとしても他のブロックを崩さないといけない。そこまでスピードが早くなってないから。また、1p9sもポンしやすい分リカバリーが効きやすい',
+    call_options: %w[一筒 四筒 七筒 一萬 四萬 六萬 七索 九索 白 全てスルー],
+    correct_calls: %w[白]
+  },
+  {
+    tiles: %w[七筒 八筒 九筒 二萬 三萬 三萬 五萬 七萬 二索 四索 四索 發 發],
+    correct: '發',
+    dora: '八索',
+    situation: '東1局 南家 5巡目',
+    explanation: '發ポンと好形が残る4m6mチーのみする。3mやソーズから仕掛けてもそこまでスピードが早くなってない（愚形が残るため）他のターツが形が良かったら無理に鳴かなくていい',
+    call_options: %w[一萬 三萬 四萬 六萬 三索 四索 發 全てスルー],
+    correct_calls: %w[四萬 六萬 發]
+  },
+  {
+    tiles: %w[四筒 四筒 五筒 七筒 九筒 八萬 九萬 三索 四索 五索 七索 發 發],
+    correct: '發',
+    dora: '二索',
+    situation: '東1局 南家 5巡目',
+    explanation: '苦しいところだけ鳴こう。リャンカンは急所ではない。この形だと三筒の受けもあるので無理に鳴かなくていい',
+    call_options: %w[四筒 六筒 八筒 七萬 六索 發 全てスルー],
+    correct_calls: %w[七萬 發]
+  },
+  {
+    tiles: %w[一筒 五筒 六筒 三萬 八萬 九萬 一索 三索 六索 七索 東 東 南],
+    correct: '東',
+    dora: '西',
+    situation: '東1局 南家 3巡目',
+    explanation: '雀頭なし、愚形が多い、打点が低いの三重苦。鳴かない方が良い。手牌を短くすると放銃の可能性が高くなる',
+    call_options: %w[四筒 七筒 七萬 二索 五索 八索 東 全てスルー],
+    correct_calls: %w[全てスルー]
+  },
+  {
+    tiles: %w[二筒 三筒 八筒 九筒 一萬 三萬 六萬 八萬 一索 二索 三索 五索 六索],
+    correct: '一萬',
+    dora: '九筒',
+    situation: '東1局 南家 4巡目',
+    explanation: '二萬鳴いて四筒引いたとき最悪、そもそも雀頭がない状態のため出来るだけ面前で進めたい。そのため三色確定となる一筒のみ鳴く',
+    call_options: %w[一筒 四筒 七筒 二萬 七萬 四索 七索 全てスルー],
+    correct_calls: %w[一筒]
+  },
+  {
+    tiles: %w[二筒 三筒 四筒 赤五筒 五筒 七筒 五萬 八萬 九萬 赤五索 五索 六索 八索],
+    correct: '二筒',
+    dora: '六索',
+    situation: '東1局 南家 6巡目',
+    explanation: 'マンガンの手はタンヤオに移行。四筒鳴きは2度受けになるので鳴いたとしても苦しい形になってしまうため鳴かなくて良い',
+    call_options: %w[三筒 四筒 五筒 六筒 五索 七索 全てスルー],
+    correct_calls: %w[五筒 六筒 五索 七索]
+  },
+  {
+    tiles: %w[一筒 三筒 三筒 七筒 九筒 九萬 一索 三索 四索 七索 九索 北 白],
+    correct: '三筒',
+    dora: '西',
+    situation: '東1局 南家 3巡目',
+    explanation: '雀頭なし、愚形多い、打点が低いの三重苦。チャンタ系に寄せるために鳴くのはキツい。また鳴くことによって元々ある三筒の対子、索子のリャンメンターツも無駄となってしまう',
+    call_options: %w[二筒 三筒 八筒 二索 五索 八索 全てスルー],
+    correct_calls: %w[全てスルー]
+  },
+  {
+    tiles: %w[一筒 一筒 三筒 四筒 七筒 二萬 三萬 四萬 五萬 五萬 七萬 七萬 四索],
+    correct: '三筒',
+    dora: '三索',
+    situation: '東1局 南家 4巡目',
+    explanation: '現状ターツは5ブロックで足りているがメンツ手で進めるとリーチのみになりそう。ここは鳴いて浮いているドラ四索にくっつけてタンヤオドラ1のルートで進めたい。',
+    call_options: %w[二筒 五筒 二萬 三萬 四萬 五萬 七萬 全てスルー],
+    correct_calls: %w[五萬 七萬]
+  },
+  {
+    tiles: %w[二筒 三筒 四筒 七筒 九筒 三萬 四萬 東 東 北 白 白 白],
+    correct: '三筒',
+    dora: '三索',
+    situation: '東1局 南家 5巡目',
+    explanation: '鳴くなら混一色に移行したい。そのため、鳴いたら三四萬を落として混一色へ向かおう。鳴かずにそのまま聴牌できればそのままリーチが実践的',
+    call_options: %w[八筒 二萬 五萬 東 白 全てスルー],
+    correct_calls: %w[八筒 東]
+  },
+  {
+    tiles: %w[一筒 一筒 四筒 赤五筒 八筒 三萬 赤五萬 七萬 西 西 白 發 中],
+    correct: '四筒',
+    dora: '四筒',
+    situation: '東1局 南家 4巡目',
+    explanation: 'ドラ3のため後々ヅケの役牌の重なりを狙う。役牌が3種類あれば狙う感じで。リャンカンは強い形なので無理に鳴かなくて良い',
+    call_options: %w[一筒 三筒 六筒 四萬 六萬 西 全てスルー],
+    correct_calls: %w[一筒 西]
+  },
+
+
 ]
 
 手役意識_quiz_data = [
@@ -957,16 +1034,32 @@ def create_quizzes(quiz_data, category_id)
     end
     puts "category_id=#{category_id}: created #{created} quizzes"
 
-    # ---- 2. 枚数チェック ----
-    raise "Quiz #{i+1}: tiles must be 14" unless data[:tiles].size == 14
-
-    # ---- 3. 正解牌がtilesに含まれているか ----
     unless data[:tiles].include?(data[:correct])
       raise "Quiz #{i+1}: correct '#{data[:correct]}' not in tiles"
     end
 
     options = Array(data[:decision_options]).map(&:to_s).select { |opt| %w[push fold].include?(opt) }
     options = %w[push fold] if options.empty? && data[:correct_decision].present?
+
+    raw_call_options = Array(data[:call_options])
+    call_options = raw_call_options.map.with_index do |option, index|
+      case option
+      when Hash
+        option.respond_to?(:deep_stringify_keys) ? option.deep_stringify_keys : option.transform_keys(&:to_s)
+      when Array
+        key = option.join(',')
+        { "key" => key, "label" => option.join(' '), "tiles" => option }
+      when nil
+        nil
+      else
+        value = option.to_s
+        next if value.empty?
+        { "key" => value, "label" => value }
+      end
+    end.compact
+
+    correct_calls = Array(data[:correct_calls]).map(&:to_s).reject(&:blank?)
+
     Quiz.create!(
       category_id: category_id,
       quiz_tile_ids: data[:tiles].map { |name| tile_id(name) },
@@ -977,14 +1070,15 @@ def create_quizzes(quiz_data, category_id)
       explanation: data[:explanation],
       accept_tiles: data[:accept_tiles] || {},
       decision_options: options,
-      correct_decision: data[:correct_decision]
+      correct_decision: data[:correct_decision],
+      call_options: call_options,
+      correct_calls: correct_calls
     )
   end
 end
 
 create_quizzes(牌効率_quiz_data,   category_id_by_name('牌効率'))
 create_quizzes(押し引き_quiz_data, category_id_by_name('押し引き'))
-create_quizzes(リーチ判断_quiz_data, category_id_by_name('リーチ判断'))
 create_quizzes(仕掛け_quiz_data,   category_id_by_name('仕掛け'))
 create_quizzes(手役意識_quiz_data,  category_id_by_name('手役意識'))
 

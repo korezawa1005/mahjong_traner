@@ -12,14 +12,21 @@ class Api::V1::QuizAnswersController < ApplicationController
   private
 
   def quiz_answer_params
-    params.require(:quiz_answer).permit(
+    permitted = params.require(:quiz_answer).permit(
       :quiz_id,
       :selected_tile_id,
       :selected_decision,
-      :selected_calls,
       :correct,
       :user_id,
-      :quiz_session_id
+      :quiz_session_id,
+      selected_calls: []
     )
+
+    # strong parameters returns {"selected_calls"=>[]} even when nil; normalize to nil for consistency
+    if permitted.key?(:selected_calls)
+      permitted[:selected_calls] = Array(permitted[:selected_calls]).reject(&:blank?)
+    end
+
+    permitted
   end
 end

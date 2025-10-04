@@ -1,19 +1,33 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../libs/api";
 import AcceptTilesList from "../components/AcceptTilesList";
 import TableStateCard from "../components/TableStateCard";
 import { DECISION_LABELS } from "../components/DecisionButtons";
 
-
 const normalize = (s) => (s ?? "").trim().toLowerCase();
 const sameTile = (a, b) => !!a && !!b && normalize(a) === normalize(b);
+
+const arrayEquals = (a = [], b = []) => {
+  if (a.length !== b.length) return false;
+  const sortedA = [...a].sort();
+  const sortedB = [...b].sort();
+  return sortedA.every((value, index) => value === sortedB[index]);
+};
 
 const Answer = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { quizSessionId, quiz, previous_ids, selectedTileUrl, selectedTileId, selectedDecision } = state || {};
-  const [detail, setDetail] = useState(null); 
+  const {
+    quizSessionId,
+    quiz,
+    previous_ids,
+    selectedTileUrl,
+    selectedTileId,
+    selectedDecision,
+    selectedCalls = [],
+  } = state || {};
+  const [detail, setDetail] = useState(null);
 
   const acceptItems = (() => {
     if (!detail) return [];
@@ -22,16 +36,15 @@ const Answer = () => {
       return Object.entries(detail.accept_tiles).map(([name, count]) => ({
         name,
         count: Number(count) || 0,
-        image_url: undefined
+        image_url: undefined,
       }));
     }
     return [];
   })();
 
-
   useEffect(() => {
     if (!quiz) {
-      navigate('/', { replace: true });
+      navigate("/", { replace: true });
       return;
     }
     (async () => {
@@ -45,29 +58,99 @@ const Answer = () => {
   }, [quiz?.id, navigate]);
 
   if (!quiz) return null;
+
   const doraIndicators = quiz.dora_indicator_urls || quiz.discard_tile_urls || [];
   const tableState = detail?.table_state || quiz.table_state;
 
+  // 押し引き
   const decisionOptions = useMemo(() => {
     const source = detail?.decision_options ?? quiz.decision_options;
     return Array.isArray(source) ? source.filter(Boolean) : [];
   }, [detail?.decision_options, quiz.decision_options]);
   const isDecisionQuiz = decisionOptions.length > 0;
   const correctDecision = detail?.correct_decision;
-  const displaySelectedDecision = selectedDecision ? (DECISION_LABELS[selectedDecision] || selectedDecision) : null;
-  const displayCorrectDecision = correctDecision ? (DECISION_LABELS[correctDecision] || correctDecision) : null;
-
+  const displaySelectedDecision = selectedDecision
+    ? DECISION_LABELS[selectedDecision] || selectedDecision
+    : null;
+  const displayCorrectDecision = correctDecision
+    ? DECISION_LABELS[correctDecision] || correctDecision
+    : null;
   const decisionResult = isDecisionQuiz
-    ? (correctDecision ? selectedDecision === correctDecision : null)
-    : sameTile(selectedTileUrl, quiz.correct_tile_url);
+    ? correctDecision
+      ? selectedDecision === correctDecision
+      : null
+    : null;
 
-  const isCorrect = decisionResult === null ? false : decisionResult;
-  const hasResult = !isDecisionQuiz || decisionResult !== null;
+  // 仕掛け
+  const rawCallOptions = detail?.call_options ?? quiz.call_options;
+  const callOptions = useMemo(() => {
+    if (!Array.isArray(rawCallOptions)) return [];
+    return rawCallOptions
+      .map((option, index) => {
+        if (typeof option === "string") {
+          return { key: option, label: option };
+        }
+        if (Array.isArray(option)) {
+          const key = option.join(",");
+          return { key, label: option.join(" ") };
+        }
+        if (option && typeof option === "object") {
+          const key = option.key ?? String(index);
+          const label = option.label
+            ?? (Array.isArray(option.tiles) ? option.tiles.join(" ") : String(option.value ?? key));
+          return { key, label };
+        }
+        return null;
+      })
+      .filter(Boolean);
+  }, [rawCallOptions]);
+
+  const callOptionMap = useMemo(() => {
+    const map = new Map();
+    callOptions.forEach((option) => {
+      map.set(option.key, option.label);
+    });
+    return map;
+  }, [callOptions]);
+
+  const correctCalls = useMemo(() => {
+    const source = detail?.correct_calls ?? quiz.correct_calls;
+    return Array.isArray(source) ? source.map(String) : [];
+  }, [detail?.correct_calls, quiz.correct_calls]);
+
+  const normalizedSelectedCalls = useMemo(() => {
+    return Array.isArray(selectedCalls) ? selectedCalls.map(String) : [];
+  }, [selectedCalls]);
+
+  const isCallQuiz = callOptions.length > 0;
+  const callsResult = isCallQuiz
+    ? correctCalls && correctCalls.length > 0
+      ? arrayEquals(normalizedSelectedCalls, correctCalls.map(String))
+      : null
+    : null;
+
+  // 牌効率、手役構成クイズ
+  const tileQuizResult = !isDecisionQuiz && !isCallQuiz
+    ? sameTile(selectedTileUrl, quiz.correct_tile_url)
+    : null;
+
+  // 総合判定
+  const computedResult = isDecisionQuiz
+    ? decisionResult
+    : isCallQuiz
+      ? callsResult
+      : tileQuizResult;
+  const hasResult = isDecisionQuiz
+    ? decisionResult !== null
+    : isCallQuiz
+      ? callsResult !== null
+      : true;
+  const isCorrect = computedResult === true;
   const badgeLabel = hasResult ? (isCorrect ? "正解" : "不正解") : "判定中";
   const badgeTone = hasResult
-    ? (isCorrect
-        ? "bg-green-50 text-green-700 border-green-200"
-        : "bg-red-50 text-red-700 border-red-200")
+    ? isCorrect
+      ? "bg-green-50 text-green-700 border-green-200"
+      : "bg-red-50 text-red-700 border-red-200"
     : "bg-gray-50 text-gray-500 border-gray-200";
 
   const handleSaveAnswer = async () => {
@@ -79,6 +162,8 @@ const Answer = () => {
 
     if (isDecisionQuiz) {
       payload.selected_decision = selectedDecision;
+    } else if (isCallQuiz) {
+      payload.selected_calls = normalizedSelectedCalls;
     } else {
       payload.selected_tile_id = selectedTileId;
     }
@@ -102,7 +187,7 @@ const Answer = () => {
     const correctCount = state?.correctCount || 0;
     const updatedCorrect = isCorrect ? correctCount + 1 : correctCount;
 
-    if (excludeIds.length >= 10) {
+    if (excludeIds.length >= 2) {
       navigate("/quiz/result", {
         state: {
           quizSessionId,
@@ -146,7 +231,8 @@ const Answer = () => {
     }
   };
 
-  const userIsCorrect = isDecisionQuiz ? (hasResult ? isCorrect : false) : sameTile(selectedTileUrl, quiz.correct_tile_url);
+  const userIsCorrect = hasResult ? isCorrect : false;
+  const isTileSelectionQuiz = !isDecisionQuiz && !isCallQuiz;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-amber-50 text-black">
@@ -211,12 +297,12 @@ const Answer = () => {
               const isSelectedTile = sameTile(url, selectedTileUrl);
 
               let ringClass = "";
-              if (!isDecisionQuiz && isSelectedTile) {
+              if (isTileSelectionQuiz && isSelectedTile) {
                 ringClass = userIsCorrect
                   ? "ring-2 ring-green-400 scale-105"
-                  : "ring-2 ring-red-400"; 
-              } else if (!isDecisionQuiz && !userIsCorrect && isAnswerTile) {
-                ringClass = "ring-2 ring-green-400";  
+                  : "ring-2 ring-red-400";
+              } else if (isTileSelectionQuiz && !userIsCorrect && isAnswerTile) {
+                ringClass = "ring-2 ring-green-400";
               }
 
               return (
@@ -238,16 +324,33 @@ const Answer = () => {
           <div className="mt-6 bg-white p-4 lg:p-6 rounded-md shadow border max-w-3xl lg:max-w-4xl mx-auto">
             <div className="text-sm text-gray-600">あなたの選択</div>
             <div className="text-lg font-semibold text-gray-900">
-              {displaySelectedDecision || "-"}
+              {displaySelectedDecision || "ー"}
             </div>
-            {displayCorrectDecision && (
-              <div className="mt-3 text-sm text-gray-600">正解</div>
-            )}
-            {displayCorrectDecision && (
+            <div className="mt-3 text-sm text-gray-600">正解</div>
+            <div className="text-lg font-semibold text-gray-900">
+              {displayCorrectDecision || "ー"}
+            </div>
+          </div>
+        )}
+
+        {isCallQuiz && (
+          <div className="mt-6 bg-white p-4 lg:p-6 rounded-md shadow border max-w-3xl lg:max-w-4xl mx-auto space-y-3">
+            <div>
+              <div className="text-sm text-gray-600">あなたの選択</div>
               <div className="text-lg font-semibold text-gray-900">
-                {displayCorrectDecision}
+                {normalizedSelectedCalls.length > 0
+                  ? normalizedSelectedCalls.map((key) => callOptionMap.get(key) || key).join("、")
+                  : "ー"}
               </div>
-            )}
+            </div>
+            <div>
+              <div className="text-sm text-gray-600">正解</div>
+              <div className="text-lg font-semibold text-gray-900">
+                {correctCalls.length > 0
+                  ? correctCalls.map((key) => callOptionMap.get(key) || key).join("、")
+                  : "ー"}
+              </div>
+            </div>
           </div>
         )}
 
@@ -256,12 +359,11 @@ const Answer = () => {
             {quiz.explanation}
           </div>
           {acceptItems.length > 0 && (
-          <div className="mt-6 bg-white p-4 lg:p-6 rounded-md shadow border max-w-3xl lg:max-w-4xl mx-auto">
-            <div className="font-medium mb-3">受け入れ枚数</div>
-            <AcceptTilesList items={acceptItems} />
-          </div>
-        )}
-
+            <div className="mt-6">
+              <div className="font-medium mb-3">受け入れ枚数</div>
+              <AcceptTilesList items={acceptItems} />
+            </div>
+          )}
         </div>
 
         <div className="mt-8 lg:mt-10 flex justify-center gap-3">
@@ -277,10 +379,6 @@ const Answer = () => {
     </div>
   );
 };
-
-
-
-
 
 export default Answer;
 
