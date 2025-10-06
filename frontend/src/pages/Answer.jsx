@@ -187,7 +187,7 @@ const Answer = () => {
     const correctCount = state?.correctCount || 0;
     const updatedCorrect = isCorrect ? correctCount + 1 : correctCount;
 
-    if (excludeIds.length >= 2) {
+    if (excludeIds.length >= 10) {
       navigate("/quiz/result", {
         state: {
           quizSessionId,
