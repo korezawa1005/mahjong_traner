@@ -11,14 +11,14 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       sign_in(user)
       token, _payload = Warden::JWTAuth::UserEncoder.new.call(user, :user, nil)
       bearer_token = "Bearer #{token}"
-      redirect_to oauth_redirect_url(token: bearer_token)
+      redirect_to oauth_redirect_url(token: bearer_token), allow_other_host: true
     else
-      redirect_to oauth_redirect_url(error: 'authentication_failed')
+      redirect_to oauth_redirect_url(error: 'authentication_failed'), allow_other_host: true
     end
   end
 
   def failure
-    redirect_to oauth_redirect_url(error: params[:message] || 'authentication_failed')
+    redirect_to oauth_redirect_url(error: params[:message] || 'authentication_failed'), allow_other_host: true
   end
 
   private
