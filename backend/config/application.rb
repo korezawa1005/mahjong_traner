@@ -29,7 +29,13 @@ module App
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
     config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Session::CookieStore, key: '_your_app_session', same_site: :none, secure: true
+    session_domain = Rails.env.production? ? :all : nil
+    config.middleware.use ActionDispatch::Session::CookieStore,
+                              key: '_mahjong_trainer_session',
+                              same_site: :none,
+                              secure: Rails.env.production?,
+                              domain: session_domain
+    config.action_dispatch.cookies_same_site_protection = :none
     config.i18n.default_locale = :ja
   end
 end
