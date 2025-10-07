@@ -9,6 +9,8 @@
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
+  OmniAuth.config.allowed_request_methods = %i[get post]
+
   config.jwt do |jwt|
     jwt.secret = Rails.application.credentials.secret_key_base
     jwt.dispatch_requests = [
