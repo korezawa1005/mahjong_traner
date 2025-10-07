@@ -14,6 +14,7 @@ import UserPage from "./pages/UserPage";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Guide from "./pages/Guide";
+import OAuthCallback from "./pages/OAuthCallback";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/guide" element={<Guide />} />
+        <Route path="/oauth/google/callback" element={<OAuthCallback />} />
       </Routes>
     </BrowserRouter>
   );

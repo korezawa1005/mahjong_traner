@@ -1,4 +1,8 @@
+require 'uri'
+
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  CALLBACK_PATH = '/oauth/google/callback'
+
   def google_oauth2
     auth = request.env['omniauth.auth']
     user = User.find_or_create_from_google(auth)
@@ -6,22 +10,24 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     if user.persisted?
       sign_in(user)
       token, _payload = Warden::JWTAuth::UserEncoder.new.call(user, :user, nil)
-      response.set_header('Authorization', "Bearer #{token}")
-      render json: {
-        message: 'ログインに成功しました',
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role
-        }
-      }, status: :ok
+      bearer_token = "Bearer #{token}"
+      redirect_to oauth_redirect_url(token: bearer_token)
     else
-      render json: { errors: ['認証に失敗しました'] }, status: :unauthorized
+      redirect_to oauth_redirect_url(error: 'authentication_failed')
     end
   end
 
   def failure
-    render json: { errors: ['認証に失敗しました'] }, status: :unauthorized
+    redirect_to oauth_redirect_url(error: params[:message] || 'authentication_failed')
+  end
+
+  private
+
+  def oauth_redirect_url(query = {})
+    base_url = ENV['FRONTEND_APP_URL'].presence || 'http://localhost:5173'
+    uri = URI.parse(base_url)
+    uri.path = CALLBACK_PATH
+    uri.query = query.to_query if query.present?
+    uri.to_s
   end
 end

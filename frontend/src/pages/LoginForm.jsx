@@ -12,6 +12,15 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
 
+  const handleGoogleLogin = () => {
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+    if (!baseUrl) {
+      alert("Googleログインの設定が完了していません。");
+      return;
+    }
+    window.location.href = `${baseUrl}/users/auth/google_oauth2`;
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrors([]);
@@ -99,7 +108,11 @@ const Login = () => {
               <span className="text-green-700 font-semibold">LINEでログイン</span>
             </button>
 
-            <button className="w-full py-3 rounded-xl border bg-white hover:bg-gray-50 transition flex items-center justify-center gap-2">
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              className="w-full py-3 rounded-xl border bg-white hover:bg-gray-50 transition flex items-center justify-center gap-2"
+            >
               <FcGoogle />
               <span className="text-gray-700 font-medium">Googleでログイン</span>
             </button>
