@@ -4,6 +4,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :jwt_authenticatable,
+         :omniauthable, omniauth_providers: %i[google_oauth2],
          jwt_revocation_strategy: JwtDenylist
 
   has_many :quiz_sessions, dependent: :destroy
