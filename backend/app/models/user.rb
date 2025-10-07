@@ -39,4 +39,16 @@ class User < ApplicationRecord
 
   scope :reviewers, -> { where(role: :reviewer) }
   scope :general_users, -> { where(role: :general) }
+
+  def self.find_or_create_from_google(auth)
+    email = auth.info.email
+    name = auth.info.name
+    uid = auth.uid
+
+    user = find_or_initialize_by(email: email)
+    user.name ||= name
+    user.password ||= Devise.friendly_token[0, 20]
+    user.save! if user.changed?
+    user
+  end
 end
