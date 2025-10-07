@@ -3,7 +3,8 @@ Rails.application.routes.draw do
              controllers: {
                sessions: 'users/sessions', defaults: { format: :json },
                registrations: 'users/registrations',
-               passwords: 'users/passwords'
+               passwords: 'users/passwords',
+               omniauth_callbacks: 'users/omniauth_callbacks'
              }
   mount LetterOpenerWeb::Engine, at: '/letter_opener' if Rails.env.development?
 

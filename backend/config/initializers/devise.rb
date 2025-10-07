@@ -20,6 +20,13 @@ Devise.setup do |config|
     ]
     jwt.expiration_time = 180.minutes.to_i
   end
+
+  config.omniauth :google_oauth2,
+                  ENV['GOOGLE_CLIENT_ID'],
+                  ENV['GOOGLE_CLIENT_SECRET'],
+                  scope: 'userinfo.email,userinfo.profile',
+                  prompt: 'select_account',
+                  access_type: 'offline'
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
   # confirmation, reset password and unlock tokens in the database.
