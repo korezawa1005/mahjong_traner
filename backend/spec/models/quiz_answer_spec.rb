@@ -1,0 +1,34 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+RSpec.describe QuizAnswer, type: :model do
+  describe 'validations for different quiz types' do
+    it 'allows tile selection quizzes without additional fields' do
+      quiz = create(:quiz)
+      answer = build(:quiz_answer, quiz: quiz, selected_calls: [], selected_decision: nil)
+
+      expect(answer).to be_valid
+    end
+
+    it 'requires selected_decision when quiz has decision options' do
+      quiz = create(:quiz, decision_options: %w[push fold], correct_decision: 'push')
+      answer = build(:quiz_answer, quiz: quiz, selected_decision: nil)
+
+      expect(answer).not_to be_valid
+
+      answer.selected_decision = 'push'
+      expect(answer).to be_valid
+    end
+
+    it 'requires selected_calls when quiz has call options' do
+      quiz = create(:quiz, call_options: %w[pon pass], correct_calls: %w[pon])
+      answer = build(:quiz_answer, quiz: quiz, selected_calls: [])
+
+      expect(answer).not_to be_valid
+
+      answer.selected_calls = ['pon']
+      expect(answer).to be_valid
+    end
+  end
+end
