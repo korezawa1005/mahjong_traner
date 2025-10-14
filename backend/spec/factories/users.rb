@@ -6,5 +6,9 @@ FactoryBot.define do
     sequence(:email) { |n| "user#{n}@example.com" }
     password { "Password123" }
     role { :general }
+
+    trait :reviewer do
+      role { :reviewer }
+    end
   end
 end

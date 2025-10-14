@@ -31,4 +31,28 @@ RSpec.describe QuizAnswer, type: :model do
       expect(answer).to be_valid
     end
   end
+
+  describe 'associations' do
+    it 'requires a quiz' do
+      answer = build(:quiz_answer)
+      answer.quiz = nil
+
+      expect(answer).not_to be_valid
+      expect(answer.errors[:quiz]).to be_present
+    end
+
+    it 'requires a quiz_session' do
+      answer = build(:quiz_answer)
+      answer.quiz_session = nil
+
+      expect(answer).not_to be_valid
+      expect(answer.errors[:quiz_session]).to be_present
+    end
+
+    it 'allows selected_tile to be optional' do
+      answer = build(:quiz_answer, selected_tile: nil)
+
+      expect(answer).to be_valid
+    end
+  end
 end
