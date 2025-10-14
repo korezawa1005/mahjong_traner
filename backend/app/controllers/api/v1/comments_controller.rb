@@ -2,6 +2,7 @@ class Api::V1::CommentsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_target_user
   before_action :set_comment, only: %i[update destroy]
+  before_action :ensure_can_read!, only: %i[index]
   before_action :ensure_reviewer!, only: %i[create update destroy]
   before_action :ensure_author!,   only: %i[update destroy]
 
@@ -49,6 +50,13 @@ class Api::V1::CommentsController < ApplicationController
 
   def ensure_reviewer!
     head :forbidden unless current_user.role == 'reviewer'
+  end
+
+  def ensure_can_read!
+    return if current_user == @target_user
+    return if current_user.role == 'reviewer'
+
+    head :forbidden
   end
 
   def set_target_user
