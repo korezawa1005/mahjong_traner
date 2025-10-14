@@ -61,6 +61,15 @@ RSpec.describe 'Api::V1::Comments', type: :request do
       )
     end
 
+    it 'requires authentication' do
+      get api_v1_user_comments_path(target_user),
+          params: { quiz_session_id: quiz_session.id },
+          headers: { 'ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json' },
+          as: :json
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+
     it 'forbids access for users other than reviewer or target user' do
       outsider = create(:user, role: :general)
       headers = auth_headers_for(outsider)
