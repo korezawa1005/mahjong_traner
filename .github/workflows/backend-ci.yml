@@ -32,6 +32,7 @@ jobs:
       - name: Run RSpec
         env:
           RAILS_ENV: test
+          DEVISE_JWT_SECRET_KEY: test-secret-key
         run: |
           docker compose up -d db
           docker compose run --rm --entrypoint "" \
