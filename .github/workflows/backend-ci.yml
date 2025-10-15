@@ -34,7 +34,7 @@ jobs:
           RAILS_ENV: test
         run: |
           docker compose up -d db
-          docker compose run --rm \
+          docker compose run --rm --entrypoint "" \
             -e RAILS_ENV=test \
             back bash -lc "bundle exec rails db:prepare && bundle exec rspec"
 
