@@ -12,7 +12,9 @@ Devise.setup do |config|
   OmniAuth.config.allowed_request_methods = %i[get post]
 
   config.jwt do |jwt|
-    jwt.secret = ENV.fetch('DEVISE_JWT_SECRET_KEY', Rails.application.credentials.secret_key_base)
+    jwt.secret = ENV['DEVISE_JWT_SECRET_KEY'].presence ||
+                 (Rails.application.credentials.secret_key_base rescue nil) ||
+                 'test-secret-key'
     jwt.dispatch_requests = [
       ['POST', %r{^/users/sign_in$}],
       ['POST', %r{^/users$}] 
