@@ -1,0 +1,40 @@
+name: Backend CI
+
+on:
+  push:
+    paths:
+      - "backend/**"
+      - "docker-compose.yml"
+      - ".github/workflows/backend-ci.yml"
+  pull_request:
+    paths:
+      - "backend/**"
+      - "docker-compose.yml"
+      - ".github/workflows/backend-ci.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build backend image
+        run: docker compose build back
+
+      - name: Run RSpec
+        env:
+          RAILS_ENV: test
+        run: |
+          docker compose up -d db
+          docker compose run --rm \
+            -e RAILS_ENV=test \
+            back bash -lc "bundle exec rails db:prepare && bundle exec rspec"
+
+      - name: Tear down Docker services
+        if: always()
+        run: docker compose down -v
