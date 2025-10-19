@@ -7,7 +7,7 @@ class Api::V1::QuizzesController < ApplicationController
     quizzes = Quiz.includes(:correct_tile).where(category: category) # sampleでランダムに一問選んでる includes（:correct_tile）することによってN＋1問題を回避
     quizzes = quizzes.where.not(id: exclude_ids) if exclude_ids.any? # 　exclude_idsだけ省く
 
-    quiz = quizzes.sample # quizにexclude_idだけ除いたものを入れる
+    quiz = quizzes.order(Arel.sql('RANDOM()')).first # 絞り込み結果からDB側でランダムに一件抽出
 
     return render json: { error: 'クイズが見つかりません' }, status: 404 unless quiz
 
