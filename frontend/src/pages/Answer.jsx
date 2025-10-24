@@ -182,7 +182,7 @@ const Answer = () => {
     await handleSaveAnswer();
 
     const excludeIds = Array.from(new Set([...(previous_ids || []), quiz.id].flat()))
-      .filter((id) => typeof id === "number" && !isNaN(id));
+                            .filter((id) => typeof id === "number" && !isNaN(id));
 
     const correctCount = state?.correctCount || 0;
     const updatedCorrect = isCorrect ? correctCount + 1 : correctCount;

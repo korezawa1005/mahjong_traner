@@ -4,9 +4,7 @@ class Api::V1::QuizzesController < ApplicationController
     return render json: { error: 'カテゴリが見つかりません' }, status: 404 unless category
 
     exclude_ids = params[:exclude_ids]&.split(',') || [] # 　今まで出題されたIDを受け取る 1問目は空の配列にする &をつけることによってnilでもエラーにならない
-    quizzes = Quiz.includes(:correct_tile).where(category: category) # sampleでランダムに一問選んでる includes（:correct_tile）することによってN＋1問題を回避
-    quizzes = quizzes.where.not(id: exclude_ids) if exclude_ids.any? # 　exclude_idsだけ省く
-
+    quizzes = Quiz.where(category: category).where.not(id: exclude_ids) # exclude_idsだけ省く
     quiz = quizzes.order(Arel.sql('RANDOM()')).first # 絞り込み結果からDB側でランダムに一件抽出
 
     return render json: { error: 'クイズが見つかりません' }, status: 404 unless quiz
@@ -66,6 +64,9 @@ class Api::V1::QuizzesController < ApplicationController
   private
 
   def tile_urls_from_ids(ids)
-    ids.map { |id| Tile.find(id).image_url } # whereだと重複したidは読み込まれないため使えない
+    return [] if ids.blank?
+
+    tiles = Tile.where(id: ids).pluck(:id, :image_url).to_h
+    ids.map { |id| tiles[id] }
   end
 end
