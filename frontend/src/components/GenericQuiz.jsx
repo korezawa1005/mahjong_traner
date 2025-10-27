@@ -33,30 +33,29 @@ const GenericQuiz = ({ category }) => {
   const decisionOptions = useMemo(() => {
     if (!Array.isArray(quiz?.decision_options)) return [];
     return quiz.decision_options.filter(Boolean);
-  }, [quiz?.decision_options]);
-  const isDecisionQuiz = decisionOptions.length > 0;
+  }, [quiz?.decision_options]);// ガード: 押し引きクイズ判定に使う前に配列かつ空要素なしへ整える
+  const isDecisionQuiz = decisionOptions.length > 0;//押し引き問題かどうかフラグ化
 
   const callOptions = useMemo(() => {
     const source = Array.isArray(quiz?.call_options) ? quiz.call_options : [];
-    return source
-      .map((option, index) => {
-        if (typeof option === "string") {
-          const key = option;
-          return { key, label: option };
-        }
-        if (Array.isArray(option)) {
-          const key = option.join(",");
-          return { key, label: option.join(" ") };
-        }
-        if (option && typeof option === "object") {
-          const key = option.key ?? String(index);
-          const label = option.label
-            ?? (Array.isArray(option.tiles) ? option.tiles.join(" ") : String(option.value ?? key));
-          return { key, label };
-        }
-        return null;
-      })
-      .filter(Boolean);
+    return source.map((option, index) => {
+      if (typeof option === "string") {
+        const key = option;
+        return { key, label: option };
+      }
+      if (Array.isArray(option)) {
+        const key = option.join(",");
+        return { key, label: option.join(" ") };
+      }
+      if (option && typeof option === "object") {
+        const key = option.key ?? String(index);
+        const label = option.label
+          ?? (Array.isArray(option.tiles) ? option.tiles.join(" ") : String(option.value ?? key));
+        return { key, label };
+      }
+      return null;
+    })
+    .filter(Boolean);
   }, [quiz?.call_options]);
   const isCallQuiz = callOptions.length > 0;
 

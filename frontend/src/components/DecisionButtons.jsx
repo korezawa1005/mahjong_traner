@@ -1,6 +1,6 @@
 export const DECISION_LABELS = {
-  push: "オシ",
-  fold: "ヒキ"
+  push: "押し",
+  fold: "引き"
 };
 
 const DecisionButtons = ({ options = [], onSelect }) => {
