@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../libs/api";
 import AcceptTilesList from "../components/AcceptTilesList";
 import TableStateCard from "../components/TableStateCard";
 import { DECISION_LABELS } from "../components/DecisionButtons";
+import { playResultTone } from "../libs/sound";
 
 const normalize = (s) => (s ?? "").trim().toLowerCase();
 const sameTile = (a, b) => !!a && !!b && normalize(a) === normalize(b);
@@ -152,6 +153,18 @@ const Answer = () => {
       ? "bg-green-50 text-green-700 border-green-200"
       : "bg-red-50 text-red-700 border-red-200"
     : "bg-gray-50 text-gray-500 border-gray-200";
+  const soundPlayedRef = useRef(false);
+
+  useEffect(() => {
+    soundPlayedRef.current = false;
+  }, [quiz?.id]);
+
+  useEffect(() => {
+    if (!hasResult) return;
+    if (soundPlayedRef.current) return;
+    soundPlayedRef.current = true;
+    playResultTone(isCorrect);
+  }, [hasResult, isCorrect, quiz?.id]);
 
   const handleSaveAnswer = async () => {
     const payload = {
@@ -248,7 +261,7 @@ const Answer = () => {
             <span
               aria-live="polite"
               className={[
-                "inline-flex items-center rounded-full px-6 py-2 text-sm lg:text-base font-semibold shadow border mt-4",
+                "inline-flex items-center rounded-full px-6 sm:px-8 py-2.5 sm:py-3 text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-wide shadow border mt-6",
                 badgeTone,
               ].join(" ")}
             >
@@ -382,4 +395,4 @@ const Answer = () => {
 
 export default Answer;
 
-//TODO ・正解と不正解の音をたす　・進捗インジケータ　・“次へ”を下部に固定（モバイル親切）
+//TODO ・進捗インジケータ　・“次へ”を下部に固定（モバイル親切）
