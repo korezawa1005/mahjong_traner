@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../libs/api";
 import Header from '../components/Header';
@@ -25,7 +25,7 @@ const Home = () => {
       .then(res => {
         setIsLoggedIn(res.data.logged_in);
       if (res.data.logged_in) {
-        setUser(res.data.user); 
+        setUser(res.data.user);
       } else {
         setUser(null);
       }
@@ -129,7 +129,7 @@ const Home = () => {
       </main>
 
       {showReviewerSearch && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-25 z-40"
           onClick={() => setShowReviewerSearch(false)}
         />

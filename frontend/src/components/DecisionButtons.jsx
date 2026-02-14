@@ -3,22 +3,32 @@ export const DECISION_LABELS = {
   fold: "引き"
 };
 
+const CONTAINER_CLASS =
+  "mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center";
+const BUTTON_CLASS =
+  "w-full sm:w-48 rounded-full border border-amber-300 bg-white px-6 py-3 text-lg font-semibold text-amber-700 shadow-sm transition hover:border-amber-400 hover:bg-amber-50 active:scale-[0.99]";
+
+const getDecisionLabel = (key) => DECISION_LABELS[key] ?? key;
+
 const DecisionButtons = ({ options = [], onSelect }) => {
-  if (!Array.isArray(options) || options.length === 0) return null;
-  const handleClick = (key) => {
-    if (typeof onSelect === "function") onSelect(key);
+  const optionKeys = Array.isArray(options) ? options : [];
+  if (optionKeys.length === 0) return null;
+
+  const handleSelect = (key) => {
+    if (typeof onSelect !== "function") return;
+    onSelect(key);
   };
 
   return (
-    <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-      {options.map((key) => (
+    <div className={CONTAINER_CLASS}>
+      {optionKeys.map((key) => (
         <button
           key={key}
           type="button"
-          onClick={() => handleClick(key)}
-          className="w-full sm:w-48 rounded-full border border-amber-300 bg-white px-6 py-3 text-lg font-semibold text-amber-700 shadow-sm transition hover:border-amber-400 hover:bg-amber-50 active:scale-[0.99]"
+          onClick={() => handleSelect(key)}
+          className={BUTTON_CLASS}
         >
-          {DECISION_LABELS[key] || key}
+          {getDecisionLabel(key)}
         </button>
       ))}
     </div>
